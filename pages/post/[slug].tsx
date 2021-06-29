@@ -12,22 +12,18 @@ export default function Post({ post }: { post: any }) {
   return (
     <Container>
       <HomeLink />
-      <hr className="my-4" />
       <article>
         <H1>{post.title}</H1>
         {post.author?.name && (
           <p>
-            By{' '}
-            <Link href={`/author/${post.author.id}`}>
-              <a>{post.author.name}</a>
-            </Link>
+            By <span className="font-bold">{post.author.name}</span>
           </p>
         )}
-        {post.publishedDate && (
+        {/* {post.publishedDate && (
           <span>
             on <time dateTime={post.publishedDate}>{post.publishedDate}</time>
           </span>
-        )}
+        )} */}
         {post.content?.document && (
           <DocumentRenderer document={post.content.document} />
         )}

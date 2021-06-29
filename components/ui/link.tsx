@@ -9,7 +9,7 @@ type Props = { href: LinkProps['href'] } & Omit<
 
 export const Link = ({ className, href, ...props }: Props) => {
   const classes = classNames(
-    'text-blue-500 hover:underline hover:text-blue-800',
+    'text-blue-600 hover:underline hover:text-blue-800',
     className
   );
   return (

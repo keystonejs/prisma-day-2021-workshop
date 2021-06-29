@@ -143,18 +143,12 @@ export const componentBlocks = {
   quote: component({
     component: ({ content, name, position }) => {
       return (
-        <div
-          css={{
-            borderLeft: '3px solid #CBD5E0',
-            paddingLeft: 16,
-          }}
-        >
-          <div css={{ fontStyle: 'italic', color: '#4A5568' }}>{content}</div>
-          <div css={{ fontWeight: 'bold', color: '#718096' }}>
-            <NotEditable>— </NotEditable>
+        <div css={{}}>
+          <div css={{ fontStyle: 'italic' }}>{content}</div>
+          <div css={{ fontWeight: 'bold', color: '#4A5568', marginTop: 4 }}>
             {name}
           </div>
-          <div css={{ fontWeight: 'bold', color: '#718096' }}>{position}</div>
+          <div css={{ color: '#718096', marginTop: 4 }}>{position}</div>
         </div>
       );
     },
@@ -175,9 +169,8 @@ export const componentBlocks = {
         placeholder: 'Description...',
       }),
       image: fields.text({ label: 'Profile Photo URL' }),
-      href: fields.text({ label: 'Profile Link HREF' }),
+      href: fields.text({ label: 'Profile Link URL' }),
     },
-    chromeless: true,
   }),
   poll: component({
     component: ({ poll }) => {

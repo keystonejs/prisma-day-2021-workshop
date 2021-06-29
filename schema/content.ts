@@ -30,14 +30,6 @@ export const Label = list({
       many: true,
       ui: {
         displayMode: 'count',
-        // displayMode: 'cards',
-        // cardFields: ['title'],
-        // createView: { fieldMode: 'hidden' },
-        // linkToItem: true,
-        // inlineConnect: true,
-        // inlineCreate: {
-        //   fields: ['title'],
-        // },
       },
     }),
   },
@@ -105,10 +97,15 @@ export const Post = list({
           listKey: 'Poll',
           kind: 'prop',
           selection: `
+            id
             label
             answers {
+              id
               label
               voteCount
+            }
+            userAnswer {
+              id
             }`,
         },
       },

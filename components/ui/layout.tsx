@@ -13,6 +13,10 @@ export function Container({ children }: { children: ReactNode }) {
   );
 }
 
+export function Divider() {
+  return <hr className="my-4" />;
+}
+
 export function HomeLink() {
   return (
     <div className="border-b pb-4">
