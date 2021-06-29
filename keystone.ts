@@ -3,7 +3,7 @@ import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 
 import { lists, extendGraphqlSchema } from './schema';
-import { rules } from './access';
+import { rules } from './schema/access';
 
 const dbUrl =
   process.env.DATABASE_URL ||

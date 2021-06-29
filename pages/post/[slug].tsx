@@ -4,20 +4,14 @@ import React from 'react';
 import { fetchGraphQL, gql } from '../../utils';
 import { DocumentRenderer } from '../../schema/fields/content/renderers';
 
-import { Container } from '../../components/ui/layout';
+import { Container, HomeLink } from '../../components/ui/layout';
 import { Link } from '../../components/ui/link';
 import { H1 } from '../../components/ui/typography';
-import { ChevronLeft } from '../../components/ui/icons';
 
 export default function Post({ post }: { post: any }) {
   return (
     <Container>
-      <div>
-        <Link href="/" className="flex hover:no-underline">
-          <ChevronLeft />
-          Go Home
-        </Link>
-      </div>
+      <HomeLink />
       <hr className="my-4" />
       <article>
         <H1>{post.title}</H1>
