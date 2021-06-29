@@ -1,45 +1,13 @@
 import { GetStaticPathsResult, GetStaticPropsContext } from 'next';
 import React from 'react';
-import {
-  DocumentRenderer,
-  DocumentRendererProps,
-} from '@keystone-next/document-renderer';
-import { InferRenderersForComponentBlocks } from '@keystone-next/fields-document/component-blocks';
+
 import { fetchGraphQL, gql } from '../../utils';
+import { DocumentRenderer } from '../../schema/fields/content/renderers';
 
 import { Container } from '../../components/ui/layout';
 import { Link } from '../../components/ui/link';
 import { H1 } from '../../components/ui/typography';
 import { ChevronLeft } from '../../components/ui/icons';
-
-// by default the DocumentRenderer will render unstyled html elements
-// we're customising how headings are rendered here but you can customise any of the renderers that the DocumentRenderer uses
-const renderers: DocumentRendererProps['renderers'] = {
-  block: {
-    heading({ level, children, textAlign }) {
-      const Comp = `h${level}` as const;
-      return (
-        <Comp style={{ textAlign, textTransform: 'uppercase' }}>
-          {children}
-        </Comp>
-      );
-    },
-  },
-};
-
-const componentBlockRenderers: InferRenderersForComponentBlocks<
-  typeof import('../../fields/Content').componentBlocks
-> = {
-  callout: function Callout({ appearance, content }) {
-    return <div>{content}</div>;
-  },
-  quote: function Quote({ content, name, position }) {
-    return <div>{content}</div>;
-  },
-  poll: function Poll({ poll }) {
-    return <pre>{JSON.stringify(poll, null, 2)}</pre>;
-  },
-};
 
 export default function Post({ post }: { post: any }) {
   return (
@@ -67,11 +35,7 @@ export default function Post({ post }: { post: any }) {
           </span>
         )}
         {post.content?.document && (
-          <DocumentRenderer
-            document={post.content.document}
-            renderers={renderers}
-            componentBlocks={componentBlockRenderers}
-          />
+          <DocumentRenderer document={post.content.document} />
         )}
       </article>
     </Container>

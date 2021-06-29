@@ -1,6 +1,326 @@
 """
  A keystone list
 """
+type Post {
+  id: ID!
+  title: String
+  slug: String
+  status: String
+  publishedDate: String
+  author: User
+  labels(
+    where: LabelWhereInput! = {}
+    search: String
+    sortBy: [SortLabelsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [LabelOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Label!]
+  _labelsMeta(
+    where: LabelWhereInput! = {}
+    search: String
+    sortBy: [SortLabelsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [LabelOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use labelsCount instead."
+    )
+  labelsCount(where: LabelWhereInput! = {}): Int
+  intro: Post_intro_DocumentField
+  content: Post_content_DocumentField
+}
+
+type _QueryMeta {
+  count: Int
+}
+
+type Post_intro_DocumentField {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+type Post_content_DocumentField {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+input PostWhereInput {
+  AND: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  title: String
+  title_not: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  title_i: String
+  title_not_i: String
+  title_contains_i: String
+  title_not_contains_i: String
+  title_starts_with_i: String
+  title_not_starts_with_i: String
+  title_ends_with_i: String
+  title_not_ends_with_i: String
+  title_in: [String]
+  title_not_in: [String]
+  slug: String
+  slug_not: String
+  slug_contains: String
+  slug_not_contains: String
+  slug_starts_with: String
+  slug_not_starts_with: String
+  slug_ends_with: String
+  slug_not_ends_with: String
+  slug_i: String
+  slug_not_i: String
+  slug_contains_i: String
+  slug_not_contains_i: String
+  slug_starts_with_i: String
+  slug_not_starts_with_i: String
+  slug_ends_with_i: String
+  slug_not_ends_with_i: String
+  slug_in: [String]
+  slug_not_in: [String]
+  status: String
+  status_not: String
+  status_in: [String]
+  status_not_in: [String]
+  publishedDate: String
+  publishedDate_not: String
+  publishedDate_lt: String
+  publishedDate_lte: String
+  publishedDate_gt: String
+  publishedDate_gte: String
+  publishedDate_in: [String]
+  publishedDate_not_in: [String]
+  author: UserWhereInput
+  author_is_null: Boolean
+
+  """
+   condition must be true for all nodes
+  """
+  labels_every: LabelWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  labels_some: LabelWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  labels_none: LabelWhereInput
+}
+
+input PostWhereUniqueInput {
+  id: ID
+  slug: String
+}
+
+enum SortPostsBy {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  slug_ASC
+  slug_DESC
+  status_ASC
+  status_DESC
+  publishedDate_ASC
+  publishedDate_DESC
+}
+
+input PostOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  slug: OrderDirection
+  status: OrderDirection
+  publishedDate: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+input PostUpdateInput {
+  title: String
+  slug: String
+  status: String
+  publishedDate: String
+  author: UserRelateToOneInput
+  labels: LabelRelateToManyInput
+  intro: JSON
+  content: JSON
+}
+
+input UserRelateToOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  disconnect: UserWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input LabelRelateToManyInput {
+  create: [LabelCreateInput]
+  connect: [LabelWhereUniqueInput]
+  disconnect: [LabelWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input PostsUpdateInput {
+  id: ID!
+  data: PostUpdateInput
+}
+
+input PostCreateInput {
+  title: String
+  slug: String
+  status: String
+  publishedDate: String
+  author: UserRelateToOneInput
+  labels: LabelRelateToManyInput
+  intro: JSON
+  content: JSON
+}
+
+input PostsCreateInput {
+  data: PostCreateInput
+}
+
+"""
+ A keystone list
+"""
+type Label {
+  id: ID!
+  name: String
+  posts(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Post!]
+  _postsMeta(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
+  postsCount(where: PostWhereInput! = {}): Int
+}
+
+input LabelWhereInput {
+  AND: [LabelWhereInput!]
+  OR: [LabelWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  name_i: String
+  name_not_i: String
+  name_contains_i: String
+  name_not_contains_i: String
+  name_starts_with_i: String
+  name_not_starts_with_i: String
+  name_ends_with_i: String
+  name_not_ends_with_i: String
+  name_in: [String]
+  name_not_in: [String]
+
+  """
+   condition must be true for all nodes
+  """
+  posts_every: PostWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  posts_some: PostWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  posts_none: PostWhereInput
+}
+
+input LabelWhereUniqueInput {
+  id: ID
+}
+
+enum SortLabelsBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+}
+
+input LabelOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+input LabelUpdateInput {
+  name: String
+  posts: PostRelateToManyInput
+}
+
+input PostRelateToManyInput {
+  create: [PostCreateInput]
+  connect: [PostWhereUniqueInput]
+  disconnect: [PostWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input LabelsUpdateInput {
+  id: ID!
+  data: LabelUpdateInput
+}
+
+input LabelCreateInput {
+  name: String
+  posts: PostRelateToManyInput
+}
+
+input LabelsCreateInput {
+  data: LabelCreateInput
+}
+
+"""
+ A keystone list
+"""
 type Poll {
   id: ID!
   label: String
@@ -28,10 +348,6 @@ type Poll {
   answersCount(where: PollAnswerWhereInput! = {}): Int
   responsesCount: Int
   userAnswer: PollAnswer
-}
-
-type _QueryMeta {
-  count: Int
 }
 
 input PollWhereInput {
@@ -94,11 +410,6 @@ enum SortPollsBy {
 input PollOrderByInput {
   id: OrderDirection
   label: OrderDirection
-}
-
-enum OrderDirection {
-  asc
-  desc
 }
 
 input PollUpdateInput {
@@ -265,11 +576,32 @@ type User {
   id: ID!
   name: String
   email: String
-  githubUsername: String
-  githubRepos: [GitHubRepo]!
   password: PasswordState
   role: Role
-  authoredPosts: Post
+  githubUsername: String
+  githubRepos: [GitHubRepo]!
+  authoredPosts(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Post!]
+  _authoredPostsMeta(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use authoredPostsCount instead."
+    )
+  authoredPostsCount(where: PostWhereInput! = {}): Int
   pollAnswers(
     where: PollAnswerWhereInput! = {}
     search: String
@@ -294,6 +626,10 @@ type User {
   pollAnswersCount(where: PollAnswerWhereInput! = {}): Int
 }
 
+type PasswordState {
+  isSet: Boolean!
+}
+
 type GitHubRepo {
   id: Int
   name: String
@@ -309,10 +645,6 @@ type GitHubRepo {
   watchersCount: Int
   language: String
   forksCount: Int
-}
-
-type PasswordState {
-  isSet: Boolean!
 }
 
 input UserWhereInput {
@@ -362,6 +694,9 @@ input UserWhereInput {
   email_not_ends_with_i: String
   email_in: [String]
   email_not_in: [String]
+  password_is_set: Boolean
+  role: RoleWhereInput
+  role_is_null: Boolean
   githubUsername: String
   githubUsername_not: String
   githubUsername_contains: String
@@ -380,11 +715,21 @@ input UserWhereInput {
   githubUsername_not_ends_with_i: String
   githubUsername_in: [String]
   githubUsername_not_in: [String]
-  password_is_set: Boolean
-  role: RoleWhereInput
-  role_is_null: Boolean
-  authoredPosts: PostWhereInput
-  authoredPosts_is_null: Boolean
+
+  """
+   condition must be true for all nodes
+  """
+  authoredPosts_every: PostWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  authoredPosts_some: PostWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  authoredPosts_none: PostWhereInput
 
   """
    condition must be true for all nodes
@@ -428,10 +773,10 @@ input UserOrderByInput {
 input UserUpdateInput {
   name: String
   email: String
-  githubUsername: String
   password: String
   role: RoleRelateToOneInput
-  authoredPosts: PostRelateToOneInput
+  githubUsername: String
+  authoredPosts: PostRelateToManyInput
   pollAnswers: PollAnswerRelateToManyInput
 }
 
@@ -439,13 +784,6 @@ input RoleRelateToOneInput {
   create: RoleCreateInput
   connect: RoleWhereUniqueInput
   disconnect: RoleWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input PostRelateToOneInput {
-  create: PostCreateInput
-  connect: PostWhereUniqueInput
-  disconnect: PostWhereUniqueInput
   disconnectAll: Boolean
 }
 
@@ -457,10 +795,10 @@ input UsersUpdateInput {
 input UserCreateInput {
   name: String
   email: String
-  githubUsername: String
   password: String
   role: RoleRelateToOneInput
-  authoredPosts: PostRelateToOneInput
+  githubUsername: String
+  authoredPosts: PostRelateToManyInput
   pollAnswers: PollAnswerRelateToManyInput
 }
 
@@ -596,317 +934,6 @@ input RolesCreateInput {
 }
 
 """
- A keystone list
-"""
-type Label {
-  id: ID!
-  name: String
-  posts(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Post!]
-  _postsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
-  postsCount(where: PostWhereInput! = {}): Int
-}
-
-input LabelWhereInput {
-  AND: [LabelWhereInput!]
-  OR: [LabelWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_starts_with: String
-  name_not_starts_with: String
-  name_ends_with: String
-  name_not_ends_with: String
-  name_i: String
-  name_not_i: String
-  name_contains_i: String
-  name_not_contains_i: String
-  name_starts_with_i: String
-  name_not_starts_with_i: String
-  name_ends_with_i: String
-  name_not_ends_with_i: String
-  name_in: [String]
-  name_not_in: [String]
-
-  """
-   condition must be true for all nodes
-  """
-  posts_every: PostWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  posts_some: PostWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  posts_none: PostWhereInput
-}
-
-input LabelWhereUniqueInput {
-  id: ID
-}
-
-enum SortLabelsBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-}
-
-input LabelOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-}
-
-input LabelUpdateInput {
-  name: String
-  posts: PostRelateToManyInput
-}
-
-input PostRelateToManyInput {
-  create: [PostCreateInput]
-  connect: [PostWhereUniqueInput]
-  disconnect: [PostWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input LabelsUpdateInput {
-  id: ID!
-  data: LabelUpdateInput
-}
-
-input LabelCreateInput {
-  name: String
-  posts: PostRelateToManyInput
-}
-
-input LabelsCreateInput {
-  data: LabelCreateInput
-}
-
-"""
- A keystone list
-"""
-type Post {
-  id: ID!
-  title: String
-  slug: String
-  status: String
-  publishedDate: String
-  author: User
-  intro: Post_intro_DocumentField
-  content: Post_content_DocumentField
-  labels(
-    where: LabelWhereInput! = {}
-    search: String
-    sortBy: [SortLabelsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [LabelOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Label!]
-  _labelsMeta(
-    where: LabelWhereInput! = {}
-    search: String
-    sortBy: [SortLabelsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [LabelOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use labelsCount instead."
-    )
-  labelsCount(where: LabelWhereInput! = {}): Int
-}
-
-type Post_intro_DocumentField {
-  document(hydrateRelationships: Boolean! = false): JSON!
-}
-
-type Post_content_DocumentField {
-  document(hydrateRelationships: Boolean! = false): JSON!
-}
-
-input PostWhereInput {
-  AND: [PostWhereInput!]
-  OR: [PostWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  title: String
-  title_not: String
-  title_contains: String
-  title_not_contains: String
-  title_starts_with: String
-  title_not_starts_with: String
-  title_ends_with: String
-  title_not_ends_with: String
-  title_i: String
-  title_not_i: String
-  title_contains_i: String
-  title_not_contains_i: String
-  title_starts_with_i: String
-  title_not_starts_with_i: String
-  title_ends_with_i: String
-  title_not_ends_with_i: String
-  title_in: [String]
-  title_not_in: [String]
-  slug: String
-  slug_not: String
-  slug_contains: String
-  slug_not_contains: String
-  slug_starts_with: String
-  slug_not_starts_with: String
-  slug_ends_with: String
-  slug_not_ends_with: String
-  slug_i: String
-  slug_not_i: String
-  slug_contains_i: String
-  slug_not_contains_i: String
-  slug_starts_with_i: String
-  slug_not_starts_with_i: String
-  slug_ends_with_i: String
-  slug_not_ends_with_i: String
-  slug_in: [String]
-  slug_not_in: [String]
-  status: String
-  status_not: String
-  status_in: [String]
-  status_not_in: [String]
-  publishedDate: String
-  publishedDate_not: String
-  publishedDate_lt: String
-  publishedDate_lte: String
-  publishedDate_gt: String
-  publishedDate_gte: String
-  publishedDate_in: [String]
-  publishedDate_not_in: [String]
-  author: UserWhereInput
-  author_is_null: Boolean
-
-  """
-   condition must be true for all nodes
-  """
-  labels_every: LabelWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  labels_some: LabelWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  labels_none: LabelWhereInput
-}
-
-input PostWhereUniqueInput {
-  id: ID
-  slug: String
-}
-
-enum SortPostsBy {
-  id_ASC
-  id_DESC
-  title_ASC
-  title_DESC
-  slug_ASC
-  slug_DESC
-  status_ASC
-  status_DESC
-  publishedDate_ASC
-  publishedDate_DESC
-}
-
-input PostOrderByInput {
-  id: OrderDirection
-  title: OrderDirection
-  slug: OrderDirection
-  status: OrderDirection
-  publishedDate: OrderDirection
-}
-
-input PostUpdateInput {
-  title: String
-  slug: String
-  status: String
-  publishedDate: String
-  author: UserRelateToOneInput
-  intro: JSON
-  content: JSON
-  labels: LabelRelateToManyInput
-}
-
-input UserRelateToOneInput {
-  create: UserCreateInput
-  connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input LabelRelateToManyInput {
-  create: [LabelCreateInput]
-  connect: [LabelWhereUniqueInput]
-  disconnect: [LabelWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input PostsUpdateInput {
-  id: ID!
-  data: PostUpdateInput
-}
-
-input PostCreateInput {
-  title: String
-  slug: String
-  status: String
-  publishedDate: String
-  author: UserRelateToOneInput
-  intro: JSON
-  content: JSON
-  labels: LabelRelateToManyInput
-}
-
-input PostsCreateInput {
-  data: PostCreateInput
-}
-
-"""
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSON
@@ -915,6 +942,66 @@ scalar JSON
   )
 
 type Mutation {
+  """
+   Create a single Post item.
+  """
+  createPost(data: PostCreateInput): Post
+
+  """
+   Create multiple Post items.
+  """
+  createPosts(data: [PostsCreateInput]): [Post]
+
+  """
+   Update a single Post item by ID.
+  """
+  updatePost(id: ID!, data: PostUpdateInput): Post
+
+  """
+   Update multiple Post items by ID.
+  """
+  updatePosts(data: [PostsUpdateInput]): [Post]
+
+  """
+   Delete a single Post item by ID.
+  """
+  deletePost(id: ID!): Post
+
+  """
+   Delete multiple Post items by ID.
+  """
+  deletePosts(ids: [ID!]): [Post]
+
+  """
+   Create a single Label item.
+  """
+  createLabel(data: LabelCreateInput): Label
+
+  """
+   Create multiple Label items.
+  """
+  createLabels(data: [LabelsCreateInput]): [Label]
+
+  """
+   Update a single Label item by ID.
+  """
+  updateLabel(id: ID!, data: LabelUpdateInput): Label
+
+  """
+   Update multiple Label items by ID.
+  """
+  updateLabels(data: [LabelsUpdateInput]): [Label]
+
+  """
+   Delete a single Label item by ID.
+  """
+  deleteLabel(id: ID!): Label
+
+  """
+   Delete multiple Label items by ID.
+  """
+  deleteLabels(ids: [ID!]): [Label]
+
   """
    Create a single Poll item.
   """
@@ -1034,66 +1121,6 @@ type Mutation {
    Delete multiple Role items by ID.
   """
   deleteRoles(ids: [ID!]): [Role]
-
-  """
-   Create a single Label item.
-  """
-  createLabel(data: LabelCreateInput): Label
-
-  """
-   Create multiple Label items.
-  """
-  createLabels(data: [LabelsCreateInput]): [Label]
-
-  """
-   Update a single Label item by ID.
-  """
-  updateLabel(id: ID!, data: LabelUpdateInput): Label
-
-  """
-   Update multiple Label items by ID.
-  """
-  updateLabels(data: [LabelsUpdateInput]): [Label]
-
-  """
-   Delete a single Label item by ID.
-  """
-  deleteLabel(id: ID!): Label
-
-  """
-   Delete multiple Label items by ID.
-  """
-  deleteLabels(ids: [ID!]): [Label]
-
-  """
-   Create a single Post item.
-  """
-  createPost(data: PostCreateInput): Post
-
-  """
-   Create multiple Post items.
-  """
-  createPosts(data: [PostsCreateInput]): [Post]
-
-  """
-   Update a single Post item by ID.
-  """
-  updatePost(id: ID!, data: PostUpdateInput): Post
-
-  """
-   Update multiple Post items by ID.
-  """
-  updatePosts(data: [PostsUpdateInput]): [Post]
-
-  """
-   Delete a single Post item by ID.
-  """
-  deletePost(id: ID!): Post
-
-  """
-   Delete multiple Post items by ID.
-  """
-  deletePosts(ids: [ID!]): [Post]
   authenticateUserWithPassword(
     email: String!
     password: String!
@@ -1136,6 +1163,76 @@ input CreateInitialUserInput {
 }
 
 type Query {
+  """
+   Search for all Post items which match the where clause.
+  """
+  allPosts(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Post!]
+
+  """
+   Search for the Post item with the matching ID.
+  """
+  Post(where: PostWhereUniqueInput!): Post
+
+  """
+   Perform a meta-query on all Post items which match the where clause.
+  """
+  _allPostsMeta(
+    where: PostWhereInput! = {}
+    search: String
+    sortBy: [SortPostsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PostOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use postsCount instead."
+    )
+  postsCount(where: PostWhereInput! = {}): Int
+
+  """
+   Search for all Label items which match the where clause.
+  """
+  allLabels(
+    where: LabelWhereInput! = {}
+    search: String
+    sortBy: [SortLabelsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [LabelOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Label!]
+
+  """
+   Search for the Label item with the matching ID.
+  """
+  Label(where: LabelWhereUniqueInput!): Label
+
+  """
+   Perform a meta-query on all Label items which match the where clause.
+  """
+  _allLabelsMeta(
+    where: LabelWhereInput! = {}
+    search: String
+    sortBy: [SortLabelsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [LabelOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use labelsCount instead."
+    )
+  labelsCount(where: LabelWhereInput! = {}): Int
+
   """
    Search for all Poll items which match the where clause.
   """
@@ -1275,76 +1372,6 @@ type Query {
       reason: "This query will be removed in a future version. Please use rolesCount instead."
     )
   rolesCount(where: RoleWhereInput! = {}): Int
-
-  """
-   Search for all Label items which match the where clause.
-  """
-  allLabels(
-    where: LabelWhereInput! = {}
-    search: String
-    sortBy: [SortLabelsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [LabelOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Label!]
-
-  """
-   Search for the Label item with the matching ID.
-  """
-  Label(where: LabelWhereUniqueInput!): Label
-
-  """
-   Perform a meta-query on all Label items which match the where clause.
-  """
-  _allLabelsMeta(
-    where: LabelWhereInput! = {}
-    search: String
-    sortBy: [SortLabelsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [LabelOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use labelsCount instead."
-    )
-  labelsCount(where: LabelWhereInput! = {}): Int
-
-  """
-   Search for all Post items which match the where clause.
-  """
-  allPosts(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Post!]
-
-  """
-   Search for the Post item with the matching ID.
-  """
-  Post(where: PostWhereUniqueInput!): Post
-
-  """
-   Perform a meta-query on all Post items which match the where clause.
-  """
-  _allPostsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
-  postsCount(where: PostWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
 }
