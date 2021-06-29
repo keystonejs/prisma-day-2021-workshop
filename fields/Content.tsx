@@ -48,7 +48,7 @@ const appearances = {
 
 export const componentBlocks = {
   callout: component({
-    component: function Notice({ content, appearance }) {
+    component: function Callout({ content, appearance }) {
       const { palette, radii, spacing } = useTheme();
       const intentConfig = appearances[appearance.value];
 
@@ -180,7 +180,23 @@ export const componentBlocks = {
     chromeless: true,
   }),
   poll: component({
-    component: () => null,
+    component: ({ poll }) => {
+      if (!poll.value) return <div>No Poll Selected</div>;
+      return (
+        <NotEditable>
+          <h2>{poll.value.label}</h2>
+          <ul>
+            {poll.value.data.answers.map((answer: any) => {
+              return (
+                <li>
+                  {answer.label} ({answer.voteCount} answers)
+                </li>
+              );
+            })}
+          </ul>
+        </NotEditable>
+      );
+    },
     label: 'Poll',
     props: {
       poll: fields.relationship<'one'>({

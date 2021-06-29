@@ -4,7 +4,6 @@
 type Poll {
   id: ID!
   label: String
-  isOpen: Boolean
   answers(
     where: PollAnswerWhereInput! = {}
     search: String
@@ -64,8 +63,6 @@ input PollWhereInput {
   label_not_ends_with_i: String
   label_in: [String]
   label_not_in: [String]
-  isOpen: Boolean
-  isOpen_not: Boolean
 
   """
    condition must be true for all nodes
@@ -92,14 +89,11 @@ enum SortPollsBy {
   id_DESC
   label_ASC
   label_DESC
-  isOpen_ASC
-  isOpen_DESC
 }
 
 input PollOrderByInput {
   id: OrderDirection
   label: OrderDirection
-  isOpen: OrderDirection
 }
 
 enum OrderDirection {
@@ -109,7 +103,6 @@ enum OrderDirection {
 
 input PollUpdateInput {
   label: String
-  isOpen: Boolean
   answers: PollAnswerRelateToManyInput
 }
 
@@ -127,7 +120,6 @@ input PollsUpdateInput {
 
 input PollCreateInput {
   label: String
-  isOpen: Boolean
   answers: PollAnswerRelateToManyInput
 }
 
@@ -273,8 +265,8 @@ type User {
   id: ID!
   name: String
   email: String
-  github: String
-  repos: [GitHubRepo]!
+  githubUsername: String
+  githubRepos: [GitHubRepo]!
   password: PasswordState
   role: Role
   authoredPosts: Post
@@ -370,24 +362,24 @@ input UserWhereInput {
   email_not_ends_with_i: String
   email_in: [String]
   email_not_in: [String]
-  github: String
-  github_not: String
-  github_contains: String
-  github_not_contains: String
-  github_starts_with: String
-  github_not_starts_with: String
-  github_ends_with: String
-  github_not_ends_with: String
-  github_i: String
-  github_not_i: String
-  github_contains_i: String
-  github_not_contains_i: String
-  github_starts_with_i: String
-  github_not_starts_with_i: String
-  github_ends_with_i: String
-  github_not_ends_with_i: String
-  github_in: [String]
-  github_not_in: [String]
+  githubUsername: String
+  githubUsername_not: String
+  githubUsername_contains: String
+  githubUsername_not_contains: String
+  githubUsername_starts_with: String
+  githubUsername_not_starts_with: String
+  githubUsername_ends_with: String
+  githubUsername_not_ends_with: String
+  githubUsername_i: String
+  githubUsername_not_i: String
+  githubUsername_contains_i: String
+  githubUsername_not_contains_i: String
+  githubUsername_starts_with_i: String
+  githubUsername_not_starts_with_i: String
+  githubUsername_ends_with_i: String
+  githubUsername_not_ends_with_i: String
+  githubUsername_in: [String]
+  githubUsername_not_in: [String]
   password_is_set: Boolean
   role: RoleWhereInput
   role_is_null: Boolean
@@ -422,21 +414,21 @@ enum SortUsersBy {
   name_DESC
   email_ASC
   email_DESC
-  github_ASC
-  github_DESC
+  githubUsername_ASC
+  githubUsername_DESC
 }
 
 input UserOrderByInput {
   id: OrderDirection
   name: OrderDirection
   email: OrderDirection
-  github: OrderDirection
+  githubUsername: OrderDirection
 }
 
 input UserUpdateInput {
   name: String
   email: String
-  github: String
+  githubUsername: String
   password: String
   role: RoleRelateToOneInput
   authoredPosts: PostRelateToOneInput
@@ -465,7 +457,7 @@ input UsersUpdateInput {
 input UserCreateInput {
   name: String
   email: String
-  github: String
+  githubUsername: String
   password: String
   role: RoleRelateToOneInput
   authoredPosts: PostRelateToOneInput
@@ -731,6 +723,7 @@ type Post {
   status: String
   publishedDate: String
   author: User
+  intro: Post_intro_DocumentField
   content: Post_content_DocumentField
   labels(
     where: LabelWhereInput! = {}
@@ -754,6 +747,10 @@ type Post {
       reason: "This query will be removed in a future version. Please use labelsCount instead."
     )
   labelsCount(where: LabelWhereInput! = {}): Int
+}
+
+type Post_intro_DocumentField {
+  document(hydrateRelationships: Boolean! = false): JSON!
 }
 
 type Post_content_DocumentField {
@@ -840,6 +837,7 @@ input PostWhereInput {
 
 input PostWhereUniqueInput {
   id: ID
+  slug: String
 }
 
 enum SortPostsBy {
@@ -869,6 +867,7 @@ input PostUpdateInput {
   status: String
   publishedDate: String
   author: UserRelateToOneInput
+  intro: JSON
   content: JSON
   labels: LabelRelateToManyInput
 }
@@ -898,6 +897,7 @@ input PostCreateInput {
   status: String
   publishedDate: String
   author: UserRelateToOneInput
+  intro: JSON
   content: JSON
   labels: LabelRelateToManyInput
 }

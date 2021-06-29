@@ -219,11 +219,12 @@ export const lists = createSchema({
           read: rules.canManageUser,
         },
       }),
-      github: text(),
-      repos: virtual({
+      githubUsername: text({ label: 'GitHub Username' }),
+      githubRepos: virtual({
         field: schema.field({
           type: schema.nonNull(schema.list(GitHubRepo)),
           async resolve(item: any) {
+            if (!item.githubUsername) return [];
             // Note: without a personal github access token in your env, the server will be rate limited to 60 requests per hour
             // https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
             try {
@@ -232,18 +233,31 @@ export const lists = createSchema({
                 ? { headers: { Authorization: `token ${token}` } }
                 : undefined;
               const result = await fetch(
-                `https://api.github.com/users/${item.github}/repos`,
+                `https://api.github.com/users/${item.githubUsername}/repos?type=public&per_page=100`,
                 options
               );
               const allRepos = await result.json();
-              return allRepos;
+              return allRepos
+                .filter(
+                  (repo: any) =>
+                    !(
+                      repo.fork ||
+                      repo.private ||
+                      repo.disabled ||
+                      repo.private
+                    )
+                )
+                .sort(
+                  (a: any, b: any) => b.stargazers_count - a.stargazers_count
+                );
             } catch (err) {
               console.error(err);
               return [];
             }
           },
         }),
-        graphQLReturnFragment: '{ fullName }',
+        graphQLReturnFragment:
+          '{ name htmlUrl description homepage stargazersCount language }',
       }),
       password: password({ isRequired: true }),
       role: relationship({
@@ -290,23 +304,61 @@ export const lists = createSchema({
     },
     fields: {
       title: text(),
-      slug: text(),
+      slug: text({
+        defaultValue: ({ context, originalInput }) => {
+          //yearmonthday
+          const date = new Date();
+          return `${
+            (originalInput as any)?.title
+              ?.trim()
+              ?.toLowerCase()
+              ?.replace(/[^\w ]+/g, '')
+              ?.replace(/ +/g, '-') ?? ''
+          }-${date?.getFullYear() ?? ''}${date?.getMonth() + 1 ?? ''}${
+            date?.getDate() ?? ''
+          }`;
+        },
+        ui: { createView: { fieldMode: 'hidden' } },
+        isUnique: true,
+      }),
       status: select({
         options: [
           { label: 'Draft', value: 'draft' },
           { label: 'Published', value: 'published' },
-          { label: 'Arhived', value: 'archived' },
+          { label: 'Archived', value: 'archived' },
         ],
         defaultValue: 'draft',
         ui: { displayMode: 'segmented-control' },
       }),
-      publishedDate: timestamp(),
+      publishedDate: timestamp({
+        defaultValue: () => new Date().toISOString(),
+      }),
       author: relationship({ ref: 'User.authoredPosts' }),
+      intro: document({
+        formatting: {
+          inlineMarks: true,
+          blockTypes: true,
+          listTypes: true,
+          softBreaks: true,
+        },
+        links: true,
+      }),
       content: document({
         formatting: true,
         links: true,
         dividers: true,
-        relationships: { poll: { listKey: 'Poll', kind: 'prop' } },
+        relationships: {
+          poll: {
+            listKey: 'Poll',
+            kind: 'prop',
+            selection: `
+            label
+            answers {
+              label
+              voteCount
+            }`,
+          },
+        },
         componentBlocks,
         ui: { views: require.resolve('./fields/Content') },
       }),

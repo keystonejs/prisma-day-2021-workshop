@@ -11,7 +11,6 @@ generator client {
 model Poll {
   id      String       @id @default(cuid())
   label   String?
-  isOpen  Boolean?
   answers PollAnswer[] @relation("PollAnswer_poll")
 }
 
@@ -26,15 +25,15 @@ model PollAnswer {
 }
 
 model User {
-  id            String       @id @default(cuid())
-  name          String?
-  email         String?      @unique
-  github        String?
-  password      String?
-  role          Role?        @relation("User_role", fields: [roleId], references: [id])
-  roleId        String?      @map("role")
-  authoredPosts Post?        @relation("Post_author")
-  pollAnswers   PollAnswer[] @relation("PollAnswer_answeredByUsers_User_pollAnswers")
+  id             String       @id @default(cuid())
+  name           String?
+  email          String?      @unique
+  githubUsername String?
+  password       String?
+  role           Role?        @relation("User_role", fields: [roleId], references: [id])
+  roleId         String?      @map("role")
+  authoredPosts  Post?        @relation("Post_author")
+  pollAnswers    PollAnswer[] @relation("PollAnswer_answeredByUsers_User_pollAnswers")
 
   @@index([roleId])
 }
@@ -56,11 +55,12 @@ model Label {
 model Post {
   id            String    @id @default(cuid())
   title         String?
-  slug          String?
+  slug          String?   @unique
   status        String?
   publishedDate DateTime?
   author        User?     @relation("Post_author", fields: [authorId], references: [id])
   authorId      String?   @unique @map("author")
+  intro         Json?
   content       Json?
   labels        Label[]   @relation("Label_posts_Post_labels")
 }
