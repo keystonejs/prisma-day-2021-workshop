@@ -185,7 +185,7 @@ export const lists = createSchema({
                   watchers_count,
                   language,
                   forks_count,
-                }) => ({
+                }: any) => ({
                   id,
                   name,
                   fullName: full_name,
