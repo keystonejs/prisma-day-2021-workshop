@@ -7,7 +7,7 @@ import { rules } from './schema/access';
 
 const dbUrl =
   process.env.DATABASE_URL ||
-  `postgres://${process.env.USER}@localhost/prisma-day-workshop-1`;
+  `postgres://${process.env.USER}@localhost/prisma-day-workshop`;
 
 const sessionSecret =
   process.env.SESSION_SECERT ||

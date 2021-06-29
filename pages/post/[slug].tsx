@@ -19,11 +19,6 @@ export default function Post({ post }: { post: any }) {
             By <span className="font-bold">{post.author.name}</span>
           </p>
         )}
-        {/* {post.publishedDate && (
-          <span>
-            on <time dateTime={post.publishedDate}>{post.publishedDate}</time>
-          </span>
-        )} */}
         {post.content?.document && (
           <DocumentRenderer document={post.content.document} />
         )}
