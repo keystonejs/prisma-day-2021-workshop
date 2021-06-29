@@ -1,3 +1,5 @@
+import fetch from 'node-fetch';
+
 import {
   checkbox,
   password,
@@ -78,6 +80,100 @@ export const lists = createSchema({
       email: text({
         isUnique: true,
         isRequired: true,
+      }),
+      github: text(),
+      repos: virtual({
+        field: schema.field({
+          type: schema.nonNull(
+            schema.list(
+              schema.object<{
+                id: number;
+                name: string;
+                fullName: string;
+                htmlUrl: string;
+                description: string;
+                createdAt: string;
+                updatedAt: string;
+                pushedAt: string;
+                homepage: string;
+                size: number;
+                stargazersCount: number;
+                watchersCount: number;
+                language: string;
+                forksCount: number;
+              }>()({
+                name: 'GitHub',
+                fields: {
+                  id: schema.field({ type: schema.Int }),
+                  name: schema.field({ type: schema.String }),
+                  fullName: schema.field({ type: schema.String }),
+                  htmlUrl: schema.field({ type: schema.String }),
+                  description: schema.field({ type: schema.String }),
+                  createdAt: schema.field({ type: schema.String }),
+                  updatedAt: schema.field({ type: schema.String }),
+                  pushedAt: schema.field({ type: schema.String }),
+                  homepage: schema.field({ type: schema.String }),
+                  size: schema.field({ type: schema.Int }),
+                  stargazersCount: schema.field({ type: schema.Int }),
+                  watchersCount: schema.field({ type: schema.Int }),
+                  language: schema.field({ type: schema.String }),
+                  forksCount: schema.field({ type: schema.Int }),
+                },
+              })
+            )
+          ),
+          async resolve(item: any) {
+            // https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
+            try {
+              const token = process.env.GITHUB_AUTH_TOKEN;
+              const options = token
+                ? { headers: { Authorization: `token ${token}` } }
+                : undefined;
+              const result = await fetch(
+                `https://api.github.com/users/${item.github}/repos`,
+                options
+              );
+              const allRepos = await result.json();
+              return allRepos.map(
+                ({
+                  id,
+                  name,
+                  full_name,
+                  html_url,
+                  description,
+                  created_at,
+                  updated_at,
+                  pushed_at,
+                  homepage,
+                  size,
+                  stargazers_count,
+                  watchers_count,
+                  language,
+                  forks_count,
+                }) => ({
+                  id,
+                  name,
+                  fullName: full_name,
+                  htmlUrl: html_url,
+                  description,
+                  createdAt: created_at,
+                  updatedAt: updated_at,
+                  pushedAt: pushed_at,
+                  homepage,
+                  size,
+                  stargazersCount: stargazers_count,
+                  watchersCount: watchers_count,
+                  language,
+                  forksCount: forks_count,
+                })
+              );
+            } catch (err) {
+              console.error(err);
+              return [];
+            }
+          },
+        }),
+        graphQLReturnFragment: '{ words sentences paragraphs }',
       }),
       password: password(),
       accessLevel: select({
