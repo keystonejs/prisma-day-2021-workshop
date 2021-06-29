@@ -2,7 +2,7 @@ import { config } from '@keystone-next/keystone/schema';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 
-import { lists } from './schema';
+import { lists, extendGraphqlSchema } from './schema';
 import { rules } from './access';
 
 const dbUrl =
@@ -47,5 +47,6 @@ export default auth.withAuth(
     session: statelessSessions({
       secret: sessionSecret,
     }),
+    extendGraphqlSchema,
   })
 );

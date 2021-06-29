@@ -9,20 +9,123 @@ import {
   timestamp,
   virtual,
 } from '@keystone-next/fields';
-import { schema, KeystoneListsAPI, KeystoneDbAPI } from '@keystone-next/types';
+import {
+  schema,
+  KeystoneListsAPI,
+  KeystoneDbAPI,
+  KeystoneContext,
+} from '@keystone-next/types';
 import { document } from '@keystone-next/fields-document';
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import {
+  createSchema,
+  graphQLSchemaExtension,
+  list,
+} from '@keystone-next/keystone/schema';
 import { KeystoneListsTypeInfo } from '.keystone/types';
 
 import { isSignedIn, permissions, rules } from './access';
+import { componentBlocks } from './fields/Content';
 
 const gql = ([content]: TemplateStringsArray) => content;
 
-gql`
-  type Mutation {
-    voteForPoll(answerId: ID!): Boolean
-  }
-`;
+type Context = Omit<KeystoneContext, 'db' | 'lists'> & {
+  db: { lists: KeystoneDbAPI<KeystoneListsTypeInfo> };
+  lists: KeystoneListsAPI<KeystoneListsTypeInfo>;
+};
+
+export const extendGraphqlSchema = graphQLSchemaExtension({
+  typeDefs: gql`
+    type Mutation {
+      voteForPoll(answerId: ID!): Boolean
+    }
+  `,
+  resolvers: {
+    Mutation: {
+      async voteForPoll(rootVal, { answerId }, _context) {
+        const context = _context.sudo() as Context;
+        if (!context.session) {
+          return false;
+        }
+
+        const answers = await context.lists.PollAnswer.count({
+          where: {
+            poll: { answers_some: { id: answerId } },
+            answeredByUsers_some: { id: context.session.itemId },
+          },
+        });
+        if (answers > 0) {
+          return false;
+        }
+        await context.lists.PollAnswer.updateOne({
+          id: answerId,
+          data: {
+            answeredByUsers: { connect: { id: context.session.itemId } },
+          },
+        });
+        return true;
+      },
+    },
+  },
+});
+
+const GitHubRepo = schema.object<{
+  id: number;
+  name: string;
+  full_name: string;
+  html_url: string;
+  description: string;
+  created_at: string;
+  updated_at: string;
+  pushed_at: string;
+  homepage: string;
+  size: number;
+  stargazers_count: number;
+  watchers_count: number;
+  language: string;
+  forks_count: number;
+}>()({
+  name: 'GitHubRepo',
+  fields: {
+    id: schema.field({ type: schema.Int }),
+    name: schema.field({ type: schema.String }),
+    fullName: schema.field({
+      type: schema.String,
+      resolve: val => val.full_name,
+    }),
+    htmlUrl: schema.field({
+      type: schema.String,
+      resolve: val => val.html_url,
+    }),
+    description: schema.field({ type: schema.String }),
+    createdAt: schema.field({
+      type: schema.String,
+      resolve: val => val.created_at,
+    }),
+    updatedAt: schema.field({
+      type: schema.String,
+      resolve: val => val.updated_at,
+    }),
+    pushedAt: schema.field({
+      type: schema.String,
+      resolve: val => val.pushed_at,
+    }),
+    homepage: schema.field({ type: schema.String }),
+    size: schema.field({ type: schema.Int }),
+    stargazersCount: schema.field({
+      type: schema.Int,
+      resolve: val => val.stargazers_count,
+    }),
+    watchersCount: schema.field({
+      type: schema.Int,
+      resolve: val => val.watchers_count,
+    }),
+    language: schema.field({ type: schema.String }),
+    forksCount: schema.field({
+      type: schema.Int,
+      resolve: val => val.forks_count,
+    }),
+  },
+});
 
 export const lists = createSchema({
   Poll: list({
@@ -34,7 +137,6 @@ export const lists = createSchema({
     },
     fields: {
       label: text(),
-      isOpen: checkbox(),
       answers: relationship({ ref: 'PollAnswer.poll', many: true }),
       responsesCount: virtual({
         field: schema.field({
@@ -67,6 +169,7 @@ export const lists = createSchema({
               return pollAnswers[0];
             },
           }),
+        graphQLReturnFragment: '{ id }',
       }),
     },
   }),
@@ -119,45 +222,9 @@ export const lists = createSchema({
       github: text(),
       repos: virtual({
         field: schema.field({
-          type: schema.nonNull(
-            schema.list(
-              schema.object<{
-                id: number;
-                name: string;
-                fullName: string;
-                htmlUrl: string;
-                description: string;
-                createdAt: string;
-                updatedAt: string;
-                pushedAt: string;
-                homepage: string;
-                size: number;
-                stargazersCount: number;
-                watchersCount: number;
-                language: string;
-                forksCount: number;
-              }>()({
-                name: 'GitHub',
-                fields: {
-                  id: schema.field({ type: schema.Int }),
-                  name: schema.field({ type: schema.String }),
-                  fullName: schema.field({ type: schema.String }),
-                  htmlUrl: schema.field({ type: schema.String }),
-                  description: schema.field({ type: schema.String }),
-                  createdAt: schema.field({ type: schema.String }),
-                  updatedAt: schema.field({ type: schema.String }),
-                  pushedAt: schema.field({ type: schema.String }),
-                  homepage: schema.field({ type: schema.String }),
-                  size: schema.field({ type: schema.Int }),
-                  stargazersCount: schema.field({ type: schema.Int }),
-                  watchersCount: schema.field({ type: schema.Int }),
-                  language: schema.field({ type: schema.String }),
-                  forksCount: schema.field({ type: schema.Int }),
-                },
-              })
-            )
-          ),
+          type: schema.nonNull(schema.list(GitHubRepo)),
           async resolve(item: any) {
+            // Note: without a personal github access token in your env, the server will be rate limited to 60 requests per hour
             // https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
             try {
               const token = process.env.GITHUB_AUTH_TOKEN;
@@ -169,46 +236,14 @@ export const lists = createSchema({
                 options
               );
               const allRepos = await result.json();
-              return allRepos.map(
-                ({
-                  id,
-                  name,
-                  full_name,
-                  html_url,
-                  description,
-                  created_at,
-                  updated_at,
-                  pushed_at,
-                  homepage,
-                  size,
-                  stargazers_count,
-                  watchers_count,
-                  language,
-                  forks_count,
-                }: any) => ({
-                  id,
-                  name,
-                  fullName: full_name,
-                  htmlUrl: html_url,
-                  description,
-                  createdAt: created_at,
-                  updatedAt: updated_at,
-                  pushedAt: pushed_at,
-                  homepage,
-                  size,
-                  stargazersCount: stargazers_count,
-                  watchersCount: watchers_count,
-                  language,
-                  forksCount: forks_count,
-                })
-              );
+              return allRepos;
             } catch (err) {
               console.error(err);
               return [];
             }
           },
         }),
-        graphQLReturnFragment: '{ words sentences paragraphs }',
+        graphQLReturnFragment: '{ fullName }',
       }),
       password: password({ isRequired: true }),
       role: relationship({
@@ -267,7 +302,14 @@ export const lists = createSchema({
       }),
       publishedDate: timestamp(),
       author: relationship({ ref: 'User.authoredPosts' }),
-      content: document({ formatting: true, links: true, dividers: true }),
+      content: document({
+        formatting: true,
+        links: true,
+        dividers: true,
+        relationships: { poll: { listKey: 'Poll', kind: 'prop' } },
+        componentBlocks,
+        ui: { views: require.resolve('./fields/Content') },
+      }),
       labels: relationship({ ref: 'Label.posts', many: true }),
     },
   }),

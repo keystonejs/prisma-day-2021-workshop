@@ -31,9 +31,20 @@ model User {
   email         String?      @unique
   github        String?
   password      String?
-  accessLevel   String?
+  role          Role?        @relation("User_role", fields: [roleId], references: [id])
+  roleId        String?      @map("role")
   authoredPosts Post?        @relation("Post_author")
   pollAnswers   PollAnswer[] @relation("PollAnswer_answeredByUsers_User_pollAnswers")
+
+  @@index([roleId])
+}
+
+model Role {
+  id               String   @id @default(cuid())
+  name             String?
+  canManageContent Boolean?
+  canManageUsers   Boolean?
+  users            User[]   @relation("User_role")
 }
 
 model Label {
