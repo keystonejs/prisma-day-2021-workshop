@@ -1,0 +1,55 @@
+datasource postgresql {
+  url      = env("DATABASE_URL")
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "node_modules/.prisma/client"
+}
+
+model Poll {
+  id      String       @id @default(cuid())
+  label   String?
+  isOpen  Boolean?
+  answers PollAnswer[] @relation("PollAnswer_poll")
+}
+
+model PollAnswer {
+  id              String  @id @default(cuid())
+  label           String?
+  poll            Poll?   @relation("PollAnswer_poll", fields: [pollId], references: [id])
+  pollId          String? @map("poll")
+  answeredByUsers User[]  @relation("PollAnswer_answeredByUsers_User_pollAnswers")
+
+  @@index([pollId])
+}
+
+model User {
+  id            String       @id @default(cuid())
+  name          String?
+  email         String?      @unique
+  github        String?
+  password      String?
+  accessLevel   String?
+  authoredPosts Post?        @relation("Post_author")
+  pollAnswers   PollAnswer[] @relation("PollAnswer_answeredByUsers_User_pollAnswers")
+}
+
+model Label {
+  id    String  @id @default(cuid())
+  name  String?
+  posts Post[]  @relation("Label_posts_Post_labels")
+}
+
+model Post {
+  id            String    @id @default(cuid())
+  title         String?
+  slug          String?
+  status        String?
+  publishedDate DateTime?
+  author        User?     @relation("Post_author", fields: [authorId], references: [id])
+  authorId      String?   @unique @map("author")
+  content       Json?
+  labels        Label[]   @relation("Label_posts_Post_labels")
+}
