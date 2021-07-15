@@ -7,7 +7,7 @@
     "site:dev": "next dev -p 8000",
     "site:build": "next build",
     "site:start": "next start -p 8000",
-    "api:dev": "keystone-next dev",
+    "dev": "keystone-next dev",
     "start": "keystone-next start",
     "build": "keystone-next prisma migrate deploy && keystone-next build",
     "format": "prettier --write \"**/*.ts\""

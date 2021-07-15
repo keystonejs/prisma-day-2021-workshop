@@ -86,6 +86,5 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
       }
     `
   );
-  console.log(data);
   return { props: { posts: data.allPosts }, revalidate: 60 };
 }
