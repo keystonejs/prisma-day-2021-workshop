@@ -9,7 +9,8 @@
     "site:start": "next start -p 8000",
     "dev": "keystone-next dev",
     "start": "keystone-next start",
-    "build": "keystone-next prisma migrate deploy && keystone-next build",
+    "build": "keystone-next build",
+    "migrate": "keystone-next prisma migrate deploy",
     "format": "prettier --write \"**/*.ts\""
   },
   "dependencies": {
