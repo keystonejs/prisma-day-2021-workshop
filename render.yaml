@@ -3,7 +3,7 @@ services:
     name: keystone
     env: node
     plan: starter
-    buildCommand: yarn && yarn migrate && yarn build
+    buildCommand: yarn install --production=false && yarn migrate && yarn build
     startCommand: yarn start
     envVars:
       - key: NODE_VERSION
