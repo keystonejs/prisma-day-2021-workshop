@@ -40,7 +40,7 @@ export default auth.withAuth(
     db: {
       url: dbUrl,
       provider: 'postgresql',
-      // useMigrations: true,
+      useMigrations: true,
     },
     ui: { isAccessAllowed: rules.canUseAdminUI },
     lists,
