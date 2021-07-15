@@ -1,23 +1,13 @@
 import { graphQLSchemaExtension } from '@keystone-next/keystone/schema';
-import {
-  KeystoneListsAPI,
-  KeystoneDbAPI,
-  KeystoneContext,
-} from '@keystone-next/types';
-import { KeystoneListsTypeInfo, PollWhereInput } from '.keystone/types';
+import { KeystoneContext, PollWhereInput } from '.keystone/types';
 
 const gql = ([content]: TemplateStringsArray) => content;
-
-type Context = Omit<KeystoneContext, 'db' | 'lists'> & {
-  db: { lists: KeystoneDbAPI<KeystoneListsTypeInfo> };
-  lists: KeystoneListsAPI<KeystoneListsTypeInfo>;
-};
 
 async function clearVote(
   _context: KeystoneContext,
   pollFilter: PollWhereInput
 ) {
-  const context = _context.sudo() as Context;
+  const context = _context.sudo();
   if (!context.session) {
     throw new Error('You must be signed in to vote');
   }
@@ -50,11 +40,11 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
   `,
   resolvers: {
     Mutation: {
-      async clearVoteForPoll(rootVal, { pollId }, _context) {
-        await clearVote(_context, { id: pollId });
+      async clearVoteForPoll(rootVal, { pollId }, context) {
+        await clearVote(context as KeystoneContext, { id: pollId });
       },
       async voteForPoll(rootVal, { answerId }, _context) {
-        const context = _context.sudo() as Context;
+        const context = _context.sudo() as KeystoneContext;
         clearVote(context, { answers_some: { id: answerId } });
         await context.db.lists.PollAnswer.updateOne({
           id: answerId,
