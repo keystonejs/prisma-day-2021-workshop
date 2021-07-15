@@ -174,12 +174,7 @@ export const componentBlocks = {
   }),
   poll: component({
     component: ({ poll }) => {
-      if (!poll.value)
-        return (
-          <div>
-            <NotEditable>No Poll Selected</NotEditable>
-          </div>
-        );
+      if (!poll.value) return <NotEditable>No Poll Selected</NotEditable>;
       return (
         <NotEditable>
           <h2>{poll.value.label}</h2>

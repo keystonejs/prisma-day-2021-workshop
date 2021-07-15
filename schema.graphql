@@ -1129,6 +1129,7 @@ type Mutation {
     data: CreateInitialUserInput!
   ): UserAuthenticationWithPasswordSuccess!
   voteForPoll(answerId: ID!): Boolean
+  clearVoteForPoll(pollId: ID!): Boolean
   endSession: Boolean!
 }
 
