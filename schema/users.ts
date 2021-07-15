@@ -9,10 +9,7 @@ import { schema } from '@keystone-next/types';
 import { list } from '@keystone-next/keystone/schema';
 
 import { permissions, rules } from './access';
-import {
-  GitHubRepo,
-  githubReposResolver,
-} from '../schema/fields/githubRepos/field';
+import { GitHubRepo, githubReposResolver } from './fields/githubRepos/field';
 
 const fieldModes = {
   editSelfOrRead: ({ session, item }: any) =>
@@ -121,3 +118,8 @@ export const Role = list({
     users: relationship({ ref: 'User.role', many: true }),
   },
 });
+
+console.log(
+  '-> GitHub Repos Field Components Path:',
+  require.resolve('./fields/GitHubRepos/components')
+);
