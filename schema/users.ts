@@ -79,7 +79,7 @@ export const User = list({
         resolve: githubReposResolver,
       }),
       ui: {
-        views: require.resolve('./fields/GitHubRepos/components'),
+        views: require.resolve('./fields/githubRepos/components'),
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'read' },
@@ -118,8 +118,3 @@ export const Role = list({
     users: relationship({ ref: 'User.role', many: true }),
   },
 });
-
-console.log(
-  '-> GitHub Repos Field Components Path:',
-  require.resolve('./fields/GitHubRepos/components')
-);
