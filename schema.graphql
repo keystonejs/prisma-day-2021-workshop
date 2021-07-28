@@ -1,6 +1,3 @@
-"""
- A keystone list
-"""
 type Post {
   id: ID!
   title: String
@@ -107,20 +104,8 @@ input PostWhereInput {
   publishedDate_not_in: [String]
   author: UserWhereInput
   author_is_null: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   labels_every: LabelWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   labels_some: LabelWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   labels_none: LabelWhereInput
 }
 
@@ -200,9 +185,6 @@ input PostsCreateInput {
   data: PostCreateInput
 }
 
-"""
- A keystone list
-"""
 type Label {
   id: ID!
   name: String
@@ -259,20 +241,8 @@ input LabelWhereInput {
   name_not_ends_with_i: String
   name_in: [String]
   name_not_in: [String]
-
-  """
-   condition must be true for all nodes
-  """
   posts_every: PostWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   posts_some: PostWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   posts_none: PostWhereInput
 }
 
@@ -318,9 +288,6 @@ input LabelsCreateInput {
   data: LabelCreateInput
 }
 
-"""
- A keystone list
-"""
 type Poll {
   id: ID!
   label: String
@@ -379,20 +346,8 @@ input PollWhereInput {
   label_not_ends_with_i: String
   label_in: [String]
   label_not_in: [String]
-
-  """
-   condition must be true for all nodes
-  """
   answers_every: PollAnswerWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   answers_some: PollAnswerWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   answers_none: PollAnswerWhereInput
 }
 
@@ -438,9 +393,6 @@ input PollsCreateInput {
   data: PollCreateInput
 }
 
-"""
- A keystone list
-"""
 type PollAnswer {
   id: ID!
   label: String
@@ -501,20 +453,8 @@ input PollAnswerWhereInput {
   label_not_in: [String]
   poll: PollWhereInput
   poll_is_null: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   answeredByUsers_every: UserWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   answeredByUsers_some: UserWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   answeredByUsers_none: UserWhereInput
 }
 
@@ -569,9 +509,6 @@ input PollAnswersCreateInput {
   data: PollAnswerCreateInput
 }
 
-"""
- A keystone list
-"""
 type User {
   id: ID!
   name: String
@@ -715,35 +652,11 @@ input UserWhereInput {
   githubUsername_not_ends_with_i: String
   githubUsername_in: [String]
   githubUsername_not_in: [String]
-
-  """
-   condition must be true for all nodes
-  """
   authoredPosts_every: PostWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   authoredPosts_some: PostWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   authoredPosts_none: PostWhereInput
-
-  """
-   condition must be true for all nodes
-  """
   pollAnswers_every: PollAnswerWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   pollAnswers_some: PollAnswerWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   pollAnswers_none: PollAnswerWhereInput
 }
 
@@ -806,9 +719,6 @@ input UsersCreateInput {
   data: UserCreateInput
 }
 
-"""
- A keystone list
-"""
 type Role {
   id: ID!
   name: String
@@ -871,20 +781,8 @@ input RoleWhereInput {
   canManageContent_not: Boolean
   canManageUsers: Boolean
   canManageUsers_not: Boolean
-
-  """
-   condition must be true for all nodes
-  """
   users_every: UserWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
   users_some: UserWhereInput
-
-  """
-   condition must be false for all nodes
-  """
   users_none: UserWhereInput
 }
 
@@ -942,184 +840,41 @@ scalar JSON
   )
 
 type Mutation {
-  """
-   Create a single Post item.
-  """
   createPost(data: PostCreateInput): Post
-
-  """
-   Create multiple Post items.
-  """
   createPosts(data: [PostsCreateInput]): [Post]
-
-  """
-   Update a single Post item by ID.
-  """
   updatePost(id: ID!, data: PostUpdateInput): Post
-
-  """
-   Update multiple Post items by ID.
-  """
   updatePosts(data: [PostsUpdateInput]): [Post]
-
-  """
-   Delete a single Post item by ID.
-  """
   deletePost(id: ID!): Post
-
-  """
-   Delete multiple Post items by ID.
-  """
   deletePosts(ids: [ID!]): [Post]
-
-  """
-   Create a single Label item.
-  """
   createLabel(data: LabelCreateInput): Label
-
-  """
-   Create multiple Label items.
-  """
   createLabels(data: [LabelsCreateInput]): [Label]
-
-  """
-   Update a single Label item by ID.
-  """
   updateLabel(id: ID!, data: LabelUpdateInput): Label
-
-  """
-   Update multiple Label items by ID.
-  """
   updateLabels(data: [LabelsUpdateInput]): [Label]
-
-  """
-   Delete a single Label item by ID.
-  """
   deleteLabel(id: ID!): Label
-
-  """
-   Delete multiple Label items by ID.
-  """
   deleteLabels(ids: [ID!]): [Label]
-
-  """
-   Create a single Poll item.
-  """
   createPoll(data: PollCreateInput): Poll
-
-  """
-   Create multiple Poll items.
-  """
   createPolls(data: [PollsCreateInput]): [Poll]
-
-  """
-   Update a single Poll item by ID.
-  """
   updatePoll(id: ID!, data: PollUpdateInput): Poll
-
-  """
-   Update multiple Poll items by ID.
-  """
   updatePolls(data: [PollsUpdateInput]): [Poll]
-
-  """
-   Delete a single Poll item by ID.
-  """
   deletePoll(id: ID!): Poll
-
-  """
-   Delete multiple Poll items by ID.
-  """
   deletePolls(ids: [ID!]): [Poll]
-
-  """
-   Create a single PollAnswer item.
-  """
   createPollAnswer(data: PollAnswerCreateInput): PollAnswer
-
-  """
-   Create multiple PollAnswer items.
-  """
   createPollAnswers(data: [PollAnswersCreateInput]): [PollAnswer]
-
-  """
-   Update a single PollAnswer item by ID.
-  """
   updatePollAnswer(id: ID!, data: PollAnswerUpdateInput): PollAnswer
-
-  """
-   Update multiple PollAnswer items by ID.
-  """
   updatePollAnswers(data: [PollAnswersUpdateInput]): [PollAnswer]
-
-  """
-   Delete a single PollAnswer item by ID.
-  """
   deletePollAnswer(id: ID!): PollAnswer
-
-  """
-   Delete multiple PollAnswer items by ID.
-  """
   deletePollAnswers(ids: [ID!]): [PollAnswer]
-
-  """
-   Create a single User item.
-  """
   createUser(data: UserCreateInput): User
-
-  """
-   Create multiple User items.
-  """
   createUsers(data: [UsersCreateInput]): [User]
-
-  """
-   Update a single User item by ID.
-  """
   updateUser(id: ID!, data: UserUpdateInput): User
-
-  """
-   Update multiple User items by ID.
-  """
   updateUsers(data: [UsersUpdateInput]): [User]
-
-  """
-   Delete a single User item by ID.
-  """
   deleteUser(id: ID!): User
-
-  """
-   Delete multiple User items by ID.
-  """
   deleteUsers(ids: [ID!]): [User]
-
-  """
-   Create a single Role item.
-  """
   createRole(data: RoleCreateInput): Role
-
-  """
-   Create multiple Role items.
-  """
   createRoles(data: [RolesCreateInput]): [Role]
-
-  """
-   Update a single Role item by ID.
-  """
   updateRole(id: ID!, data: RoleUpdateInput): Role
-
-  """
-   Update multiple Role items by ID.
-  """
   updateRoles(data: [RolesUpdateInput]): [Role]
-
-  """
-   Delete a single Role item by ID.
-  """
   deleteRole(id: ID!): Role
-
-  """
-   Delete multiple Role items by ID.
-  """
   deleteRoles(ids: [ID!]): [Role]
   authenticateUserWithPassword(
     email: String!
@@ -1164,9 +919,6 @@ input CreateInitialUserInput {
 }
 
 type Query {
-  """
-   Search for all Post items which match the where clause.
-  """
   allPosts(
     where: PostWhereInput! = {}
     search: String
@@ -1176,15 +928,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Post!]
-
-  """
-   Search for the Post item with the matching ID.
-  """
   Post(where: PostWhereUniqueInput!): Post
-
-  """
-   Perform a meta-query on all Post items which match the where clause.
-  """
   _allPostsMeta(
     where: PostWhereInput! = {}
     search: String
@@ -1198,10 +942,6 @@ type Query {
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
   postsCount(where: PostWhereInput! = {}): Int
-
-  """
-   Search for all Label items which match the where clause.
-  """
   allLabels(
     where: LabelWhereInput! = {}
     search: String
@@ -1211,15 +951,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Label!]
-
-  """
-   Search for the Label item with the matching ID.
-  """
   Label(where: LabelWhereUniqueInput!): Label
-
-  """
-   Perform a meta-query on all Label items which match the where clause.
-  """
   _allLabelsMeta(
     where: LabelWhereInput! = {}
     search: String
@@ -1233,10 +965,6 @@ type Query {
       reason: "This query will be removed in a future version. Please use labelsCount instead."
     )
   labelsCount(where: LabelWhereInput! = {}): Int
-
-  """
-   Search for all Poll items which match the where clause.
-  """
   allPolls(
     where: PollWhereInput! = {}
     search: String
@@ -1246,15 +974,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Poll!]
-
-  """
-   Search for the Poll item with the matching ID.
-  """
   Poll(where: PollWhereUniqueInput!): Poll
-
-  """
-   Perform a meta-query on all Poll items which match the where clause.
-  """
   _allPollsMeta(
     where: PollWhereInput! = {}
     search: String
@@ -1268,10 +988,6 @@ type Query {
       reason: "This query will be removed in a future version. Please use pollsCount instead."
     )
   pollsCount(where: PollWhereInput! = {}): Int
-
-  """
-   Search for all PollAnswer items which match the where clause.
-  """
   allPollAnswers(
     where: PollAnswerWhereInput! = {}
     search: String
@@ -1281,15 +997,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [PollAnswer!]
-
-  """
-   Search for the PollAnswer item with the matching ID.
-  """
   PollAnswer(where: PollAnswerWhereUniqueInput!): PollAnswer
-
-  """
-   Perform a meta-query on all PollAnswer items which match the where clause.
-  """
   _allPollAnswersMeta(
     where: PollAnswerWhereInput! = {}
     search: String
@@ -1303,10 +1011,6 @@ type Query {
       reason: "This query will be removed in a future version. Please use pollAnswersCount instead."
     )
   pollAnswersCount(where: PollAnswerWhereInput! = {}): Int
-
-  """
-   Search for all User items which match the where clause.
-  """
   allUsers(
     where: UserWhereInput! = {}
     search: String
@@ -1316,15 +1020,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [User!]
-
-  """
-   Search for the User item with the matching ID.
-  """
   User(where: UserWhereUniqueInput!): User
-
-  """
-   Perform a meta-query on all User items which match the where clause.
-  """
   _allUsersMeta(
     where: UserWhereInput! = {}
     search: String
@@ -1338,10 +1034,6 @@ type Query {
       reason: "This query will be removed in a future version. Please use usersCount instead."
     )
   usersCount(where: UserWhereInput! = {}): Int
-
-  """
-   Search for all Role items which match the where clause.
-  """
   allRoles(
     where: RoleWhereInput! = {}
     search: String
@@ -1351,15 +1043,7 @@ type Query {
     first: Int
     skip: Int! = 0
   ): [Role!]
-
-  """
-   Search for the Role item with the matching ID.
-  """
   Role(where: RoleWhereUniqueInput!): Role
-
-  """
-   Perform a meta-query on all Role items which match the where clause.
-  """
   _allRolesMeta(
     where: RoleWhereInput! = {}
     search: String
@@ -1417,6 +1101,7 @@ type KeystoneAdminUIFieldMeta {
   createView: KeystoneAdminUIFieldMetaCreateView!
   listView: KeystoneAdminUIFieldMetaListView!
   itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+  search: QueryMode
 }
 
 type KeystoneAdminUIFieldMetaCreateView {
@@ -1445,6 +1130,11 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   edit
   read
   hidden
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 type KeystoneAdminUISort {
