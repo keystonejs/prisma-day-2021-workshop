@@ -24,6 +24,7 @@ export const Poll = list({
           fields: ['label'],
         },
         removeMode: 'disconnect',
+        inlineConnect: true,
       },
     }),
     responsesCount: virtual({
