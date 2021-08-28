@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
+import { FC } from 'react';
 import { FieldProps } from '@keystone-next/types';
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
@@ -34,10 +35,11 @@ function Star() {
   );
 }
 
-export const Field = ({
-  field,
-  value,
-}: Omit<FieldProps<typeof controller>, 'value'> & { value?: Repo[] }) => {
+type GitHubReposFieldProps = Omit<FieldProps<typeof controller>, 'value'> & {
+  value?: Repo[];
+};
+
+export const Field: FC<GitHubReposFieldProps> = ({ field, value }) => {
   if (!value) return null;
   const topRepos = value.slice(0, 10);
   const moreRepos = value.length - 10;
@@ -47,13 +49,15 @@ export const Field = ({
       {value.length ? (
         <ul>
           {topRepos.map(repo => {
+            const href = repo.homepage || repo.htmlUrl;
+            const stars = repo.stargazersCount.toLocaleString();
             return (
               <li>
                 <div css={{ display: 'flex', alignItems: 'center' }}>
-                  <a href={repo.homepage || repo.htmlUrl} target="_blank">
+                  <a href={href} target="_blank">
                     {repo.name}
                   </a>
-                  <Star /> <span>{repo.stargazersCount.toLocaleString()}</span>
+                  <Star /> <span>{stars}</span>
                 </div>
               </li>
             );

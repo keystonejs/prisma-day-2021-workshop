@@ -85,7 +85,7 @@ export const User = list({
         itemView: { fieldMode: 'read' },
       },
       graphQLReturnFragment:
-        '{ name htmlUrl description homepage stargazersCount language }',
+        '{ name htmlUrl description homepage stargazersCount }',
     }),
     authoredPosts: relationship({
       ref: 'Post.author',

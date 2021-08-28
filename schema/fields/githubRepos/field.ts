@@ -4,7 +4,7 @@
 import { schema } from '@keystone-next/types';
 import fetch from 'node-fetch';
 
-export const GitHubRepo = schema.object<{
+type GitubRepoData = {
   id: number;
   name: string;
   full_name: string;
@@ -19,7 +19,9 @@ export const GitHubRepo = schema.object<{
   watchers_count: number;
   language: string;
   forks_count: number;
-}>()({
+};
+
+export const GitHubRepo = schema.object<GitubRepoData>()({
   name: 'GitHubRepo',
   fields: {
     id: schema.field({ type: schema.Int }),
