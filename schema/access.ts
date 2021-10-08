@@ -11,7 +11,7 @@ type SessionContext = {
     listKey: string;
   };
 };
-type ItemContext = { item: any } & SessionContext;
+type ItemContext = { item: any; } & SessionContext;
 
 export const isSignedIn = ({ session }: SessionContext) => {
   return !!session;
@@ -32,16 +32,16 @@ export const rules = {
   },
   canReadContentList: ({ session }: SessionContext) => {
     if (permissions.canManageContent({ session })) return true;
-    return { status: 'published' };
+    return { status: { equals: 'published' } };
   },
   canManageUser: ({ session, item }: ItemContext) => {
     if (permissions.canManageUsers({ session })) return true;
     if (session?.itemId === item.id) return true;
     return false;
   },
-  canManageUserList: ({ session }: ItemContext) => {
+  canManageUserList: ({ session }: SessionContext) => {
     if (permissions.canManageUsers({ session })) return true;
     if (!isSignedIn({ session })) return false;
-    return { id: session!.itemId };
+    return { where: { id: { equals: session!.itemId } } };
   },
 };

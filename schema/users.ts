@@ -23,7 +23,9 @@ const fieldModes = {
 
 export const User = list({
   access: {
-    create: true,
+    operation: {
+      create: () => true,
+    },
     filter: {
       query: () => true,
       update: rules.canManageUserList,

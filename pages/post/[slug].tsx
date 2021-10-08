@@ -31,14 +31,14 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const data = await fetchGraphQL(
     gql`
       query {
-        allPosts {
+        posts {
           slug
         }
       }
     `
   );
   return {
-    paths: data.allPosts.map((post: any) => ({ params: { slug: post.slug } })),
+    paths: data.posts.map((post: any) => ({ params: { slug: post.slug } })),
     fallback: 'blocking',
   };
 }
@@ -47,7 +47,7 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
   const data = await fetchGraphQL(
     gql`
       query ($slug: String!) {
-        Post(where: { slug: $slug }) {
+        post(where: { slug: $slug }) {
           title
           content {
             document(hydrateRelationships: true)
@@ -62,5 +62,5 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
     `,
     { slug: params!.slug }
   );
-  return { props: { post: data.Post }, revalidate: 60 };
+  return { props: { post: data.post }, revalidate: 60 };
 }

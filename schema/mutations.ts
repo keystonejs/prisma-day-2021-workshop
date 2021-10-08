@@ -12,7 +12,7 @@ async function clearVote(
     throw new Error('You must be signed in to vote');
   }
 
-  const answers = await context.db.lists.PollAnswer.findMany({
+  const answers = await context.db.PollAnswer.findMany({
     where: {
       poll: pollFilter,
       answeredByUsers_some: { id: context.session.itemId },
@@ -20,9 +20,9 @@ async function clearVote(
   });
 
   if (answers.length) {
-    await context.db.lists.PollAnswer.updateMany({
+    await context.db.PollAnswer.updateMany({
       data: answers.map((answer: any) => ({
-        id: answer.id,
+        where: { id: answer.id },
         data: {
           answeredByUsers: { disconnect: { id: context.session.itemId } },
         },
@@ -45,9 +45,9 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
       },
       async voteForPoll(rootVal, { answerId }, _context) {
         const context = _context.sudo() as KeystoneContext;
-        clearVote(context, { answers_some: { id: answerId } });
-        await context.db.lists.PollAnswer.updateOne({
-          id: answerId,
+        clearVote(context, { answers: { some: { id: answerId } } });
+        await context.db.PollAnswer.updateOne({
+          where: { id: answerId },
           data: {
             answeredByUsers: { connect: { id: context.session.itemId } },
           },

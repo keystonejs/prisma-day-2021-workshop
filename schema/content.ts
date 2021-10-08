@@ -37,13 +37,13 @@ export const Label = list({
   },
 });
 
-function defaultSlug({ context, originalInput }: any) {
+function defaultSlug({ context, inputData }: any) {
   const date = new Date();
-  return `${originalInput?.title
-      ?.trim()
-      ?.toLowerCase()
-      ?.replace(/[^\w ]+/g, '')
-      ?.replace(/ +/g, '-') ?? ''
+  return `${inputData?.title
+    ?.trim()
+    ?.toLowerCase()
+    ?.replace(/[^\w ]+/g, '')
+    ?.replace(/ +/g, '-') ?? ''
     }-${date?.getFullYear() ?? ''}${date?.getMonth() + 1 ?? ''}${date?.getDate() ?? ''
     }`;
 }
@@ -54,16 +54,25 @@ function defaultTimestamp() {
 
 export const Post = list({
   access: {
-    ...contentListAccess,
-    read: rules.canReadContentList,
+    filter: {
+      ...contentListAccess.filter,
+      query: rules.canReadContentList,
+    },
   },
   ui: contentUIConfig,
   fields: {
     title: text(),
     slug: text({
-      defaultValue: defaultSlug,
       ui: { createView: { fieldMode: 'hidden' } },
-      isUnique: true,
+      isIndexed: 'unique',
+      hooks: {
+        resolveInput: ({ operation, resolvedData, inputData, context }) => {
+          if (operation === 'create' && !inputData.slug) {
+            return defaultSlug({ context, inputData });
+          }
+          return resolvedData.slug;
+        }
+      }
     }),
     status: select({
       options: [
@@ -75,7 +84,14 @@ export const Post = list({
       ui: { displayMode: 'segmented-control' },
     }),
     publishedDate: timestamp({
-      defaultValue: defaultTimestamp,
+      hooks: {
+        resolveInput: ({ inputData, operation, resolvedData }) => {
+          if (operation === 'create' && !inputData.slug) {
+            return defaultTimestamp();
+          }
+          return resolvedData.slug;
+        }
+      }
     }),
     author: relationship({ ref: 'User.authoredPosts' }),
     labels: relationship({ ref: 'Label.posts', many: true }),

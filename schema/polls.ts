@@ -33,7 +33,7 @@ export const Poll = list({
           const lists = context.query as KeystoneListsAPI;
           return lists.User.count({
             where: {
-              pollAnswers_some: { poll: { id: poll.id.toString() } },
+              pollAnswers: { some: { poll: { id: { equals: poll.id.toString() } } } },
             },
           });
         },
@@ -45,11 +45,11 @@ export const Poll = list({
           type: lists.PollAnswer.types.output,
           async resolve(poll, args, context) {
             if (!isSignedIn(context)) return null;
-            const lists = context.db.lists as KeystoneDbAPI;
+            const lists = context.db as KeystoneDbAPI;
             const pollAnswers = await lists.PollAnswer.findMany({
               where: {
-                poll: { id: poll.id.toString() },
-                answeredByUsers_some: { id: context.session.itemId },
+                poll: { id: { equals: poll.id.toString() } },
+                answeredByUsers: { some: { id: { equals: context.session.itemId } } },
               },
             });
             return pollAnswers[0];
@@ -73,7 +73,7 @@ export const PollAnswer = list({
           const lists = context.query as KeystoneListsAPI;
 
           return lists.User.count({
-            where: { pollAnswers_some: { id: pollAnswer.id.toString() } },
+            where: { pollAnswers: { some: { id: { equals: pollAnswer.id.toString() } } } },
           });
         },
       }),
