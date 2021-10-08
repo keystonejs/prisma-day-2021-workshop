@@ -4,9 +4,8 @@ import {
   relationship,
   text,
   virtual,
-} from '@keystone-next/fields';
-import { schema } from '@keystone-next/types';
-import { list } from '@keystone-next/keystone/schema';
+} from '@keystone-next/keystone/fields';
+import { list, graphql } from '@keystone-next/keystone';
 
 import { permissions, rules } from './access';
 import { GitHubRepo, githubReposResolver } from './fields/githubRepos/field';
@@ -24,10 +23,14 @@ const fieldModes = {
 
 export const User = list({
   access: {
-    create: true,
-    read: true,
-    update: rules.canManageUserList,
-    delete: rules.canManageUserList,
+    operation: {
+      create: () => true,
+    },
+    filter: {
+      query: () => true,
+      update: rules.canManageUserList,
+      delete: rules.canManageUserList,
+    }
   },
   ui: {
     hideCreate: context => !permissions.canManageUsers(context),
@@ -48,8 +51,10 @@ export const User = list({
       },
     }),
     email: text({
-      isUnique: true,
-      isRequired: true,
+      isIndexed: 'unique',
+      validation: {
+        isRequired: true,
+      },
       access: {
         read: rules.canManageUser,
       },
@@ -58,7 +63,9 @@ export const User = list({
       },
     }),
     password: password({
-      isRequired: true,
+      validation: {
+        isRequired: true,
+      },
       ui: {
         itemView: { fieldMode: fieldModes.editSelfOrHidden },
       },
@@ -74,8 +81,8 @@ export const User = list({
       },
     }),
     githubRepos: virtual({
-      field: schema.field({
-        type: schema.nonNull(schema.list(GitHubRepo)),
+      field: graphql.field({
+        type: graphql.nonNull(graphql.list(GitHubRepo)),
         resolve: githubReposResolver,
       }),
       ui: {
@@ -83,9 +90,8 @@ export const User = list({
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'read' },
+        query: '{ name htmlUrl description homepage stargazersCount }',
       },
-      graphQLReturnFragment:
-        '{ name htmlUrl description homepage stargazersCount }',
     }),
     authoredPosts: relationship({
       ref: 'Post.author',
@@ -107,7 +113,13 @@ export const User = list({
 });
 
 export const Role = list({
-  access: permissions.canManageUsers,
+  access: {
+    filter: {
+      delete: permissions.canManageUsers,
+      query: permissions.canManageUsers,
+      update: permissions.canManageUsers,
+    }
+  },
   ui: {
     isHidden: context => !permissions.canManageUsers(context),
   },

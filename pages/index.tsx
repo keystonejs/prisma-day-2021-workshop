@@ -67,8 +67,8 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
   const data = await fetchGraphQL(
     gql`
       query {
-        allPosts(
-          where: { status: "published" }
+        posts(
+          where: { status: { equals: "published" } }
           orderBy: [{ publishedDate: desc }]
         ) {
           id
@@ -86,5 +86,5 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
       }
     `
   );
-  return { props: { posts: data.allPosts }, revalidate: 60 };
+  return { props: { posts: data.posts }, revalidate: 60 };
 }

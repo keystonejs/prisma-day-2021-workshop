@@ -1,6 +1,5 @@
-import { relationship, text, virtual } from '@keystone-next/fields';
-import { schema } from '@keystone-next/types';
-import { list } from '@keystone-next/keystone/schema';
+import { relationship, text, virtual } from '@keystone-next/keystone/fields';
+import { graphql, list } from '@keystone-next/keystone';
 import { KeystoneListsAPI, KeystoneDbAPI } from '.keystone/types';
 
 import { isSignedIn, permissions } from './access';
@@ -28,13 +27,13 @@ export const Poll = list({
       },
     }),
     responsesCount: virtual({
-      field: schema.field({
-        type: schema.Int,
+      field: graphql.field({
+        type: graphql.Int,
         resolve(poll, args, context) {
-          const lists = context.lists as KeystoneListsAPI;
+          const lists = context.query as KeystoneListsAPI;
           return lists.User.count({
             where: {
-              pollAnswers_some: { poll: { id: poll.id.toString() } },
+              pollAnswers: { some: { poll: { id: { equals: poll.id.toString() } } } },
             },
           });
         },
@@ -42,21 +41,21 @@ export const Poll = list({
     }),
     userAnswer: virtual({
       field: lists =>
-        schema.field({
+        graphql.field({
           type: lists.PollAnswer.types.output,
           async resolve(poll, args, context) {
             if (!isSignedIn(context)) return null;
-            const lists = context.db.lists as KeystoneDbAPI;
+            const lists = context.db as KeystoneDbAPI;
             const pollAnswers = await lists.PollAnswer.findMany({
               where: {
-                poll: { id: poll.id.toString() },
-                answeredByUsers_some: { id: context.session.itemId },
+                poll: { id: { equals: poll.id.toString() } },
+                answeredByUsers: { some: { id: { equals: context.session.itemId } } },
               },
             });
             return pollAnswers[0];
           },
         }),
-      graphQLReturnFragment: '{ id label }',
+      ui: { query: '{ id label }' },
     }),
   },
 });
@@ -68,13 +67,13 @@ export const PollAnswer = list({
     label: text(),
     poll: relationship({ ref: 'Poll.answers' }),
     voteCount: virtual({
-      field: schema.field({
-        type: schema.Int,
+      field: graphql.field({
+        type: graphql.Int,
         resolve(pollAnswer, args, context) {
-          const lists = context.lists as KeystoneListsAPI;
+          const lists = context.query as KeystoneListsAPI;
 
           return lists.User.count({
-            where: { pollAnswers_some: { id: pollAnswer.id.toString() } },
+            where: { pollAnswers: { some: { id: { equals: pollAnswer.id.toString() } } } },
           });
         },
       }),
