@@ -29,7 +29,7 @@ export default function Home({ posts }: { posts: Post[] }) {
       <H1>My Blog</H1>
       {auth.ready && auth.sessionData ? (
         <p>
-          You're signed in as {auth.sessionData.name} |{' '}
+          You&apos;re signed in as {auth.sessionData.name} |{' '}
           <button onClick={() => auth.signOut()}>sign out</button>
         </p>
       ) : (
