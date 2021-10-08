@@ -1,17 +1,21 @@
-import { config } from '@keystone-next/keystone/schema';
+import { config } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
-
-import { lists, extendGraphqlSchema } from './schema';
+import { lists, extendGraphqlSchema  } from './schema';
 import { rules } from './schema/access';
 
 const dbUrl =
-  process.env.DATABASE_URL ||
-  `postgres://${process.env.USER}@localhost/prisma-day-workshop`;
+  `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST}/keyn_25_0_3`;
 
 const sessionSecret =
-  process.env.SESSION_SECERT ||
-  'iLqbHhm7qwiBNc8KgL4NQ8tD8fFVhNhNqZ2nRdprgnKNjgJHgvitWx6DPoZJpYHa';
+  process.env.SESSION_SECRET ||
+  'iLqbHhm7qwihbsdfjvb87876sdfIUSHSJZ2nRdprgnKNjgJHgvitWx6DPoZJpYHa';
+
+
+
+let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
+
+
 
 const auth = createAuth({
   identityField: 'email',
@@ -45,8 +49,10 @@ export default auth.withAuth(
     ui: { isAccessAllowed: rules.canUseAdminUI },
     lists,
     session: statelessSessions({
+      maxAge: sessionMaxAge,
       secret: sessionSecret,
     }),
     extendGraphqlSchema,
   })
 );
+

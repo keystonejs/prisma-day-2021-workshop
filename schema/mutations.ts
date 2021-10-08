@@ -1,4 +1,4 @@
-import { graphQLSchemaExtension } from '@keystone-next/keystone/schema';
+import { graphQLSchemaExtension } from '@keystone-next/keystone';
 import { KeystoneContext, PollWhereInput } from '.keystone/types';
 
 const gql = ([content]: TemplateStringsArray) => content;
@@ -14,17 +14,18 @@ async function clearVote(
 
   const answers = await context.db.lists.PollAnswer.findMany({
     where: {
-      poll: pollFilter,
-      answeredByUsers_some: { id: context.session.itemId },
+      answeredByUsers: {some: { id: {equals: context.session.itemId }}},
     },
   });
+
+  console.log("Answers: " + answers)
 
   if (answers.length) {
     await context.db.lists.PollAnswer.updateMany({
       data: answers.map(answer => ({
-        id: answer.id,
+        where: {id: answer.id},
         data: {
-          answeredByUsers: { disconnect: { id: context.session.itemId } },
+          answeredByUsers: { set: [] },
         },
       })),
     });
@@ -45,9 +46,10 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
       },
       async voteForPoll(rootVal, { answerId }, _context) {
         const context = _context.sudo() as KeystoneContext;
-        clearVote(context, { answers_some: { id: answerId } });
+        clearVote(context, { answers: {some: { id: { equals : answerId }}} });
+
         await context.db.lists.PollAnswer.updateOne({
-          id: answerId,
+          where: {id: answerId},
           data: {
             answeredByUsers: { connect: { id: context.session.itemId } },
           },

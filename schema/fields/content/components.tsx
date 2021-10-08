@@ -42,7 +42,7 @@ const appearances = {
     icon: CheckCircleIcon,
     backgroundColor: '#D1FAE5',
     borderColor: '#34D399',
-    foregroundColor: '#064E3B',
+    foregroundColor: '#068E3B',
   },
 } as const;
 

@@ -1,4 +1,4 @@
-import { createSchema } from '@keystone-next/keystone/schema';
+import { createSchema } from '@keystone-next/keystone';
 
 import { Poll, PollAnswer } from './schema/polls';
 import { User, Role } from './schema/users';

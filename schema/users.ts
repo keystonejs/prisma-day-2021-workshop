@@ -4,12 +4,15 @@ import {
   relationship,
   text,
   virtual,
-} from '@keystone-next/fields';
-import { schema } from '@keystone-next/types';
-import { list } from '@keystone-next/keystone/schema';
+} from '@keystone-next/keystone/fields';
 
-import { permissions, rules } from './access';
+import {graphql as schema } from '@keystone-next/keystone/types';
+import { list } from '@keystone-next/keystone';
+
+import { permissions, rules, ItemContext } from './access';
 import { GitHubRepo, githubReposResolver } from './fields/githubRepos/field';
+
+
 
 const fieldModes = {
   editSelfOrRead: ({ session, item }: any) =>
@@ -24,11 +27,19 @@ const fieldModes = {
 
 export const User = list({
   access: {
-    create: true,
-    read: true,
-    update: rules.canManageUserList,
-    delete: rules.canManageUserList,
+    operation: {
+      create: ({ session, context, listKey, operation }) => true,
+      query: ({ session, context, listKey, operation }) => true,
+      update: ({ session, context, listKey, operation }) => rules.operationCanManageUserList(session),
+      delete: ({ session, context, listKey, operation }) => rules.operationCanManageUserList(session),
+    },
+    filter: {
+      update: ({ session, context, listKey, operation }) => rules.filterCanManageUserList,
+      delete: ({ session, context, listKey, operation }) => rules.filterCanManageUserList
+    }
+
   },
+
   ui: {
     hideCreate: context => !permissions.canManageUsers(context),
     hideDelete: context => !permissions.canManageUsers(context),
@@ -48,7 +59,8 @@ export const User = list({
       },
     }),
     email: text({
-      isUnique: true,
+      isIndexed: 'unique', 
+      isFilterable: true,
       isRequired: true,
       access: {
         read: rules.canManageUser,
@@ -68,6 +80,7 @@ export const User = list({
       access: permissions.canManageUsers,
     }),
     githubUsername: text({
+      isFilterable: true,
       label: 'GitHub Username',
       ui: {
         itemView: { fieldMode: fieldModes.editSelfOrRead },
@@ -89,6 +102,7 @@ export const User = list({
     }),
     authoredPosts: relationship({
       ref: 'Post.author',
+      isFilterable: true,
       many: true,
       ui: {
         createView: { fieldMode: 'hidden' },
@@ -96,6 +110,7 @@ export const User = list({
     }),
     pollAnswers: relationship({
       ref: 'PollAnswer.answeredByUsers',
+      isFilterable: true,
       many: true,
       access: permissions.canManageUsers,
       ui: {
@@ -107,14 +122,34 @@ export const User = list({
 });
 
 export const Role = list({
-  access: permissions.canManageUsers,
+  
+    
+    fields: {
+      name: text(),
+      canManageContent: checkbox({ defaultValue: false }),
+      canManageUsers: checkbox({ defaultValue: false }),
+      users: relationship({ ref: 'User.role', many: true })
+    },
+    
+    access: {  
+      filter: {
+        query: ({ session, context, listKey, operation }) => 
+        { 
+          return { canManageUsers: { equals: true } };
+        },
+        update: ({ session, context, listKey, operation }) => 
+        { 
+          return { canManageUsers: { equals: true } };
+        },
+        delete: ({ session, context, listKey, operation }) => 
+        { 
+          return { canManageUsers: { equals: true } };
+        }
+    }
+  },
+  //permissions.canManageUsers,
   ui: {
     isHidden: context => !permissions.canManageUsers(context),
   },
-  fields: {
-    name: text(),
-    canManageContent: checkbox({ defaultValue: false }),
-    canManageUsers: checkbox({ defaultValue: false }),
-    users: relationship({ ref: 'User.role', many: true }),
-  },
+
 });

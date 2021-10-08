@@ -5,6 +5,9 @@ import {
 } from '@keystone-next/document-renderer';
 import React, { ComponentProps, Fragment } from 'react';
 
+
+
+
 import { H1, H2, H3, H4, H5, H6, P } from '../../../components/ui/typography';
 import { Divider } from '../../../components/ui/layout';
 import { useAuth } from '../../../components/auth';
@@ -53,12 +56,18 @@ type Poll = {
   userAnswer: { id: string } | null;
 };
 
+
+
+
+
 const calloutStyles = {
   info: 'text-blue-800 bg-blue-50 border-blue-300',
   error: 'text-red-800 bg-red-50 border-red-300',
   warning: 'text-yellow-800 bg-yellow-50 border-yellow-300',
   success: 'text-green-800 bg-green-50 border-green-300',
 };
+
+
 
 export const componentBlockRenderers: InferRenderersForComponentBlocks<
   typeof import('./components').componentBlocks
@@ -89,7 +98,7 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
     const [{ data }] = useQuery({
       query: gql`
         query ($id: ID!) {
-          Poll(where: { id: $id }) {
+          poll(where: { id: $id }) {
             id
             label
             answers {
@@ -105,7 +114,7 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
       `,
       variables: { id: relatedPoll.id },
     });
-    const poll = (data?.Poll || relatedPoll.data) as Poll;
+    const poll = (data?.poll || relatedPoll.data) as Poll;
 
     const [{}, voteForPoll] = useMutation(gql`
       mutation ($answerId: ID!) {
@@ -160,6 +169,7 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
         {poll.userAnswer?.id && (
           <Button
             onClick={() => {
+
               clearVoteForPoll(
                 { pollId: relatedPoll.id },
                 { additionalTypenames: ['Poll', 'PollAnswer'] }

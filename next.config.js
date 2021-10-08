@@ -1,3 +1,5 @@
+
+
 module.exports = {
   async rewrites() {
     return [
@@ -7,4 +9,8 @@ module.exports = {
       },
     ];
   },
+  images: {
+    domains: ['picsum.photos'],
+  },
+
 };
