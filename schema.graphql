@@ -1,891 +1,62 @@
-type Post {
-  id: ID!
-  title: String
-  slug: String
-  status: String
-  publishedDate: String
-  author: User
-  labels(
-    where: LabelWhereInput! = {}
-    search: String
-    sortBy: [SortLabelsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [LabelOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Label!]
-  _labelsMeta(
-    where: LabelWhereInput! = {}
-    search: String
-    sortBy: [SortLabelsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [LabelOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use labelsCount instead."
-    )
-  labelsCount(where: LabelWhereInput! = {}): Int
-  intro: Post_intro_DocumentField
-  content: Post_content_DocumentField
-}
-
-type _QueryMeta {
-  count: Int
-}
-
-type Post_intro_DocumentField {
-  document(hydrateRelationships: Boolean! = false): JSON!
-}
-
-type Post_content_DocumentField {
-  document(hydrateRelationships: Boolean! = false): JSON!
-}
-
-input PostWhereInput {
-  AND: [PostWhereInput!]
-  OR: [PostWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  title: String
-  title_not: String
-  title_contains: String
-  title_not_contains: String
-  title_starts_with: String
-  title_not_starts_with: String
-  title_ends_with: String
-  title_not_ends_with: String
-  title_i: String
-  title_not_i: String
-  title_contains_i: String
-  title_not_contains_i: String
-  title_starts_with_i: String
-  title_not_starts_with_i: String
-  title_ends_with_i: String
-  title_not_ends_with_i: String
-  title_in: [String]
-  title_not_in: [String]
-  slug: String
-  slug_not: String
-  slug_contains: String
-  slug_not_contains: String
-  slug_starts_with: String
-  slug_not_starts_with: String
-  slug_ends_with: String
-  slug_not_ends_with: String
-  slug_i: String
-  slug_not_i: String
-  slug_contains_i: String
-  slug_not_contains_i: String
-  slug_starts_with_i: String
-  slug_not_starts_with_i: String
-  slug_ends_with_i: String
-  slug_not_ends_with_i: String
-  slug_in: [String]
-  slug_not_in: [String]
-  status: String
-  status_not: String
-  status_in: [String]
-  status_not_in: [String]
-  publishedDate: String
-  publishedDate_not: String
-  publishedDate_lt: String
-  publishedDate_lte: String
-  publishedDate_gt: String
-  publishedDate_gte: String
-  publishedDate_in: [String]
-  publishedDate_not_in: [String]
-  author: UserWhereInput
-  author_is_null: Boolean
-  labels_every: LabelWhereInput
-  labels_some: LabelWhereInput
-  labels_none: LabelWhereInput
-}
-
-input PostWhereUniqueInput {
-  id: ID
-  slug: String
-}
-
-enum SortPostsBy {
-  id_ASC
-  id_DESC
-  title_ASC
-  title_DESC
-  slug_ASC
-  slug_DESC
-  status_ASC
-  status_DESC
-  publishedDate_ASC
-  publishedDate_DESC
-}
-
-input PostOrderByInput {
-  id: OrderDirection
-  title: OrderDirection
-  slug: OrderDirection
-  status: OrderDirection
-  publishedDate: OrderDirection
-}
-
-enum OrderDirection {
-  asc
-  desc
-}
-
-input PostUpdateInput {
-  title: String
-  slug: String
-  status: String
-  publishedDate: String
-  author: UserRelateToOneInput
-  labels: LabelRelateToManyInput
-  intro: JSON
-  content: JSON
-}
-
-input UserRelateToOneInput {
-  create: UserCreateInput
-  connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input LabelRelateToManyInput {
-  create: [LabelCreateInput]
-  connect: [LabelWhereUniqueInput]
-  disconnect: [LabelWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input PostsUpdateInput {
-  id: ID!
-  data: PostUpdateInput
-}
-
-input PostCreateInput {
-  title: String
-  slug: String
-  status: String
-  publishedDate: String
-  author: UserRelateToOneInput
-  labels: LabelRelateToManyInput
-  intro: JSON
-  content: JSON
-}
-
-input PostsCreateInput {
-  data: PostCreateInput
-}
-
-type Label {
-  id: ID!
-  name: String
-  posts(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Post!]
-  _postsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
-  postsCount(where: PostWhereInput! = {}): Int
-}
-
-input LabelWhereInput {
-  AND: [LabelWhereInput!]
-  OR: [LabelWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_starts_with: String
-  name_not_starts_with: String
-  name_ends_with: String
-  name_not_ends_with: String
-  name_i: String
-  name_not_i: String
-  name_contains_i: String
-  name_not_contains_i: String
-  name_starts_with_i: String
-  name_not_starts_with_i: String
-  name_ends_with_i: String
-  name_not_ends_with_i: String
-  name_in: [String]
-  name_not_in: [String]
-  posts_every: PostWhereInput
-  posts_some: PostWhereInput
-  posts_none: PostWhereInput
-}
-
-input LabelWhereUniqueInput {
-  id: ID
-}
-
-enum SortLabelsBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-}
-
-input LabelOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-}
-
-input LabelUpdateInput {
-  name: String
-  posts: PostRelateToManyInput
-}
-
-input PostRelateToManyInput {
-  create: [PostCreateInput]
-  connect: [PostWhereUniqueInput]
-  disconnect: [PostWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input LabelsUpdateInput {
-  id: ID!
-  data: LabelUpdateInput
-}
-
-input LabelCreateInput {
-  name: String
-  posts: PostRelateToManyInput
-}
-
-input LabelsCreateInput {
-  data: LabelCreateInput
-}
-
-type Poll {
-  id: ID!
-  label: String
-  answers(
-    where: PollAnswerWhereInput! = {}
-    search: String
-    sortBy: [SortPollAnswersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PollAnswerOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [PollAnswer!]
-  _answersMeta(
-    where: PollAnswerWhereInput! = {}
-    search: String
-    sortBy: [SortPollAnswersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PollAnswerOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use answersCount instead."
-    )
-  answersCount(where: PollAnswerWhereInput! = {}): Int
-  responsesCount: Int
-  userAnswer: PollAnswer
-}
-
-input PollWhereInput {
-  AND: [PollWhereInput!]
-  OR: [PollWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  label: String
-  label_not: String
-  label_contains: String
-  label_not_contains: String
-  label_starts_with: String
-  label_not_starts_with: String
-  label_ends_with: String
-  label_not_ends_with: String
-  label_i: String
-  label_not_i: String
-  label_contains_i: String
-  label_not_contains_i: String
-  label_starts_with_i: String
-  label_not_starts_with_i: String
-  label_ends_with_i: String
-  label_not_ends_with_i: String
-  label_in: [String]
-  label_not_in: [String]
-  answers_every: PollAnswerWhereInput
-  answers_some: PollAnswerWhereInput
-  answers_none: PollAnswerWhereInput
-}
-
-input PollWhereUniqueInput {
-  id: ID
-}
-
-enum SortPollsBy {
-  id_ASC
-  id_DESC
-  label_ASC
-  label_DESC
-}
-
-input PollOrderByInput {
-  id: OrderDirection
-  label: OrderDirection
-}
-
-input PollUpdateInput {
-  label: String
-  answers: PollAnswerRelateToManyInput
-}
-
-input PollAnswerRelateToManyInput {
-  create: [PollAnswerCreateInput]
-  connect: [PollAnswerWhereUniqueInput]
-  disconnect: [PollAnswerWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input PollsUpdateInput {
-  id: ID!
-  data: PollUpdateInput
-}
-
-input PollCreateInput {
-  label: String
-  answers: PollAnswerRelateToManyInput
-}
-
-input PollsCreateInput {
-  data: PollCreateInput
-}
-
-type PollAnswer {
-  id: ID!
-  label: String
-  poll: Poll
-  voteCount: Int
-  answeredByUsers(
-    where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [UserOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [User!]
-  _answeredByUsersMeta(
-    where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [UserOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use answeredByUsersCount instead."
-    )
-  answeredByUsersCount(where: UserWhereInput! = {}): Int
-}
-
-input PollAnswerWhereInput {
-  AND: [PollAnswerWhereInput!]
-  OR: [PollAnswerWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  label: String
-  label_not: String
-  label_contains: String
-  label_not_contains: String
-  label_starts_with: String
-  label_not_starts_with: String
-  label_ends_with: String
-  label_not_ends_with: String
-  label_i: String
-  label_not_i: String
-  label_contains_i: String
-  label_not_contains_i: String
-  label_starts_with_i: String
-  label_not_starts_with_i: String
-  label_ends_with_i: String
-  label_not_ends_with_i: String
-  label_in: [String]
-  label_not_in: [String]
-  poll: PollWhereInput
-  poll_is_null: Boolean
-  answeredByUsers_every: UserWhereInput
-  answeredByUsers_some: UserWhereInput
-  answeredByUsers_none: UserWhereInput
-}
-
-input PollAnswerWhereUniqueInput {
-  id: ID
-}
-
-enum SortPollAnswersBy {
-  id_ASC
-  id_DESC
-  label_ASC
-  label_DESC
-}
-
-input PollAnswerOrderByInput {
-  id: OrderDirection
-  label: OrderDirection
-}
-
-input PollAnswerUpdateInput {
-  label: String
-  poll: PollRelateToOneInput
-  answeredByUsers: UserRelateToManyInput
-}
-
-input PollRelateToOneInput {
-  create: PollCreateInput
-  connect: PollWhereUniqueInput
-  disconnect: PollWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input UserRelateToManyInput {
-  create: [UserCreateInput]
-  connect: [UserWhereUniqueInput]
-  disconnect: [UserWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input PollAnswersUpdateInput {
-  id: ID!
-  data: PollAnswerUpdateInput
-}
-
-input PollAnswerCreateInput {
-  label: String
-  poll: PollRelateToOneInput
-  answeredByUsers: UserRelateToManyInput
-}
-
-input PollAnswersCreateInput {
-  data: PollAnswerCreateInput
-}
-
-type User {
-  id: ID!
-  name: String
-  email: String
-  password: PasswordState
-  role: Role
-  githubUsername: String
-  githubRepos: [GitHubRepo]!
-  authoredPosts(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Post!]
-  _authoredPostsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use authoredPostsCount instead."
-    )
-  authoredPostsCount(where: PostWhereInput! = {}): Int
-  pollAnswers(
-    where: PollAnswerWhereInput! = {}
-    search: String
-    sortBy: [SortPollAnswersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PollAnswerOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [PollAnswer!]
-  _pollAnswersMeta(
-    where: PollAnswerWhereInput! = {}
-    search: String
-    sortBy: [SortPollAnswersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PollAnswerOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use pollAnswersCount instead."
-    )
-  pollAnswersCount(where: PollAnswerWhereInput! = {}): Int
-}
-
-type PasswordState {
-  isSet: Boolean!
-}
-
-type GitHubRepo {
-  id: Int
-  name: String
-  fullName: String
-  htmlUrl: String
-  description: String
-  createdAt: String
-  updatedAt: String
-  pushedAt: String
-  homepage: String
-  size: Int
-  stargazersCount: Int
-  watchersCount: Int
-  language: String
-  forksCount: Int
-}
-
-input UserWhereInput {
-  AND: [UserWhereInput!]
-  OR: [UserWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_starts_with: String
-  name_not_starts_with: String
-  name_ends_with: String
-  name_not_ends_with: String
-  name_i: String
-  name_not_i: String
-  name_contains_i: String
-  name_not_contains_i: String
-  name_starts_with_i: String
-  name_not_starts_with_i: String
-  name_ends_with_i: String
-  name_not_ends_with_i: String
-  name_in: [String]
-  name_not_in: [String]
-  email: String
-  email_not: String
-  email_contains: String
-  email_not_contains: String
-  email_starts_with: String
-  email_not_starts_with: String
-  email_ends_with: String
-  email_not_ends_with: String
-  email_i: String
-  email_not_i: String
-  email_contains_i: String
-  email_not_contains_i: String
-  email_starts_with_i: String
-  email_not_starts_with_i: String
-  email_ends_with_i: String
-  email_not_ends_with_i: String
-  email_in: [String]
-  email_not_in: [String]
-  password_is_set: Boolean
-  role: RoleWhereInput
-  role_is_null: Boolean
-  githubUsername: String
-  githubUsername_not: String
-  githubUsername_contains: String
-  githubUsername_not_contains: String
-  githubUsername_starts_with: String
-  githubUsername_not_starts_with: String
-  githubUsername_ends_with: String
-  githubUsername_not_ends_with: String
-  githubUsername_i: String
-  githubUsername_not_i: String
-  githubUsername_contains_i: String
-  githubUsername_not_contains_i: String
-  githubUsername_starts_with_i: String
-  githubUsername_not_starts_with_i: String
-  githubUsername_ends_with_i: String
-  githubUsername_not_ends_with_i: String
-  githubUsername_in: [String]
-  githubUsername_not_in: [String]
-  authoredPosts_every: PostWhereInput
-  authoredPosts_some: PostWhereInput
-  authoredPosts_none: PostWhereInput
-  pollAnswers_every: PollAnswerWhereInput
-  pollAnswers_some: PollAnswerWhereInput
-  pollAnswers_none: PollAnswerWhereInput
-}
-
-input UserWhereUniqueInput {
-  id: ID
-  email: String
-}
-
-enum SortUsersBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  email_ASC
-  email_DESC
-  githubUsername_ASC
-  githubUsername_DESC
-}
-
-input UserOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-  email: OrderDirection
-  githubUsername: OrderDirection
-}
-
-input UserUpdateInput {
-  name: String
-  email: String
-  password: String
-  role: RoleRelateToOneInput
-  githubUsername: String
-  authoredPosts: PostRelateToManyInput
-  pollAnswers: PollAnswerRelateToManyInput
-}
-
-input RoleRelateToOneInput {
-  create: RoleCreateInput
-  connect: RoleWhereUniqueInput
-  disconnect: RoleWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input UsersUpdateInput {
-  id: ID!
-  data: UserUpdateInput
-}
-
-input UserCreateInput {
-  name: String
-  email: String
-  password: String
-  role: RoleRelateToOneInput
-  githubUsername: String
-  authoredPosts: PostRelateToManyInput
-  pollAnswers: PollAnswerRelateToManyInput
-}
-
-input UsersCreateInput {
-  data: UserCreateInput
-}
-
-type Role {
-  id: ID!
-  name: String
-  canManageContent: Boolean
-  canManageUsers: Boolean
-  users(
-    where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [UserOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [User!]
-  _usersMeta(
-    where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [UserOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use usersCount instead."
-    )
-  usersCount(where: UserWhereInput! = {}): Int
-}
-
-input RoleWhereInput {
-  AND: [RoleWhereInput!]
-  OR: [RoleWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  name: String
-  name_not: String
-  name_contains: String
-  name_not_contains: String
-  name_starts_with: String
-  name_not_starts_with: String
-  name_ends_with: String
-  name_not_ends_with: String
-  name_i: String
-  name_not_i: String
-  name_contains_i: String
-  name_not_contains_i: String
-  name_starts_with_i: String
-  name_not_starts_with_i: String
-  name_ends_with_i: String
-  name_not_ends_with_i: String
-  name_in: [String]
-  name_not_in: [String]
-  canManageContent: Boolean
-  canManageContent_not: Boolean
-  canManageUsers: Boolean
-  canManageUsers_not: Boolean
-  users_every: UserWhereInput
-  users_some: UserWhereInput
-  users_none: UserWhereInput
-}
-
-input RoleWhereUniqueInput {
-  id: ID
-}
-
-enum SortRolesBy {
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  canManageContent_ASC
-  canManageContent_DESC
-  canManageUsers_ASC
-  canManageUsers_DESC
-}
-
-input RoleOrderByInput {
-  id: OrderDirection
-  name: OrderDirection
-  canManageContent: OrderDirection
-  canManageUsers: OrderDirection
-}
-
-input RoleUpdateInput {
-  name: String
-  canManageContent: Boolean
-  canManageUsers: Boolean
-  users: UserRelateToManyInput
-}
-
-input RolesUpdateInput {
-  id: ID!
-  data: RoleUpdateInput
-}
-
-input RoleCreateInput {
-  name: String
-  canManageContent: Boolean
-  canManageUsers: Boolean
-  users: UserRelateToManyInput
-}
-
-input RolesCreateInput {
-  data: RoleCreateInput
-}
-
-"""
-The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
-"""
-scalar JSON
-  @specifiedBy(
-    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
-  )
+# This file is automatically generated by Keystone, do not modify it manually.
+# Modify your Keystone config when you want to change this.
 
 type Mutation {
-  createPost(data: PostCreateInput): Post
-  createPosts(data: [PostsCreateInput]): [Post]
-  updatePost(id: ID!, data: PostUpdateInput): Post
-  updatePosts(data: [PostsUpdateInput]): [Post]
-  deletePost(id: ID!): Post
-  deletePosts(ids: [ID!]): [Post]
-  createLabel(data: LabelCreateInput): Label
-  createLabels(data: [LabelsCreateInput]): [Label]
-  updateLabel(id: ID!, data: LabelUpdateInput): Label
-  updateLabels(data: [LabelsUpdateInput]): [Label]
-  deleteLabel(id: ID!): Label
-  deleteLabels(ids: [ID!]): [Label]
-  createPoll(data: PollCreateInput): Poll
-  createPolls(data: [PollsCreateInput]): [Poll]
-  updatePoll(id: ID!, data: PollUpdateInput): Poll
-  updatePolls(data: [PollsUpdateInput]): [Poll]
-  deletePoll(id: ID!): Poll
-  deletePolls(ids: [ID!]): [Poll]
-  createPollAnswer(data: PollAnswerCreateInput): PollAnswer
-  createPollAnswers(data: [PollAnswersCreateInput]): [PollAnswer]
-  updatePollAnswer(id: ID!, data: PollAnswerUpdateInput): PollAnswer
-  updatePollAnswers(data: [PollAnswersUpdateInput]): [PollAnswer]
-  deletePollAnswer(id: ID!): PollAnswer
-  deletePollAnswers(ids: [ID!]): [PollAnswer]
-  createUser(data: UserCreateInput): User
-  createUsers(data: [UsersCreateInput]): [User]
-  updateUser(id: ID!, data: UserUpdateInput): User
-  updateUsers(data: [UsersUpdateInput]): [User]
-  deleteUser(id: ID!): User
-  deleteUsers(ids: [ID!]): [User]
-  createRole(data: RoleCreateInput): Role
-  createRoles(data: [RolesCreateInput]): [Role]
-  updateRole(id: ID!, data: RoleUpdateInput): Role
-  updateRoles(data: [RolesUpdateInput]): [Role]
-  deleteRole(id: ID!): Role
-  deleteRoles(ids: [ID!]): [Role]
+  voteForPoll(answerId: ID!): Boolean
+  clearVoteForPoll(pollId: ID!): Boolean
+  createInitialUser(
+    data: CreateInitialUserInput!
+  ): UserAuthenticationWithPasswordSuccess!
   authenticateUserWithPassword(
     email: String!
     password: String!
   ): UserAuthenticationWithPasswordResult!
-  createInitialUser(
-    data: CreateInitialUserInput!
-  ): UserAuthenticationWithPasswordSuccess!
-  voteForPoll(answerId: ID!): Boolean
-  clearVoteForPoll(pollId: ID!): Boolean
+  createPost(data: PostCreateInput!): Post
+  createPosts(data: [PostCreateInput!]!): [Post]
+  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  updatePosts(data: [PostUpdateArgs!]!): [Post]
+  deletePost(where: PostWhereUniqueInput!): Post
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post]
+  createLabel(data: LabelCreateInput!): Label
+  createLabels(data: [LabelCreateInput!]!): [Label]
+  updateLabel(where: LabelWhereUniqueInput!, data: LabelUpdateInput!): Label
+  updateLabels(data: [LabelUpdateArgs!]!): [Label]
+  deleteLabel(where: LabelWhereUniqueInput!): Label
+  deleteLabels(where: [LabelWhereUniqueInput!]!): [Label]
+  createPoll(data: PollCreateInput!): Poll
+  createPolls(data: [PollCreateInput!]!): [Poll]
+  updatePoll(where: PollWhereUniqueInput!, data: PollUpdateInput!): Poll
+  updatePolls(data: [PollUpdateArgs!]!): [Poll]
+  deletePoll(where: PollWhereUniqueInput!): Poll
+  deletePolls(where: [PollWhereUniqueInput!]!): [Poll]
+  createPollAnswer(data: PollAnswerCreateInput!): PollAnswer
+  createPollAnswers(data: [PollAnswerCreateInput!]!): [PollAnswer]
+  updatePollAnswer(
+    where: PollAnswerWhereUniqueInput!
+    data: PollAnswerUpdateInput!
+  ): PollAnswer
+  updatePollAnswers(data: [PollAnswerUpdateArgs!]!): [PollAnswer]
+  deletePollAnswer(where: PollAnswerWhereUniqueInput!): PollAnswer
+  deletePollAnswers(where: [PollAnswerWhereUniqueInput!]!): [PollAnswer]
+  createUser(data: UserCreateInput!): User
+  createUsers(data: [UserCreateInput!]!): [User]
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UserUpdateArgs!]!): [User]
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User]
+  createRole(data: RoleCreateInput!): Role
+  createRoles(data: [RoleCreateInput!]!): [Role]
+  updateRole(where: RoleWhereUniqueInput!, data: RoleUpdateInput!): Role
+  updateRoles(data: [RoleUpdateArgs!]!): [Role]
+  deleteRole(where: RoleWhereUniqueInput!): Role
+  deleteRoles(where: [RoleWhereUniqueInput!]!): [Role]
   endSession: Boolean!
+}
+
+input CreateInitialUserInput {
+  name: String
+  email: String
+  password: String
 }
 
 union AuthenticatedItem = User
@@ -912,152 +83,573 @@ enum PasswordAuthErrorCode {
   SECRET_MISMATCH
 }
 
-input CreateInitialUserInput {
+type Post {
+  id: ID!
+  title: String
+  image_url: String
+  slug: String
+  status: String
+  publishedDate: String
+  author: User
+  labels(
+    where: LabelWhereInput! = {}
+    orderBy: [LabelOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Label!]
+  labelsCount(where: LabelWhereInput! = {}): Int
+  intro: Post_intro_DocumentField
+  content: Post_content_DocumentField
+}
+
+type Post_intro_DocumentField {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+type Post_content_DocumentField {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+input PostWhereUniqueInput {
+  id: ID
+  slug: String
+}
+
+input PostWhereInput {
+  AND: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  NOT: [PostWhereInput!]
+  id: IDFilter
+  slug: StringNullableFilter
+  status: StringNullableFilter
+  publishedDate: DateTimeNullableFilter
+}
+
+input IDFilter {
+  equals: ID
+  in: [ID!]
+  notIn: [ID!]
+  lt: ID
+  lte: ID
+  gt: ID
+  gte: ID
+  not: IDFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringNullableFilter
+}
+
+enum QueryMode {
+  default
+  insensitive
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input DateTimeNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  not: DateTimeNullableFilter
+}
+
+input PostOrderByInput {
+  id: OrderDirection
+  publishedDate: OrderDirection
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+input PostUpdateInput {
+  title: String
+  image_url: String
+  slug: String
+  status: String
+  publishedDate: String
+  author: UserRelateToOneForUpdateInput
+  labels: LabelRelateToManyForUpdateInput
+  intro: JSON
+  content: JSON
+}
+
+input UserRelateToOneForUpdateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  disconnect: Boolean
+}
+
+input LabelRelateToManyForUpdateInput {
+  disconnect: [LabelWhereUniqueInput!]
+  set: [LabelWhereUniqueInput!]
+  create: [LabelCreateInput!]
+  connect: [LabelWhereUniqueInput!]
+}
+
+input PostUpdateArgs {
+  where: PostWhereUniqueInput!
+  data: PostUpdateInput!
+}
+
+input PostCreateInput {
+  title: String
+  image_url: String
+  slug: String
+  status: String
+  publishedDate: String
+  author: UserRelateToOneForCreateInput
+  labels: LabelRelateToManyForCreateInput
+  intro: JSON
+  content: JSON
+}
+
+input UserRelateToOneForCreateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+}
+
+input LabelRelateToManyForCreateInput {
+  create: [LabelCreateInput!]
+  connect: [LabelWhereUniqueInput!]
+}
+
+type Label {
+  id: ID!
+  name: String
+  posts(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Post!]
+  postsCount(where: PostWhereInput! = {}): Int
+}
+
+input LabelWhereUniqueInput {
+  id: ID
+}
+
+input LabelWhereInput {
+  AND: [LabelWhereInput!]
+  OR: [LabelWhereInput!]
+  NOT: [LabelWhereInput!]
+  id: IDFilter
+}
+
+input LabelOrderByInput {
+  id: OrderDirection
+}
+
+input LabelUpdateInput {
+  name: String
+  posts: PostRelateToManyForUpdateInput
+}
+
+input PostRelateToManyForUpdateInput {
+  disconnect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
+}
+
+input LabelUpdateArgs {
+  where: LabelWhereUniqueInput!
+  data: LabelUpdateInput!
+}
+
+input LabelCreateInput {
+  name: String
+  posts: PostRelateToManyForCreateInput
+}
+
+input PostRelateToManyForCreateInput {
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
+}
+
+type Poll {
+  id: ID!
+  label: String
+  answers(
+    where: PollAnswerWhereInput! = {}
+    orderBy: [PollAnswerOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [PollAnswer!]
+  answersCount(where: PollAnswerWhereInput! = {}): Int
+  responsesCount: Int
+  userAnswer: PollAnswer
+}
+
+input PollWhereUniqueInput {
+  id: ID
+}
+
+input PollWhereInput {
+  AND: [PollWhereInput!]
+  OR: [PollWhereInput!]
+  NOT: [PollWhereInput!]
+  id: IDFilter
+  answers: PollAnswerManyRelationFilter
+}
+
+input PollAnswerManyRelationFilter {
+  every: PollAnswerWhereInput
+  some: PollAnswerWhereInput
+  none: PollAnswerWhereInput
+}
+
+input PollOrderByInput {
+  id: OrderDirection
+}
+
+input PollUpdateInput {
+  label: String
+  answers: PollAnswerRelateToManyForUpdateInput
+}
+
+input PollAnswerRelateToManyForUpdateInput {
+  disconnect: [PollAnswerWhereUniqueInput!]
+  set: [PollAnswerWhereUniqueInput!]
+  create: [PollAnswerCreateInput!]
+  connect: [PollAnswerWhereUniqueInput!]
+}
+
+input PollUpdateArgs {
+  where: PollWhereUniqueInput!
+  data: PollUpdateInput!
+}
+
+input PollCreateInput {
+  label: String
+  answers: PollAnswerRelateToManyForCreateInput
+}
+
+input PollAnswerRelateToManyForCreateInput {
+  create: [PollAnswerCreateInput!]
+  connect: [PollAnswerWhereUniqueInput!]
+}
+
+type PollAnswer {
+  id: ID!
+  label: String
+  poll: Poll
+  voteCount: Int
+  answeredByUsers(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [User!]
+  answeredByUsersCount(where: UserWhereInput! = {}): Int
+}
+
+input PollAnswerWhereUniqueInput {
+  id: ID
+}
+
+input PollAnswerWhereInput {
+  AND: [PollAnswerWhereInput!]
+  OR: [PollAnswerWhereInput!]
+  NOT: [PollAnswerWhereInput!]
+  id: IDFilter
+  poll: PollWhereInput
+  answeredByUsers: UserManyRelationFilter
+}
+
+input UserManyRelationFilter {
+  every: UserWhereInput
+  some: UserWhereInput
+  none: UserWhereInput
+}
+
+input PollAnswerOrderByInput {
+  id: OrderDirection
+}
+
+input PollAnswerUpdateInput {
+  label: String
+  poll: PollRelateToOneForUpdateInput
+  answeredByUsers: UserRelateToManyForUpdateInput
+}
+
+input PollRelateToOneForUpdateInput {
+  create: PollCreateInput
+  connect: PollWhereUniqueInput
+  disconnect: Boolean
+}
+
+input UserRelateToManyForUpdateInput {
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input PollAnswerUpdateArgs {
+  where: PollAnswerWhereUniqueInput!
+  data: PollAnswerUpdateInput!
+}
+
+input PollAnswerCreateInput {
+  label: String
+  poll: PollRelateToOneForCreateInput
+  answeredByUsers: UserRelateToManyForCreateInput
+}
+
+input PollRelateToOneForCreateInput {
+  create: PollCreateInput
+  connect: PollWhereUniqueInput
+}
+
+input UserRelateToManyForCreateInput {
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+type User {
+  id: ID!
+  name: String
+  email: String
+  password: PasswordState
+  role: Role
+  githubUsername: String
+  githubRepos: [GitHubRepo]!
+  authoredPosts(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Post!]
+  authoredPostsCount(where: PostWhereInput! = {}): Int
+  pollAnswers(
+    where: PollAnswerWhereInput! = {}
+    orderBy: [PollAnswerOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [PollAnswer!]
+  pollAnswersCount(where: PollAnswerWhereInput! = {}): Int
+}
+
+type PasswordState {
+  isSet: Boolean!
+}
+
+type GitHubRepo {
+  id: Int
+  name: String
+  fullName: String
+  htmlUrl: String
+  description: String
+  createdAt: String
+  updatedAt: String
+  pushedAt: String
+  homepage: String
+  size: Int
+  stargazersCount: Int
+  watchersCount: Int
+  language: String
+  forksCount: Int
+}
+
+input UserWhereUniqueInput {
+  id: ID
+  email: String
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  id: IDFilter
+  email: StringNullableFilter
+  githubUsername: StringNullableFilter
+  authoredPosts: PostManyRelationFilter
+  pollAnswers: PollAnswerManyRelationFilter
+}
+
+input PostManyRelationFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
+}
+
+input UserOrderByInput {
+  id: OrderDirection
+}
+
+input UserUpdateInput {
   name: String
   email: String
   password: String
+  role: RoleRelateToOneForUpdateInput
+  githubUsername: String
+  authoredPosts: PostRelateToManyForUpdateInput
+  pollAnswers: PollAnswerRelateToManyForUpdateInput
 }
 
-type Query {
-  allPosts(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Post!]
-  Post(where: PostWhereUniqueInput!): Post
-  _allPostsMeta(
-    where: PostWhereInput! = {}
-    search: String
-    sortBy: [SortPostsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
-    )
-  postsCount(where: PostWhereInput! = {}): Int
-  allLabels(
-    where: LabelWhereInput! = {}
-    search: String
-    sortBy: [SortLabelsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [LabelOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Label!]
-  Label(where: LabelWhereUniqueInput!): Label
-  _allLabelsMeta(
-    where: LabelWhereInput! = {}
-    search: String
-    sortBy: [SortLabelsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [LabelOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use labelsCount instead."
-    )
-  labelsCount(where: LabelWhereInput! = {}): Int
-  allPolls(
-    where: PollWhereInput! = {}
-    search: String
-    sortBy: [SortPollsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PollOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Poll!]
-  Poll(where: PollWhereUniqueInput!): Poll
-  _allPollsMeta(
-    where: PollWhereInput! = {}
-    search: String
-    sortBy: [SortPollsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PollOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use pollsCount instead."
-    )
-  pollsCount(where: PollWhereInput! = {}): Int
-  allPollAnswers(
-    where: PollAnswerWhereInput! = {}
-    search: String
-    sortBy: [SortPollAnswersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PollAnswerOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [PollAnswer!]
-  PollAnswer(where: PollAnswerWhereUniqueInput!): PollAnswer
-  _allPollAnswersMeta(
-    where: PollAnswerWhereInput! = {}
-    search: String
-    sortBy: [SortPollAnswersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PollAnswerOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use pollAnswersCount instead."
-    )
-  pollAnswersCount(where: PollAnswerWhereInput! = {}): Int
-  allUsers(
+input RoleRelateToOneForUpdateInput {
+  create: RoleCreateInput
+  connect: RoleWhereUniqueInput
+  disconnect: Boolean
+}
+
+input UserUpdateArgs {
+  where: UserWhereUniqueInput!
+  data: UserUpdateInput!
+}
+
+input UserCreateInput {
+  name: String
+  email: String
+  password: String
+  role: RoleRelateToOneForCreateInput
+  githubUsername: String
+  authoredPosts: PostRelateToManyForCreateInput
+  pollAnswers: PollAnswerRelateToManyForCreateInput
+}
+
+input RoleRelateToOneForCreateInput {
+  create: RoleCreateInput
+  connect: RoleWhereUniqueInput
+}
+
+type Role {
+  id: ID!
+  name: String
+  canManageContent: Boolean
+  canManageUsers: Boolean
+  users(
     where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [UserOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [User!]
-  User(where: UserWhereUniqueInput!): User
-  _allUsersMeta(
-    where: UserWhereInput! = {}
-    search: String
-    sortBy: [SortUsersBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [UserOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use usersCount instead."
-    )
   usersCount(where: UserWhereInput! = {}): Int
-  allRoles(
+}
+
+input RoleWhereUniqueInput {
+  id: ID
+}
+
+input RoleWhereInput {
+  AND: [RoleWhereInput!]
+  OR: [RoleWhereInput!]
+  NOT: [RoleWhereInput!]
+  id: IDFilter
+}
+
+input RoleOrderByInput {
+  id: OrderDirection
+}
+
+input RoleUpdateInput {
+  name: String
+  canManageContent: Boolean
+  canManageUsers: Boolean
+  users: UserRelateToManyForUpdateInput
+}
+
+input RoleUpdateArgs {
+  where: RoleWhereUniqueInput!
+  data: RoleUpdateInput!
+}
+
+input RoleCreateInput {
+  name: String
+  canManageContent: Boolean
+  canManageUsers: Boolean
+  users: UserRelateToManyForCreateInput
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+  @specifiedBy(
+    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
+  )
+
+type Query {
+  authenticatedItem: AuthenticatedItem
+  posts(
+    where: PostWhereInput! = {}
+    orderBy: [PostOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Post!]
+  post(where: PostWhereUniqueInput!): Post
+  postsCount(where: PostWhereInput! = {}): Int
+  labels(
+    where: LabelWhereInput! = {}
+    orderBy: [LabelOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Label!]
+  label(where: LabelWhereUniqueInput!): Label
+  labelsCount(where: LabelWhereInput! = {}): Int
+  polls(
+    where: PollWhereInput! = {}
+    orderBy: [PollOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Poll!]
+  poll(where: PollWhereUniqueInput!): Poll
+  pollsCount(where: PollWhereInput! = {}): Int
+  pollAnswers(
+    where: PollAnswerWhereInput! = {}
+    orderBy: [PollAnswerOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [PollAnswer!]
+  pollAnswer(where: PollAnswerWhereUniqueInput!): PollAnswer
+  pollAnswersCount(where: PollAnswerWhereInput! = {}): Int
+  users(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [User!]
+  user(where: UserWhereUniqueInput!): User
+  usersCount(where: UserWhereInput! = {}): Int
+  roles(
     where: RoleWhereInput! = {}
-    search: String
-    sortBy: [SortRolesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
     orderBy: [RoleOrderByInput!]! = []
-    first: Int
+    take: Int
     skip: Int! = 0
   ): [Role!]
-  Role(where: RoleWhereUniqueInput!): Role
-  _allRolesMeta(
-    where: RoleWhereInput! = {}
-    search: String
-    sortBy: [SortRolesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [RoleOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use rolesCount instead."
-    )
+  role(where: RoleWhereUniqueInput!): Role
   rolesCount(where: RoleWhereInput! = {}): Int
-  authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
 }
 
@@ -1095,6 +687,7 @@ type KeystoneAdminUIFieldMeta {
   path: String!
   label: String!
   isOrderable: Boolean!
+  isFilterable: Boolean!
   fieldMeta: JSON
   viewsIndex: Int!
   customViewsIndex: Int
@@ -1130,11 +723,6 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   edit
   read
   hidden
-}
-
-enum QueryMode {
-  default
-  insensitive
 }
 
 type KeystoneAdminUISort {

@@ -1,15 +1,55 @@
-import { relationship, select, text, timestamp } from '@keystone-next/fields';
+import { relationship, select, text, timestamp } from '@keystone-next/keystone/fields';
 import { document } from '@keystone-next/fields-document';
-import { list } from '@keystone-next/keystone/schema';
+import { list } from '@keystone-next/keystone';
 
 import { permissions, rules } from './access';
-import { componentBlocks } from '../schema/fields/content/components';
+import { componentBlocks } from './fields/content/components';
 
-export const contentListAccess = {
-  create: permissions.canManageContent,
-  update: permissions.canManageContent,
-  delete: permissions.canManageContent,
-};
+import { ListAccessControl, BaseGeneratedListTypes } from '@keystone-next/keystone/types';
+
+
+
+export const contentListAccess : ListAccessControl<BaseGeneratedListTypes> = { 
+
+  operation:
+  {
+    create: ({ session, context, listKey, operation }) =>  !!permissions.canManageContent(context),
+    query: ({ session, context, listKey, operation }) =>  true,
+    update: ({ session, context, listKey, operation }) =>  !!permissions.canManageContent(context),
+    delete: ({ session, context, listKey, operation }) =>  !!permissions.canManageContent(context)
+  }  
+  }
+  
+
+  /*
+  let acc = contentListAccess
+  acc!.operation!.query =  ({ session, context, listKey, operation }) => 
+    rules.canReadContentList(session)
+    
+  acc!.filter!.query = ({ session, context, listKey, operation }) => 
+  { 
+    return { status: { equals: 'published' } }
+  }
+  operation:
+  {
+    create: ({ session, context, listKey, operation }) =>  rules.canReadContentList(session)
+  },
+  */
+
+export const postListAccess  : ListAccessControl<BaseGeneratedListTypes> = { 
+  operation:
+  {
+    create: ({ session, context, listKey, operation }) =>  !!permissions.canManageContent(context),
+    query: ({ session, context, listKey, operation }) =>  true,
+    update: ({ session, context, listKey, operation }) =>  !!permissions.canManageContent(context),
+    delete: ({ session, context, listKey, operation }) =>  !!permissions.canManageContent(context)
+  },
+
+}
+/*
+
+*/
+
 
 export const contentUIConfig = {
   hideCreate: (context: any) => !permissions.canManageContent(context),
@@ -53,17 +93,17 @@ function defaultTimestamp() {
 }
 
 export const Post = list({
-  access: {
-    ...contentListAccess,
-    read: rules.canReadContentList,
-  },
+  access: 
+    postListAccess,
   ui: contentUIConfig,
   fields: {
     title: text(),
+    image_url: text(),
     slug: text({
       defaultValue: defaultSlug,
       ui: { createView: { fieldMode: 'hidden' } },
-      isUnique: true,
+      isFilterable: true,
+      isIndexed: 'unique'
     }),
     status: select({
       options: [
@@ -71,10 +111,13 @@ export const Post = list({
         { label: 'Published', value: 'published' },
         { label: 'Archived', value: 'archived' },
       ],
+      isFilterable: true,
       defaultValue: 'draft',
       ui: { displayMode: 'segmented-control' },
     }),
     publishedDate: timestamp({
+      isFilterable: true,
+      isOrderable: true,
       defaultValue: defaultTimestamp,
     }),
     author: relationship({ ref: 'User.authoredPosts' }),
@@ -109,6 +152,7 @@ export const Post = list({
             }`,
         },
       },
+      
       componentBlocks,
       ui: { views: require.resolve('./fields/content/components') },
     }),

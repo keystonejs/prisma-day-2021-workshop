@@ -1,7 +1,8 @@
 // Note: without a personal github access token in your env, the server will be rate limited to 60 requests per hour
 // https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 
-import { schema } from '@keystone-next/types';
+import {graphql as schema } from '@keystone-next/keystone/types';
+
 import fetch from 'node-fetch';
 
 type GitubRepoData = {

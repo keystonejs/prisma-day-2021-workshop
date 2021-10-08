@@ -1,6 +1,6 @@
-import { relationship, text, virtual } from '@keystone-next/fields';
-import { schema } from '@keystone-next/types';
-import { list } from '@keystone-next/keystone/schema';
+import { relationship, text, virtual } from '@keystone-next/keystone/fields';
+import {graphql as schema } from '@keystone-next/keystone/types';
+import { list } from '@keystone-next/keystone';
 import { KeystoneListsAPI, KeystoneDbAPI } from '.keystone/types';
 
 import { isSignedIn, permissions } from './access';
@@ -14,6 +14,7 @@ export const Poll = list({
     answers: relationship({
       ref: 'PollAnswer.poll',
       many: true,
+      isFilterable: true,
       ui: {
         displayMode: 'cards',
         cardFields: ['label', 'voteCount'],
@@ -25,6 +26,7 @@ export const Poll = list({
         },
         removeMode: 'disconnect',
         inlineConnect: true,
+
       },
     }),
     responsesCount: virtual({
@@ -34,7 +36,7 @@ export const Poll = list({
           const lists = context.lists as KeystoneListsAPI;
           return lists.User.count({
             where: {
-              pollAnswers_some: { poll: { id: poll.id.toString() } },
+              pollAnswers: {some :{ poll: { id: { equals: poll.id.toString() }} }},
             },
           });
         },
@@ -49,8 +51,8 @@ export const Poll = list({
             const lists = context.db.lists as KeystoneDbAPI;
             const pollAnswers = await lists.PollAnswer.findMany({
               where: {
-                poll: { id: poll.id.toString() },
-                answeredByUsers_some: { id: context.session.itemId },
+                poll: { id: {equals: poll.id.toString() }},
+                answeredByUsers: {some: { id: {equals: context.session.itemId} }},
               },
             });
             return pollAnswers[0];
@@ -66,7 +68,7 @@ export const PollAnswer = list({
   ui: contentUIConfig,
   fields: {
     label: text(),
-    poll: relationship({ ref: 'Poll.answers' }),
+    poll: relationship({isFilterable: true, ref: 'Poll.answers' }),
     voteCount: virtual({
       field: schema.field({
         type: schema.Int,
@@ -74,7 +76,7 @@ export const PollAnswer = list({
           const lists = context.lists as KeystoneListsAPI;
 
           return lists.User.count({
-            where: { pollAnswers_some: { id: pollAnswer.id.toString() } },
+            where: { pollAnswers: { some: { id: {equals: pollAnswer.id.toString() } }} },
           });
         },
       }),
@@ -86,6 +88,7 @@ export const PollAnswer = list({
       ref: 'User.pollAnswers',
       many: true,
       access: { read: permissions.canManageContent },
+      isFilterable: true,
       ui: {
         displayMode: 'count',
         createView: { fieldMode: 'hidden' },

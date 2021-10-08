@@ -1,65 +1,52 @@
-# Prisma Day 2021 Workshop
+# Keystone Project Starter
 
-This is the sample app built for Jed's Prisma Day 2021 Workshop.
+Welcome to Keystone!
 
-It's both the front and back-end for a Blog built with Prisma, KeystoneJS, GraphQL, Next.js and Tailwind.
-
-The App includes public auth and signup, role-based access control, and custom design-system based components in the Content field. Content authors can embed Polls in post content, and authenticated visitors can vote on responses.
-
-## About KeystoneJS
-
-**Keystone 6** is the next-gen CMS for Node.js built with Prisma, Apollo Server, and Next.js.
-
-Fully open source, it's not just a great headless CMS, it's also a powerful API server and app back-end.
-
-Learn more at [keystonejs.com](https://keystonejs.com)
-
-## Running this app
-
-Make sure you have:
-
-- Node v12 or v14
-- Yarn
-- Postgres
-
-Then, clone this repo and run `yarn` to install the dependencies.
-
-### Starting the API
-
-Start the API Server first by running `yarn api:dev`. This will start Keystone's GraphQL API and Admin UI on `localhost:3000`
-
-The first time you open that link you will be prompted to create a new user.
-
-### Starting the Site
-
-With the API running, in a separate terminal run `yarn site:dev`. This will start the front-end Next.js app on `localhost:8000`
-
-## About the codebase
-
-The Keystone and Next.js app are colocated in the same repo for ease of demonstration, but you'd often separate them into different packages in a monorepo or even separate repositories.
-
-The back-end files include:
+Run
 
 ```
-keystone.ts
-schema.graphql (generated)
-schema.prisma (generated)
-schema.ts
-schema/*
+yarn dev
 ```
 
-The front-end files include:
+To view the config for your new app, look at [./keystone.ts](./keystone.ts)
 
+This project starter is designed to give you a sense of the power Keystone can offer you, and show off some of its main features. It's also a pretty simple setup if you want to build out from it.
+
+We recommend you use this alongside our [getting started walkthrough](https://keystonejs.com/docs/walkthroughs/getting-started-with-create-keystone-app) which will walk you through what you get as part of this starter.
+
+If you want an overview of all the features Keystone offers, check out our [features](https://keystonejs.com/why-keystone#features) page.
+
+## Some Quick Notes On Getting Started
+
+### Changing the database
+
+We've set you up with an [SQLite database](https://keystonejs.com/docs/apis/config#sqlite) for ease-of-use. If you're wanting to use postgres, you can!
+
+Just change the `db` property on line 16 of the Keystone file [./keystone.ts](./keystone.ts) to
+
+```typescript
+db: {
+    adapter: 'prisma_postgresql',
+    url: process.env.DATABASE_URL || 'DATABASE_URL_TO_REPLACE',
+}
 ```
-components/*
-pages/*
-next-env.d.ts
-next.config.js
-postcss.config.js
-tailwind.config.js
-utils.js
-```
 
-## License
+And provide your database url from postgres.
 
-Copyright (c) 2021 Thinkmill Labs Pty Ltd. Licensed under the MIT License.
+For more on database configuration, check out or [db api docs](https://keystonejs.com/docs/apis/config#db)
+
+### Auth
+
+We've put auth into its own file to make this humble starter easier to navigate. To explore it without auth turned on, comment out the `isAccessAllowed` on line 21 of the keystone file [./keystone.ts](./keystone.ts).
+
+For more on auth, check out our [authentication API docs](https://keystonejs.com/docs/apis/auth#authentication-api)
+
+### Adding a frontend
+
+As a Headless CMS, Keystone can be used with any frontend that uses GraphQL. It provides a GraphQL endpoint you can write queries against at `/api/graphql` (by default [http://localhost:3000/api/graphql](http://localhost:3000/api/graphql)). At Thinkmill, we tend to use [Next.js](https://nextjs.org/) and [Apollo graphql](https://www.apollographql.com/docs/react/get-started/) as our frontend and way to write queries, but if you have your own favourite, feel free to use it.
+
+A walkthrough on how to do this is forthcoming, but in the meantime our [todo example](https://github.com/keystonejs/keystone-react-todo-demo) shows a Keystone set up with a frontend. For a more full example, you can also look at an example app we built for [Prisma Day 2021](https://github.com/keystonejs/prisma-day-2021-workshop)
+
+### Embedding Keystone in a Next.js frontend
+
+While Keystone works as a standalone app, you can embed your Keystone app into a [Next.js](https://nextjs.org/) app. This is quite a different setup to the starter, and we recommend checking out our walkthrough for that [here](https://keystonejs.com/docs/walkthroughs/embedded-mode-with-sqlite-nextjs#how-to-embed-keystone-sq-lite-in-a-next-js-app).

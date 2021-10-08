@@ -10,11 +10,11 @@ import { useAuth } from '../components/auth';
 
 export default function SigninPage() {
   const auth = useAuth();
-  const [email, setEmail] = useState('admin@demo.com');
-  const [password, setPassword] = useState('password');
+  const [email, setEmail] = useState('jonathan@fourcube.net');
+  const [password, setPassword] = useState('SzALAUc@WedD9s8');
   const [error, setError] = useState('');
 
-  // const router = useRouter();
+  const router = useRouter();
 
   const signIn = async () => {
     if (!auth.ready) {
@@ -28,10 +28,12 @@ export default function SigninPage() {
     setError('');
     const result = await auth.signIn({ email, password });
     if (result.success) {
+      // Commented out code now seems to work!
+      //router.push('/');
+
       // FIXME: there's a cache issue with Urql where it's not reloading the
       // current user properly if we do a client-side redirect here.
-      // router.push('/');
-      top.location.href = '/';
+      top!.location!.href = '/';
     } else {
       setEmail('');
       setPassword('');

@@ -2,10 +2,10 @@
 /** @jsx jsx */
 
 import { FC } from 'react';
-import { FieldProps } from '@keystone-next/types';
+import { FieldProps } from '@keystone-next/keystone/types';
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { controller } from '@keystone-next/fields/types/json/views';
+import { controller } from '@keystone-next/keystone/fields/types/json/views';
 
 type Repo = {
   name: string;

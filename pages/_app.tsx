@@ -1,8 +1,14 @@
 import 'tailwindcss/tailwind.css';
+
 import type { AppProps } from 'next/app';
+import App from 'next/app';
+
 import { createClient, Provider } from 'urql';
 
 import { AuthProvider } from '../components/auth';
+
+
+
 
 export const client = createClient({
   url:
@@ -11,13 +17,24 @@ export const client = createClient({
       : '/api/graphql',
 });
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return (
-    <Provider value={client}>
-      <AuthProvider>
-        <Component {...pageProps} />
+class MyApp extends App {
+  render() {
+    const { Component, pageProps, router } = this.props;
+
+    return (
+
+      <Provider value={client}>      
+      <AuthProvider>  
+
+      <Component {...pageProps} key={router.route} />
+
       </AuthProvider>
-    </Provider>
-  );
+      </Provider>
+
+    );
+  }
 }
+
+
+
 export default MyApp;
