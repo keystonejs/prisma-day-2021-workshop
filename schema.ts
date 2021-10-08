@@ -1,15 +1,13 @@
-import { createSchema } from '@keystone-next/keystone/schema';
-
 import { Poll, PollAnswer } from './schema/polls';
 import { User, Role } from './schema/users';
 import { Post, Label } from './schema/content';
 export { extendGraphqlSchema } from './schema/mutations';
 
-export const lists = createSchema({
+export const lists = {
   Post,
   Label,
   Poll,
   PollAnswer,
   User,
   Role,
-});
+};

@@ -1,7 +1,7 @@
 // Note: without a personal github access token in your env, the server will be rate limited to 60 requests per hour
 // https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 
-import { schema } from '@keystone-next/types';
+import { graphql } from '@keystone-next/keystone';
 import fetch from 'node-fetch';
 
 type GitubRepoData = {
@@ -21,45 +21,45 @@ type GitubRepoData = {
   forks_count: number;
 };
 
-export const GitHubRepo = schema.object<GitubRepoData>()({
+export const GitHubRepo = graphql.object<GitubRepoData>()({
   name: 'GitHubRepo',
   fields: {
-    id: schema.field({ type: schema.Int }),
-    name: schema.field({ type: schema.String }),
-    fullName: schema.field({
-      type: schema.String,
+    id: graphql.field({ type: graphql.Int }),
+    name: graphql.field({ type: graphql.String }),
+    fullName: graphql.field({
+      type: graphql.String,
       resolve: val => val.full_name,
     }),
-    htmlUrl: schema.field({
-      type: schema.String,
+    htmlUrl: graphql.field({
+      type: graphql.String,
       resolve: val => val.html_url,
     }),
-    description: schema.field({ type: schema.String }),
-    createdAt: schema.field({
-      type: schema.String,
+    description: graphql.field({ type: graphql.String }),
+    createdAt: graphql.field({
+      type: graphql.String,
       resolve: val => val.created_at,
     }),
-    updatedAt: schema.field({
-      type: schema.String,
+    updatedAt: graphql.field({
+      type: graphql.String,
       resolve: val => val.updated_at,
     }),
-    pushedAt: schema.field({
-      type: schema.String,
+    pushedAt: graphql.field({
+      type: graphql.String,
       resolve: val => val.pushed_at,
     }),
-    homepage: schema.field({ type: schema.String }),
-    size: schema.field({ type: schema.Int }),
-    stargazersCount: schema.field({
-      type: schema.Int,
+    homepage: graphql.field({ type: graphql.String }),
+    size: graphql.field({ type: graphql.Int }),
+    stargazersCount: graphql.field({
+      type: graphql.Int,
       resolve: val => val.stargazers_count,
     }),
-    watchersCount: schema.field({
-      type: schema.Int,
+    watchersCount: graphql.field({
+      type: graphql.Int,
       resolve: val => val.watchers_count,
     }),
-    language: schema.field({ type: schema.String }),
-    forksCount: schema.field({
-      type: schema.Int,
+    language: graphql.field({ type: graphql.String }),
+    forksCount: graphql.field({
+      type: graphql.Int,
       resolve: val => val.forks_count,
     }),
   },

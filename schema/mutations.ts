@@ -1,4 +1,4 @@
-import { graphQLSchemaExtension } from '@keystone-next/keystone/schema';
+import { graphQLSchemaExtension } from '@keystone-next/keystone';
 import { KeystoneContext, PollWhereInput } from '.keystone/types';
 
 const gql = ([content]: TemplateStringsArray) => content;
@@ -21,7 +21,7 @@ async function clearVote(
 
   if (answers.length) {
     await context.db.lists.PollAnswer.updateMany({
-      data: answers.map(answer => ({
+      data: answers.map((answer: any) => ({
         id: answer.id,
         data: {
           answeredByUsers: { disconnect: { id: context.session.itemId } },

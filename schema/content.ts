@@ -1,14 +1,16 @@
-import { relationship, select, text, timestamp } from '@keystone-next/fields';
+import { relationship, select, text, timestamp } from '@keystone-next/keystone/fields';
 import { document } from '@keystone-next/fields-document';
-import { list } from '@keystone-next/keystone/schema';
+import { list } from '@keystone-next/keystone';
 
 import { permissions, rules } from './access';
 import { componentBlocks } from '../schema/fields/content/components';
 
 export const contentListAccess = {
-  create: permissions.canManageContent,
-  update: permissions.canManageContent,
-  delete: permissions.canManageContent,
+  filter: {
+    create: permissions.canManageContent,
+    update: permissions.canManageContent,
+    delete: permissions.canManageContent,
+  }
 };
 
 export const contentUIConfig = {
@@ -37,15 +39,13 @@ export const Label = list({
 
 function defaultSlug({ context, originalInput }: any) {
   const date = new Date();
-  return `${
-    originalInput?.title
+  return `${originalInput?.title
       ?.trim()
       ?.toLowerCase()
       ?.replace(/[^\w ]+/g, '')
       ?.replace(/ +/g, '-') ?? ''
-  }-${date?.getFullYear() ?? ''}${date?.getMonth() + 1 ?? ''}${
-    date?.getDate() ?? ''
-  }`;
+    }-${date?.getFullYear() ?? ''}${date?.getMonth() + 1 ?? ''}${date?.getDate() ?? ''
+    }`;
 }
 
 function defaultTimestamp() {
