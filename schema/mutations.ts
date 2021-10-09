@@ -14,8 +14,8 @@ async function clearVote(
 
   const answers = await context.db.PollAnswer.findMany({
     where: {
-      poll: pollFilter,
-      answeredByUsers_some: { id: context.session.itemId },
+
+      answeredByUsers: { some: { id: {equals: context.session.itemId}} },
     },
   });
 
@@ -24,7 +24,7 @@ async function clearVote(
       data: answers.map((answer: any) => ({
         where: { id: answer.id },
         data: {
-          answeredByUsers: { disconnect: { id: context.session.itemId } },
+          answeredByUsers: { set: [] },
         },
       })),
     });
@@ -45,7 +45,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
       },
       async voteForPoll(rootVal, { answerId }, _context) {
         const context = _context.sudo() as KeystoneContext;
-        clearVote(context, { answers: { some: { id: answerId } } });
+        clearVote(context, { answers: { some: { id: { equals: answerId }} } });
         await context.db.PollAnswer.updateOne({
           where: { id: answerId },
           data: {

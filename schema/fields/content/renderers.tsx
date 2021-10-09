@@ -89,7 +89,7 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
     const [{ data }] = useQuery({
       query: gql`
         query ($id: ID!) {
-          Poll(where: { id: $id }) {
+          poll(where: { id: $id }) {
             id
             label
             answers {
@@ -105,13 +105,15 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
       `,
       variables: { id: relatedPoll.id },
     });
-    const poll = (data?.Poll || relatedPoll.data) as Poll;
+    const poll = (data?.poll || relatedPoll.data) as Poll;
 
-    const [{}, voteForPoll] = useMutation(gql`
+    const [{}, voteForPoll] = 
+      useMutation(gql`
       mutation ($answerId: ID!) {
         voteForPoll(answerId: $answerId)
       }
-    `);
+    `)
+  ;
     const [{}, clearVoteForPoll] = useMutation(gql`
       mutation ($pollId: ID!) {
         clearVoteForPoll(pollId: $pollId)
