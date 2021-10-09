@@ -38,5 +38,3 @@ yarn-error.log*
 app.db
 
 migrations/migration_lock.toml
-schema.prisma
-schema.graphql
