@@ -9,12 +9,13 @@ import {
 import {graphql} from '@keystone-next/keystone';
 import { list } from '@keystone-next/keystone';
 
-import { permissions, rules, SessionContext} from './access';
+import { permissions, rules, SessionContext, ItemContext} from './access';
 import { GitHubRepo, githubReposResolver } from './fields/githubRepos/field';
-import { KeystoneContext} from '.keystone/types';
+import { KeystoneContext } from '.keystone/types'
+
 
 type SessionFrame = {
-  session: any,
+  session: ItemContext,
   context: SessionContext,
   listKey: string,
   operation: string
@@ -47,8 +48,8 @@ export const User = list({
   },
 
   ui: {
-    hideCreate: (context: SessionContext) => !permissions.canManageUsers(context),
-    hideDelete: (context: SessionContext) => !permissions.canManageUsers(context),
+    hideCreate: (session: SessionContext) => !permissions.canManageUsers(session),
+    hideDelete: (session: SessionContext) => !permissions.canManageUsers(session),
     itemView: {
       defaultFieldMode: (context: SessionContext) =>
         permissions.canManageUsers(context) ? 'edit' : 'hidden',
@@ -153,7 +154,7 @@ export const Role = list({
   },
   //permissions.canManageUsers,
   ui: {
-    isHidden:  (context: SessionContext) => !permissions.canManageUsers(context),
+    isHidden:  (session: SessionContext) => !permissions.canManageUsers(session),
   },
 
 });
