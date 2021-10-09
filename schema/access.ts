@@ -13,7 +13,15 @@ export type SessionContext = {
 };
 
 
+
+
+
 export type ItemContext = { item: any } & SessionContext;
+
+export type MiniSessionFrame = { 
+  session: ItemContext,
+  context: SessionContext,
+}
 
 export const isSignedIn = ({ session }: SessionContext) => {
   return !!session;
@@ -29,26 +37,29 @@ export const permissions = {
 };
 
 export const rules = {
-  canUseAdminUI: ({ session }: SessionContext) => {
+  canUseAdminUI: ({ session }: SessionContext) : boolean => {
     return !!session?.data?.role;
   },
-  canReadContentList: ({ session }: SessionContext) => {
-    if (permissions.canManageContent({ session })) return true;
+  canReadContentList: ({ session }: SessionContext) : boolean => {
+    //if (permissions.canManageContent({ session })) return true;
     //return { status: 'published' };
-    return false;
+    return true;
   },
-  canManageUser: ({ session, item }: ItemContext) => {
-    if (permissions.canManageUsers({ session })) return true;
+  filterCanReadContentList: ({ session }: SessionContext) => {
+    return {OR: [{canManageContent: { equals: true }}, {status: {equals: 'published'}}]} 
+  },
+  canManageUser: ( session : ItemContext, context : SessionContext   ) : boolean => {
+    if (permissions.canManageUsers( session )) return true;
     if (session?.itemId === item.id) return true;
     return false;
   },
-  operationCanManageUserList: ({ session }: ItemContext) => {
-    if (permissions.canManageUsers({ session })) return true;
-    if (!isSignedIn({ session })) 
+  operationCanManageUserList: ({ session, context  } : MiniSessionFrame) : boolean => {
+    if (permissions.canManageUsers( session )) return true;
+    if (!isSignedIn( session )) 
       return false;
     return true;
   },
-  filterCanManageUserList:  {
-      canManageUsers: { equals: true } 
+  filterCanManageUserList: ( session : ItemContext, context  : SessionContext   ) => {
+      return {OR: [{canManageUsers: { equals: true }}, {AND: [{id: {equals: context?.itemId}}, {id: {equals: context.itemId}}]}]} 
   }
 };
