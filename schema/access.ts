@@ -38,12 +38,14 @@ export const rules = {
     return !!session?.data.role;
   },
   canReadContentList: ({ session }: SessionContext)  => {
+    console.log("rules.canReadContentList");
     if (!permissions.canManageContent({ session })) return false;
     //return { status: 'published' };
     return true;
   },
   filterCanReadContentList: ({ session }: SessionContext) => {
-    return {OR: [{canManageContent: { equals: true }}, {status: {equals: 'published'}}]} 
+    console.log("rules.filterCanReadContentList");
+    return {where: false} 
   },
   canManageUser: ( { session, item }: ItemContext ) => {
     if (!permissions.canManageUsers({ session  })) return false;
