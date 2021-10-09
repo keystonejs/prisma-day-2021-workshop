@@ -1,4 +1,4 @@
-type SessionContext = {
+export type SessionContext = {
   session?: {
     data: {
       name: string;
@@ -11,7 +11,9 @@ type SessionContext = {
     listKey: string;
   };
 };
-type ItemContext = { item: any; } & SessionContext;
+
+
+export type ItemContext = { item: any } & SessionContext;
 
 export const isSignedIn = ({ session }: SessionContext) => {
   return !!session;
@@ -28,20 +30,25 @@ export const permissions = {
 
 export const rules = {
   canUseAdminUI: ({ session }: SessionContext) => {
-    return !!session?.data.role;
+    return !!session?.data?.role;
   },
   canReadContentList: ({ session }: SessionContext) => {
     if (permissions.canManageContent({ session })) return true;
-    return { status: { equals: 'published' } };
+    //return { status: 'published' };
+    return false;
   },
   canManageUser: ({ session, item }: ItemContext) => {
     if (permissions.canManageUsers({ session })) return true;
     if (session?.itemId === item.id) return true;
     return false;
   },
-  canManageUserList: ({ session }: SessionContext) => {
+  operationCanManageUserList: ({ session }: ItemContext) => {
     if (permissions.canManageUsers({ session })) return true;
-    if (!isSignedIn({ session })) return false;
-    return { where: { id: { equals: session!.itemId } } };
+    if (!isSignedIn({ session })) 
+      return false;
+    return true;
   },
+  filterCanManageUserList:  {
+      canManageUsers: { equals: true } 
+  }
 };
