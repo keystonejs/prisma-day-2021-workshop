@@ -36,3 +36,7 @@ yarn-error.log*
 # keystone
 .keystone
 app.db
+
+migrations/migration_lock.toml
+schema.prisma
+schema.graphql
