@@ -1,3 +1,7 @@
+import {KeystoneContext} from '.keystone/types'
+
+declare type MaybePromise<T> = Promise<T> | T;
+
 export type SessionContext = {
   session?: {
     data: {
@@ -14,14 +18,7 @@ export type SessionContext = {
 
 
 
-
-
 export type ItemContext = { item: any } & SessionContext;
-
-export type MiniSessionFrame = { 
-  session: ItemContext,
-  context: SessionContext,
-}
 
 export const isSignedIn = ({ session }: SessionContext) => {
   return !!session;
@@ -37,29 +34,29 @@ export const permissions = {
 };
 
 export const rules = {
-  canUseAdminUI: ({ session }: SessionContext) : boolean => {
-    return !!session?.data?.role;
+  canUseAdminUI: ({ session }: SessionContext) => {
+    return !!session?.data.role;
   },
-  canReadContentList: ({ session }: SessionContext) : boolean => {
-    //if (permissions.canManageContent({ session })) return true;
+  canReadContentList: ({ session }: SessionContext)  => {
+    if (!permissions.canManageContent({ session })) return false;
     //return { status: 'published' };
     return true;
   },
   filterCanReadContentList: ({ session }: SessionContext) => {
     return {OR: [{canManageContent: { equals: true }}, {status: {equals: 'published'}}]} 
   },
-  canManageUser: ( session : ItemContext, context : SessionContext   ) : boolean => {
-    if (permissions.canManageUsers( session )) return true;
-    if (session?.itemId === item.id) return true;
-    return false;
+  canManageUser: ( { session, item }: ItemContext ) => {
+    if (!permissions.canManageUsers({ session  })) return false;
+    if (session?.itemId !== item.id) return false;
+    return true;
   },
-  operationCanManageUserList: ({ session, context  } : MiniSessionFrame) : boolean => {
-    if (permissions.canManageUsers( session )) return true;
-    if (!isSignedIn( session )) 
+  operationCanManageUserList: ({ session }: SessionContext)  => {
+    if (!permissions.canManageUsers({ session })) return false;
+    if (!isSignedIn({ session })) 
       return false;
     return true;
   },
-  filterCanManageUserList: ( session : ItemContext, context  : SessionContext   ) => {
-      return {OR: [{canManageUsers: { equals: true }}, {AND: [{id: {equals: context?.itemId}}, {id: {equals: context.itemId}}]}]} 
+  filterCanManageUserList: ({ session }: SessionContext) => {
+      return {where: {OR: [{canManageUsers: { equals: true }}, {id: { equals: session!.itemId }}]}} 
   }
 };

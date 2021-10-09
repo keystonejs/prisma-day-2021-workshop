@@ -138,12 +138,12 @@ export const Role = list({
     
     access: {  
       filter: {
-        query: ({ session : ItemContext, context : sessionContext, listKey, operation } ) => 
-          rules.filterCanManageUserList({session, context}),
+        query: ({ session , context, listKey, operation } : SessionFrame) => 
+          rules.filterCanManageUserList(session),
         update: ({ session, context, listKey, operation } : SessionFrame) => 
-          rules.filterCanManageUserList({session, context}),
+          rules.filterCanManageUserList(session),
         delete: ({ session, context, listKey, operation }  : SessionFrame) => 
-          rules.filterCanManageUserList({session, context}),
+          rules.filterCanManageUserList(session),
     }
   },
   //permissions.canManageUsers,

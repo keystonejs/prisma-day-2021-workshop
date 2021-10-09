@@ -54,9 +54,12 @@ function defaultTimestamp() {
 
 export const Post = list({
   access: {
+    operation : {
+      query: rules.canReadContentList
+    },
     filter: {
       ...contentListAccess.filter,
-      query: rules.canReadContentList,
+      query: rules.filterCanReadContentList,
     },
   },
   ui: contentUIConfig,
