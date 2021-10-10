@@ -31,15 +31,15 @@ export const isSignedIn = ({ session }: SessionContext) => {
 
 export const permissions = {
   canManageContent: ({ session }: SessionContext) => {
-    return !!session?.data.role?.canManageContent;
+    return !!session?.data?.role?.canManageContent;
   },
   canManageUsers: ({ session }: SessionContext) => {
-    return !!session?.data.role?.canManageUsers;
+    return !!session?.data?.role?.canManageUsers;
   },
 };
 
 export const rules = {
-  canUseAdminUI: ( session: any ) => {
+  canUseAdminUI: ( { session }: SessionContext ) => {
     console.log("Typeof session: " + typeof(session))
     return !!session?.data.role as MaybePromise<boolean>;
   },
@@ -51,20 +51,21 @@ export const rules = {
   },
   filterCanReadContentList: ({ session }: SessionContext) => {
     console.log("rules.filterCanReadContentList");
-    return {where: {OR: [{canManageContent: { equals: true }}, {status: {equals: 'published'}}]}} 
+    return {status: {equals: 'published'}} 
   },
   canManageUser: ( {  item, session }: ItemContext ) => {
     if (!permissions.canManageUsers({ session  })) return false;
-    if (session?.itemId !== item.id) return false;
+    if (session?.itemId !== item?.id) return false;
     return true;
   },
-  operationCanManageUserList: ({ session }: ItemContext)  => {
-    if (!permissions.canManageUsers({ session })) return false;
+  operationCanManageUserList: ({ item, session }: ItemContext)  => {
     if (!isSignedIn({ session })) 
-      return false;
-    return true;
+    return false;
+    if (permissions.canManageUsers({ session })) return true;
+
+    return false;
   },
-  filterCanManageUserList: () => {
-      return { where: {canManageUsers: { equals: true }}}
+  filterCanManageUserList: ({item,session}: ItemContext) => {
+    return {true: {equals: true}}
   }
 };

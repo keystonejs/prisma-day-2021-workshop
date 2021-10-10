@@ -36,8 +36,8 @@ export const User = list({
       delete: ({ session, context, listKey, operation } : SessionFrame) => rules.operationCanManageUserList(session),
     },
     filter: {
-      update: rules.filterCanManageUserList,
-      delete: rules.filterCanManageUserList
+      update:  ({ session, context, listKey, operation } : SessionFrame) => rules.filterCanManageUserList(session),
+      delete: ({ session, context, listKey, operation } : SessionFrame) => rules.filterCanManageUserList(session)
     }
 
   },
@@ -132,10 +132,10 @@ export const Role = list({
     },
     
     access: {  
-      filter: {
-        query: rules.filterCanManageUserList,
-        update: rules.filterCanManageUserList,
-        delete: rules.filterCanManageUserList,
+      operation: {
+        query: ({ session, context, listKey, operation } : SessionFrame) => rules.operationCanManageUserList(session),
+        update: ({ session, context, listKey, operation } : SessionFrame) => rules.operationCanManageUserList(session),
+        delete: ({ session, context, listKey, operation } : SessionFrame) => rules.operationCanManageUserList(session),
     }
   },
   //permissions.canManageUsers,
