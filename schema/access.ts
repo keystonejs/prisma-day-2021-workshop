@@ -1,5 +1,5 @@
-import {KeystoneContext} from '.keystone/types'
 
+import {KeystoneContext} from '.keystone/types'
 declare type MaybePromise<T> = Promise<T> | T;
 
 export type SessionContext = {
@@ -16,7 +16,12 @@ export type SessionContext = {
   };
 };
 
-
+export type SessionFrame = {
+  session: ItemContext,
+  context: SessionContext,
+  listKey: string,
+  operation: string
+}
 
 export type ItemContext = { item: any } & SessionContext;
 
@@ -34,31 +39,32 @@ export const permissions = {
 };
 
 export const rules = {
-  canUseAdminUI: ({ session }: SessionContext) => {
-    return !!session?.data.role;
+  canUseAdminUI: ( session: any ) => {
+    console.log("Typeof session: " + typeof(session))
+    return !!session?.data.role as MaybePromise<boolean>;
   },
   canReadContentList: ({ session }: SessionContext)  => {
     console.log("rules.canReadContentList");
     if (!permissions.canManageContent({ session })) return false;
-    //return { status: 'published' };
+ 
     return true;
   },
   filterCanReadContentList: ({ session }: SessionContext) => {
     console.log("rules.filterCanReadContentList");
-    return {where: false} 
+    return {where: {OR: [{canManageContent: { equals: true }}, {status: {equals: 'published'}}]}} 
   },
-  canManageUser: ( { session, item }: ItemContext ) => {
+  canManageUser: ( {  item, session }: ItemContext ) => {
     if (!permissions.canManageUsers({ session  })) return false;
     if (session?.itemId !== item.id) return false;
     return true;
   },
-  operationCanManageUserList: ({ session }: SessionContext)  => {
+  operationCanManageUserList: ({ session }: ItemContext)  => {
     if (!permissions.canManageUsers({ session })) return false;
     if (!isSignedIn({ session })) 
       return false;
     return true;
   },
-  filterCanManageUserList: ({ session }: SessionContext) => {
-      return {where: {OR: [{canManageUsers: { equals: true }}, {id: { equals: session!.itemId }}]}} 
+  filterCanManageUserList: () => {
+      return { where: {canManageUsers: { equals: true }}}
   }
 };

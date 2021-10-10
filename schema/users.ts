@@ -9,17 +9,12 @@ import {
 import {graphql} from '@keystone-next/keystone';
 import { list } from '@keystone-next/keystone';
 
-import { permissions, rules, SessionContext, ItemContext} from './access';
+import { permissions, rules, SessionContext, SessionFrame, ItemContext} from './access';
 import { GitHubRepo, githubReposResolver } from './fields/githubRepos/field';
-import { KeystoneContext } from '.keystone/types'
 
 
-type SessionFrame = {
-  session: ItemContext,
-  context: SessionContext,
-  listKey: string,
-  operation: string
-}
+
+
 
 const fieldModes = {
   editSelfOrRead: ({ session, item }: any) =>
@@ -41,8 +36,8 @@ export const User = list({
       delete: ({ session, context, listKey, operation } : SessionFrame) => rules.operationCanManageUserList(session),
     },
     filter: {
-      update: ({ session, context, listKey, operation } : SessionFrame) => rules.filterCanManageUserList(session),
-      delete: ({ session, context, listKey, operation } : SessionFrame) => rules.filterCanManageUserList(session)
+      update: rules.filterCanManageUserList,
+      delete: rules.filterCanManageUserList
     }
 
   },
@@ -69,7 +64,7 @@ export const User = list({
       isIndexed: 'unique', 
       isFilterable: true,
       access: {
-        read: rules.canManageUser,
+        read: ({ session, context, listKey, operation } : SessionFrame) => rules.canManageUser(session),
       },
       ui: {
         itemView: { fieldMode: fieldModes.editSelfOrHidden },
@@ -138,17 +133,14 @@ export const Role = list({
     
     access: {  
       filter: {
-        query: ({ session , context, listKey, operation } : SessionFrame) => 
-          rules.filterCanManageUserList(session),
-        update: ({ session, context, listKey, operation } : SessionFrame) => 
-          rules.filterCanManageUserList(session),
-        delete: ({ session, context, listKey, operation }  : SessionFrame) => 
-          rules.filterCanManageUserList(session),
+        query: rules.filterCanManageUserList,
+        update: rules.filterCanManageUserList,
+        delete: rules.filterCanManageUserList,
     }
   },
   //permissions.canManageUsers,
   ui: {
-    isHidden:  (session: SessionContext) => !permissions.canManageUsers(session),
+    isHidden:  (session) => !permissions.canManageUsers(session),
   },
 
 });

@@ -53,7 +53,7 @@ model User {
   id             String       @id @default(cuid())
   name           String       @default("")
   email          String       @unique @default("")
-  password       String
+  password       String?
   role           Role?        @relation("User_role", fields: [roleId], references: [id])
   roleId         String?      @map("role")
   githubUsername String       @default("")

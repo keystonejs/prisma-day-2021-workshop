@@ -2,23 +2,23 @@ import { relationship, select, text, timestamp } from '@keystone-next/keystone/f
 import { document } from '@keystone-next/fields-document';
 import { list } from '@keystone-next/keystone';
 
-import { permissions, rules } from './access';
+import { permissions, rules, SessionFrame, ItemContext } from './access';
 import { componentBlocks } from '../schema/fields/content/components';
 
 export const contentListAccess = {
   filter: {
-    create: permissions.canManageContent,
-    update: permissions.canManageContent,
-    delete: permissions.canManageContent,
+    create:  ({ session, context, listKey, operation } : SessionFrame) => permissions.canManageContent(session),
+    update: ({ session, context, listKey, operation } : SessionFrame) => permissions.canManageContent(session),
+    delete: ({ session, context, listKey, operation } : SessionFrame) => permissions.canManageContent(session),
   }
 };
 
 export const contentUIConfig = {
-  hideCreate: (context: any) => !permissions.canManageContent(context),
-  hideDelete: (context: any) => !permissions.canManageContent(context),
+  hideCreate: (session: any) => !permissions.canManageContent(session),
+  hideDelete: (session: any) => !permissions.canManageContent(session),
   itemView: {
-    defaultFieldMode: (context: any) =>
-      permissions.canManageContent(context) ? 'edit' : 'read',
+    defaultFieldMode: (session: ItemContext) =>
+      permissions.canManageContent(session) ? 'edit' : 'read',
   },
 };
 
@@ -54,10 +54,13 @@ function defaultTimestamp() {
 
 export const Post = list({
   access: {
-
+    operation: {
+      query:({ session, context, listKey, operation } : SessionFrame) =>  rules.canReadContentList(context),
+    },
     filter: {
       ...contentListAccess.filter,
-      query: rules.filterCanReadContentList,
+      
+      query:({ session, context, listKey, operation } : SessionFrame) => rules.filterCanReadContentList(session),
     },
   },
   ui: contentUIConfig,
