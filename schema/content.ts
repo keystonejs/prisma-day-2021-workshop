@@ -55,14 +55,19 @@ function defaultTimestamp() {
 export const Post = list({
   access: {
     operation: {
-      query:({ session, context, listKey, operation } : SessionFrame) =>  rules.canReadContentList(context),
+      create:  ({ session, context, listKey, operation } : SessionFrame) => permissions.canManageContent(session),
+      update: ({ session, context, listKey, operation } : SessionFrame) => permissions.canManageContent(session),
+      delete: ({ session, context, listKey, operation } : SessionFrame) => permissions.canManageContent(session),
+
     },
     filter: {
-      ...contentListAccess.filter,
-      
-      query:({ session, context, listKey, operation } : SessionFrame) => rules.filterCanReadContentList(session),
-    },
-  },
+      query: ({ session, context, listKey, operation } : SessionFrame) => {
+      console.log("permissions?.canManageContent( session ) " + permissions?.canManageContent( session ))
+       if (!!permissions?.canManageContent( session ) ) 
+          return {status: {in: ['published','draft','archive']}};
+       return {status: {in: ['published']}} 
+    }
+  }},
   ui: contentUIConfig,
   fields: {
     title: text(),

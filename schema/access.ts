@@ -43,22 +43,32 @@ export const rules = {
     console.log("Typeof session: " + typeof(session))
     return !!session?.data.role as MaybePromise<boolean>;
   },
-  canReadContentList: ({ session }: SessionContext)  => {
-    console.log("rules.canReadContentList");
-    if (!permissions.canManageContent({ session })) return false;
+  operationCanReadContentList: ({item}: ItemContext)  => {
+    console.log("rules.operationCanReadContentList");
+    if (!permissions.canManageContent(item)) return false;
  
     return true;
   },
-  filterCanReadContentList: ({ session }: SessionContext) => {
+  filterCanReadContent: () => {
+    console.log("rules.filterCanReadContent");
+    return  {status: {equals: 'published'}} 
+  },
+  canReadContentList: ({item}: ItemContext)  => {
+    console.log("rules.canReadContentList");
+    if (!permissions.canManageContent(item)) return false;
+ 
+    return true;
+  },
+  filterCanReadContentList: ({  session }: SessionContext) => {
     console.log("rules.filterCanReadContentList");
-    return {status: {equals: 'published'}} 
+    return  {true: {equals: true}} 
   },
   canManageUser: ( {  item, session }: ItemContext ) => {
     if (!permissions.canManageUsers({ session  })) return false;
     if (session?.itemId !== item?.id) return false;
     return true;
   },
-  operationCanManageUserList: ({ item, session }: ItemContext)  => {
+  operationCanManageUserList: ({ session }: SessionContext)  => {
     if (!isSignedIn({ session })) 
     return false;
     if (permissions.canManageUsers({ session })) return true;

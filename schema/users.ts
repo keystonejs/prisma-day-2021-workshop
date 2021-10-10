@@ -36,8 +36,8 @@ export const User = list({
       delete: ({ session, context, listKey, operation } : SessionFrame) => rules.operationCanManageUserList(session),
     },
     filter: {
-      update:  ({ session, context, listKey, operation } : SessionFrame) => rules.filterCanManageUserList(session),
-      delete: ({ session, context, listKey, operation } : SessionFrame) => rules.filterCanManageUserList(session)
+      //update:  ({ session, context, listKey, operation } : SessionFrame) => rules.filterCanManageUserList(session),
+      //delete: ({ session, context, listKey, operation } : SessionFrame) => rules.filterCanManageUserList(session)
     }
 
   },
