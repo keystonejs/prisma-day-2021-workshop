@@ -1,5 +1,16 @@
 module.exports = {
-  purge: [],
+  purge: {
+    content: [
+        './components/**/*.{js,ts,jsx,tsx}',
+        './pages/**/*.{js,ts,jsx,tsx}',
+        './schema/**/*.{js,ts,jsx,tsx}',
+    ],
+    options: {
+        safelist: {
+            standard: ['outline-none']
+        }
+    }
+},
   darkMode: false, // or 'media' or 'class'
   theme: {
     screens: {

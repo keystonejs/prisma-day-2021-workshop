@@ -12,6 +12,7 @@ export const Poll = list({
     label: text(),
     answers: relationship({
       ref: 'PollAnswer.poll',
+      isFilterable: true,
       many: true,
       ui: {
         displayMode: 'cards',
@@ -65,7 +66,7 @@ export const PollAnswer = list({
   ui: contentUIConfig,
   fields: {
     label: text(),
-    poll: relationship({ ref: 'Poll.answers' }),
+    poll: relationship({isFilterable: true, ref: 'Poll.answers' }),
     voteCount: virtual({
       field: graphql.field({
         type: graphql.Int,
@@ -83,6 +84,7 @@ export const PollAnswer = list({
     }),
     answeredByUsers: relationship({
       ref: 'User.pollAnswers',
+      isFilterable: true,
       many: true,
       access: { read: permissions.canManageContent },
       ui: {
