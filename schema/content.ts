@@ -2,16 +2,9 @@ import { relationship, select, text, timestamp } from '@keystone-next/keystone/f
 import { document } from '@keystone-next/fields-document';
 import { list } from '@keystone-next/keystone';
 
-import { permissions, rules, SessionFrame, ItemContext } from './access';
+import { permissions, rules, SessionFrame, ItemContext, OperationCanManageContentList, FilterCanManageContentList } from './access';
 import { componentBlocks } from '../schema/fields/content/components';
 
-export const contentListAccess = {
-  filter: {
-    create:  ({ session, context, listKey, operation } : SessionFrame) => permissions.canManageContent(session),
-    update: ({ session, context, listKey, operation } : SessionFrame) => permissions.canManageContent(session),
-    delete: ({ session, context, listKey, operation } : SessionFrame) => permissions.canManageContent(session),
-  }
-};
 
 export const contentUIConfig = {
   hideCreate: (session: any) => !permissions.canManageContent(session),
@@ -21,6 +14,16 @@ export const contentUIConfig = {
       permissions.canManageContent(session) ? 'edit' : 'read',
   },
 };
+
+export const contentListAccess =
+{
+  operation: {
+    create: OperationCanManageContentList,
+    update: OperationCanManageContentList,
+    delete: OperationCanManageContentList
+  }
+}
+
 
 export const Label = list({
   access: contentListAccess,
@@ -52,21 +55,16 @@ function defaultTimestamp() {
   return new Date().toISOString();
 }
 
+
 export const Post = list({
   access: {
     operation: {
-      create:  ({ session, context, listKey, operation } : SessionFrame) => permissions.canManageContent(session),
-      update: ({ session, context, listKey, operation } : SessionFrame) => permissions.canManageContent(session),
-      delete: ({ session, context, listKey, operation } : SessionFrame) => permissions.canManageContent(session),
-
+      create: OperationCanManageContentList,
+      update: OperationCanManageContentList,
+      delete: OperationCanManageContentList
     },
     filter: {
-      query: ({ session, context, listKey, operation } : SessionFrame) => {
-      console.log("permissions?.canManageContent( session ) " + permissions?.canManageContent( session ))
-       if (!!permissions?.canManageContent( session ) ) 
-          return {status: {in: ['published','draft','archive']}};
-       return {status: {in: ['published']}} 
-    }
+      query: FilterCanManageContentList
   }},
   ui: contentUIConfig,
   fields: {

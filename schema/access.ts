@@ -23,6 +23,13 @@ export type SessionFrame = {
   operation: string
 }
 
+export const IsBuildEnvir = ({ session }:  ItemContext) : boolean =>
+{
+  if (session === undefined)
+    return false 
+  return true
+}
+
 export type ItemContext = { item: any } & SessionContext;
 
 export const isSignedIn = ({ session }: SessionContext) => {
@@ -43,7 +50,7 @@ export const rules = {
     console.log("Typeof session: " + typeof(session))
     return !!session?.data.role as MaybePromise<boolean>;
   },
-  operationCanReadContentList: ({item}: ItemContext)  => {
+  operationCanManageContentList: ({item}: ItemContext)  => {
     console.log("rules.operationCanReadContentList");
     if (!permissions.canManageContent(item)) return false;
  
@@ -59,10 +66,7 @@ export const rules = {
  
     return true;
   },
-  filterCanReadContentList: ({  session }: SessionContext) => {
-    console.log("rules.filterCanReadContentList");
-    return  {true: {equals: true}} 
-  },
+
   canManageUser: ( {  item, session }: ItemContext ) => {
     if (!permissions.canManageUsers({ session  })) return false;
     if (session?.itemId !== item?.id) return false;
@@ -76,6 +80,17 @@ export const rules = {
     return false;
   },
   filterCanManageUserList: ({item,session}: ItemContext) => {
-    return {true: {equals: true}}
+    return {canManageUsers: {equals: true}}
   }
 };
+
+export const OperationCanManageContentList = ({ session, context, listKey, operation } : SessionFrame) => 
+  rules.operationCanManageContentList(session)
+export const FilterCanManageContentList = ({ session, context, listKey, operation } : SessionFrame) => 
+({ session, context, listKey, operation } : SessionFrame) => {
+
+  console.log("Computed canManageContent( session ) " + IsBuildEnvir(session) || !!permissions?.canManageContent( session ) )
+   if (IsBuildEnvir(session) || !!permissions?.canManageContent( session ) ) 
+      return {status: {in: ['published','draft','archive']}};
+   return {status: {in: ['published']}} 
+}
