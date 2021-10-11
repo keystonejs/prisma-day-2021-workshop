@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "clean": "rm -rf node_modules yarn.lock .keystone .next",
-    "postinstall": "keystone-next postinstall",
+    "postinstall": "keystone-next postinstall && yarn next telemetry disable",
     "site:dev": "next dev -p 8000",
     "site:build": "next build",
     "site:start": "next start -p 8000",
@@ -22,6 +22,7 @@
     "@keystone-next/session-store-redis": "6.0.0",
     "@prisma/client": "^3.2.1",
     "classnames": "^2.3.1",
+    "colors": "^1.4.0",
     "graphql": "^15.6.1",
     "next": "^11.1.2",
     "node-fetch": "^2.6.1",

@@ -1,5 +1,7 @@
-
 import {KeystoneContext} from '.keystone/types'
+
+const { withKeystone } = require("@keystone-next/keystone/next");
+
 declare type MaybePromise<T> = Promise<T> | T;
 
 export type SessionContext = {
@@ -23,14 +25,43 @@ export type SessionFrame = {
   operation: string
 }
 
-export const IsBuildEnvir = ({ session }:  ItemContext) : boolean =>
-{
-  if (session === undefined)
-    return false 
-  return true
+export type ItemContext = { item: any } & SessionContext;
+
+const unit = {}
+const rmap_va = (...props: any) => (f: any) => {
+  props.forEach((element: any )=> {
+    f(element)
+  });
 }
 
-export type ItemContext = { item: any } & SessionContext;
+let colors = require('colors/safe');
+
+const warn = (...obj: any) => 
+  rmap_va(obj) 
+    ((x : any) => 
+      console.log(colors.yellow(x.toString())))
+
+
+const xwarn = (...obj: any) => unit
+
+
+export const IsBuildEnvir = (frame:  SessionFrame) : boolean =>
+{
+  if (frame.session === undefined)
+  {
+    let localWarn = (...msgs: any) => warn ("Access::IsBuildEnvir: Undefined session:",...msgs)
+
+
+    localWarn("authentication breach:", frame)
+    localWarn("Assuming next build event is an SSG or ISG event.")
+    localWarn("Blessing assumed next build authorisation breach permissisons for super user queries.")
+    //localWarn("withKeysone code", withKeystone)
+    return true 
+  }
+  return false
+}
+
+
 
 export const isSignedIn = ({ session }: SessionContext) => {
   return !!session;
@@ -86,11 +117,12 @@ export const rules = {
 
 export const OperationCanManageContentList = ({ session, context, listKey, operation } : SessionFrame) => 
   rules.operationCanManageContentList(session)
-export const FilterCanManageContentList = ({ session, context, listKey, operation } : SessionFrame) => 
-({ session, context, listKey, operation } : SessionFrame) => {
 
-  console.log("Computed canManageContent( session ) " + IsBuildEnvir(session) || !!permissions?.canManageContent( session ) )
-   if (IsBuildEnvir(session) || !!permissions?.canManageContent( session ) ) 
-      return {status: {in: ['published','draft','archive']}};
+export const EVERYTHING = {status: {in: ['published','draft','archive']}}
+
+export const FilterCanManageContentList = (frame: SessionFrame) => {
+   if (IsBuildEnvir(frame)) return EVERYTHING
+   if (!!permissions?.canManageContent( frame.session ) ) 
+      return EVERYTHING
    return {status: {in: ['published']}} 
 }

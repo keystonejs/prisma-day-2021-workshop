@@ -64,7 +64,7 @@ export const Post = list({
       delete: OperationCanManageContentList
     },
     filter: {
-      query: FilterCanManageContentList
+      query: (frame: SessionFrame) => FilterCanManageContentList(frame)
   }},
   ui: contentUIConfig,
   fields: {
