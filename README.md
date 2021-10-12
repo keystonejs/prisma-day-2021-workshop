@@ -73,14 +73,9 @@ Known Issues:
 
 Authorization: WIP. Strong typing keystone frame types.
 
-```
-yarn gitadd:
-```
-   Almost files are added, but latest.yaml didn't get auto added, even though !.github/ is in .gitignore
-
 Test code in access has to find a new home.
 
-Literal constants.
+Refactor literals.
 
 How to code where: true/false in gql without touching keystone core code. 
 
