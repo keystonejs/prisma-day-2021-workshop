@@ -90,12 +90,16 @@ Deductive filtering correctly identifies browswer based localhost traffic in tes
 Next build super user authorization to keystone, allowing for SSR/SSG/ISR tunneling.
 
 Pre production testing release status: 
-   Admin UI Authorization is incomplete, but overly tight. 
+   Admin UI Authorization has passed preliminary testing. 
+   User roles AdminUI still to be unlocked. 
    Expect missing functionality. 
 
-No proof exists that the correct firewalling of queries is correct. 
-It has passed preliminary security tests. 
-Additional KeystoneContext information needs to be correctly decoded.
+The current implementation of build process api's is a hack. A shout out to Jed for explaining the keystone way. WIP.
+It has passed only the most preliminary of security tests, determining localhost web from build, i.e. a proof of concept.
+
+Additional KeystoneContext auth information and a shared API key, set in via process .env: 
+   needs to be correctly handed down in the headers to the last line of defense, access: filter.
+
 ```
 
 Additional functionality from upstream main:
