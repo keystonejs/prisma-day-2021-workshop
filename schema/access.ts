@@ -200,12 +200,14 @@ export const FilterCanManageContentList = (frame: SessionFrame) => {
   }
   //The perms check is only running client side. Review: check the authorization props are checked
   //server side to.
-  if (!!permissions?.canManageContent(frame.session)) {
+  if (!!frame.context.session?.data?.role?.canManageContent) {
     success('Blessed super user access to the known content manager:');
     success(frame?.context?.session?.data?.name);
     success('');
     return EVERY_POST_STATUS;
   }
-  success('Client receives only published posts');
+  success('Client receives only published posts:');
+  success(frame.context?.session?.data?.name);
+  success(frame.context.session?.data?.role?.canManageContent);
   return PUBLISHED_POST_STATUS;
 };

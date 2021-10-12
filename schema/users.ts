@@ -84,6 +84,7 @@ export const User = list({
     role: relationship({
       ref: 'Role.users',
       access: permissions.canManageUsers,
+      isFilterable: true,
     }),
     githubUsername: text({
       isFilterable: true,
@@ -129,9 +130,9 @@ export const User = list({
 export const Role = list({
   fields: {
     name: text(),
-    canManageContent: checkbox({ defaultValue: false }),
-    canManageUsers: checkbox({ defaultValue: false }),
-    users: relationship({ ref: 'User.role', many: true }),
+    canManageContent: checkbox({ defaultValue: false, isFilterable: true }),
+    canManageUsers: checkbox({ defaultValue: false, isFilterable: true }),
+    users: relationship({ ref: 'User.role', many: true, isFilterable: true }),
   },
 
   access: {
