@@ -1,0 +1,49 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ latest ]
+  pull_request:
+    branches: [ latest ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: fedora:latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo "Unit testing:"
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          set -euo pipefail    
+          appname="prisma_day_2021"
+          echo "Build unseeded production server: $appname"  
+          dnf reset nodejs
+          dnf module install nodejs:14/development
+          dnf install postgresql yes        
+          cd $GITHUB_WORKSPACE
+          DATABASE_URL="postgres://postgres:changeme@localhost/$appname"
+          yes | yarn        
+          yarn dev &          
+          sleep 3          
+          yarn site:build          
+          echo "Build unseeded $appname:latest production succeded" 
+
+      # Deploy:

@@ -4,6 +4,9 @@
   "private": true,
   "scripts": {
     "clean": "rm -rf node_modules yarn.lock .keystone .next",
+    "add": "git add -u * ||:; git add * ||:",
+    "commit": "git commit -a -m \"$m\"}",
+    "push": "git push origin latest",
     "postinstall": "keystone-next postinstall && yarn next telemetry disable",
     "site:dev": "next dev -p 8000",
     "site:build": "next build",

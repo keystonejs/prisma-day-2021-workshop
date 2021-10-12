@@ -38,3 +38,5 @@ yarn-error.log*
 app.db
 
 migrations/migration_lock.toml
+
+!.github/*
