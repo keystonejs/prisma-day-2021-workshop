@@ -6,7 +6,7 @@
     "test_args":"node echo",
     "clean": "rm -rf node_modules yarn.lock .keystone .next",
     "gitadd": "git add -u * ||:; git add * ||:",
-    "echo": "echo $*",
+    "echo": "echo '$*'",
     "commit": "git commit -a -m ${mesg}",
     "push": "git push origin latest",
     "postinstall": "keystone-next postinstall && yarn next telemetry disable",
