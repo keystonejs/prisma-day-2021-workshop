@@ -3,7 +3,7 @@ import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 
 import { lists, extendGraphqlSchema } from './schema';
-import { rules } from './schema/access';
+import { permissions } from './schema/access';
 
 const dbUrl =
   process.env.DATABASE_URL ||
@@ -42,7 +42,7 @@ export default auth.withAuth(
       provider: 'postgresql',
       useMigrations: true,
     },
-    ui: { isAccessAllowed: rules.canUseAdminUI },
+    ui: { isAccessAllowed: permissions.canUseAdminUI },
     lists,
     session: statelessSessions({
       secret: sessionSecret,

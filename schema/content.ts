@@ -9,28 +9,32 @@ import { list } from '@keystone-next/keystone';
 
 import {
   permissions,
-  rules,
   SessionFrame,
   ItemContext,
-  OperationCanManageContentList,
+  operationCanManageContentList,
   FilterCanManageContentList,
 } from './access';
 import { componentBlocks } from '../schema/fields/content/components';
+
+//FIXME:
+// These anys are causing issues. What is the strong type?
+// The deduced type from permissions api is SessionFrame, but that doesn't work ...
+// MaybeSessionFunction has something to do with the ts error.
 
 export const contentUIConfig = {
   hideCreate: (session: any) => !permissions.canManageContent(session),
   hideDelete: (session: any) => !permissions.canManageContent(session),
   itemView: {
     defaultFieldMode: (session: ItemContext) =>
-      permissions.canManageContent(session) ? 'edit' : 'read',
+      permissions.canManageContentSession(session) ? 'edit' : 'read',
   },
 };
 
 export const contentListAccess = {
   operation: {
-    create: OperationCanManageContentList,
-    update: OperationCanManageContentList,
-    delete: OperationCanManageContentList,
+    create: operationCanManageContentList,
+    update: operationCanManageContentList,
+    delete: operationCanManageContentList,
   },
 };
 
@@ -69,9 +73,9 @@ function defaultTimestamp() {
 export const Post = list({
   access: {
     operation: {
-      create: OperationCanManageContentList,
-      update: OperationCanManageContentList,
-      delete: OperationCanManageContentList,
+      create: operationCanManageContentList,
+      update: operationCanManageContentList,
+      delete: operationCanManageContentList,
     },
     filter: {
       query: (frame: SessionFrame) => FilterCanManageContentList(frame),

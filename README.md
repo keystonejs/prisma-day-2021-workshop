@@ -88,11 +88,12 @@ Production build status:
 Deductive filtering correctly identifies browswer based localhost traffic in testing. 
 
 Next build super user authorization to keystone, allowing for SSR/SSG/ISR tunneling.
+   USE CASE: TESTING BUILD FUNCTIONALITY ONLY. 
 
 Pre production testing release status: 
    Admin UI Authorization has passed preliminary testing. 
-   User roles AdminUI still to be unlocked. 
-   Expect missing functionality. 
+   DRY permissions. Rules deprecation. Some tidying up stil to be done.
+   Ready for exhaustive testing.
 
 The current implementation of build process api's is a hack. A shout out to Jed for explaining the keystone way. WIP.
 It has passed only the most preliminary of security tests, determining localhost web from build, i.e. a proof of concept.

@@ -36,17 +36,25 @@ const rmap_va =
 
 let colors = require('colors/safe');
 
+// Fix Me: Test code: Needs another home.
+//This is one place where any means it! The intent was object dumping code, down to
+//every leaf. A testground for DRY logging in ts.
+// Closures are good for logging, localising to particular files/functions/lines ... the issues of this short segment quickly shows why.
+// I have some multicol markup for logging, it bash though, so replaces console.log.
+// A markup standard for shell would be useful.
+
+const log = (s: string) => console.log(s);
+
 const success = (...obj: any) =>
-  rmap_va(obj)((x: any) => console.log(colors.green(x.toString())));
+  rmap_va(obj)((x: any) => log(colors.green(x.toString())));
 
 const warn = (...obj: any) =>
-  rmap_va(obj)((x: any) => console.log(colors.yellow(x.toString())));
+  rmap_va(obj)((x: any) => log(colors.yellow(x.toString())));
 
 const report_security_incident = (...obj: any) =>
-  rmap_va(obj)((x: any) => console.log(colors.red(x.toString())));
+  rmap_va(obj)((x: any) => log(colors.red(x.toString())));
 
-const xwarn = (...obj: any) => unit;
-
+//FIXME: Needs API key.
 export const isBuildEnvir = (frame: SessionFrame): boolean => {
   if (frame.session === undefined) {
     //const headers = frame.context.req?.headers;
@@ -78,56 +86,25 @@ export const isSignedIn = ({ session }: SessionContext) => {
   return !!session;
 };
 
+//!! and ?. everywhere to protect from undefined. ts picks this up unless any is used.
 export const permissions = {
-  canManageContent: ({ session }: SessionContext) => {
+  canUseAdminUI: ({ session }: SessionContext): boolean =>
+    !!session?.data?.role,
+  canManageContent: (frame: SessionFrame): boolean =>
+    !!frame?.context?.session?.data?.role?.canManageContent,
+  canManageUsers: (frame: SessionFrame): boolean =>
+    !!frame?.context?.session?.data?.role?.canManageUsers,
+
+  canManageContentSession: ({ session }: SessionContext): boolean => {
     return !!session?.data?.role?.canManageContent;
   },
-  canManageUsers: ({ session }: SessionContext) => {
+  canManageUsersSession: ({ session }: SessionContext): boolean => {
     return !!session?.data?.role?.canManageUsers;
   },
 };
 
-export const rules = {
-  canUseAdminUI: ({ session }: SessionContext) => {
-    //console.log('Typeof session: ' + typeof session);
-    return !!session?.data.role as MaybePromise<boolean>;
-  },
-  operationCanManageContentList: ({ item }: ItemContext) => {
-    warn('rules.operationCanReadContentList:');
-    warn(item);
-    if (!permissions.canManageContent(item)) return false;
-
-    return true;
-  },
-  filterCanReadContent: () => {
-    console.log('rules.filterCanReadContent');
-    return { status: { equals: 'published' } };
-  },
-  canReadContentList: ({ item }: ItemContext) => {
-    console.log('rules.canReadContentList');
-    if (!permissions.canManageContent(item)) return false;
-
-    return true;
-  },
-
-  canManageUser: ({ item, session }: ItemContext) => {
-    if (!permissions.canManageUsers({ session })) return false;
-    if (session?.itemId !== item?.id) return false;
-    return true;
-  },
-  operationCanManageUserList: ({ session }: SessionContext) => {
-    if (!isSignedIn({ session })) return false;
-    if (permissions.canManageUsers({ session })) return true;
-
-    return false;
-  },
-  filterCanManageUserList: ({ item, session }: ItemContext) => {
-    return { canManageUsers: { equals: true } };
-  },
-};
-
-export const OperationCanManageContentList = ({ session }: SessionFrame) =>
-  rules.operationCanManageContentList(session);
+export const operationCanManageContentList = (frame: SessionFrame) =>
+  permissions.canManageContent(frame);
 
 export const EVERY_POST_STATUS = {
   status: { in: ['published', 'draft', 'archive'] },
@@ -206,8 +183,9 @@ export const FilterCanManageContentList = (frame: SessionFrame) => {
     success('');
     return EVERY_POST_STATUS;
   }
+
   success('Client receives only published posts:');
-  success(frame.context?.session?.data?.name);
-  success(frame.context.session?.data?.role?.canManageContent);
+  success(frame?.context?.session?.data?.name);
+  //success(frame.context.session?.data?.role?.canManageContent);
   return PUBLISHED_POST_STATUS;
 };

@@ -11,20 +11,26 @@ import { list } from '@keystone-next/keystone';
 
 import {
   permissions,
-  rules,
   SessionContext,
   SessionFrame,
   ItemContext,
 } from './access';
 import { GitHubRepo, githubReposResolver } from './fields/githubRepos/field';
 
+// Removed an any, revealed an extra ? was required ! any = js ;) any is to be avoid like the plague unless trying to type compose ;)
+// strong type for any type.
+// That generic "cant assign to Maybe..." error seems be trying to say "There's an any, which is potentially undefined, but is not triggering a type error"
+// On that not, I counted occurence of ": any" in the repo. 5902 results in 793 files :-O. Not good, since each hides a potential bug that is hiding
+// from ts, like occured here.
 const fieldModes = {
-  editSelfOrRead: ({ session, item }: any) =>
-    permissions.canManageUsers({ session }) || session.itemId === item.id
+  editSelfOrRead: ({ session, item }: ItemContext) =>
+    permissions.canManageUsersSession({ session }) ||
+    session?.itemId === item.id
       ? 'edit'
       : 'read',
-  editSelfOrHidden: ({ session, item }: any) =>
-    permissions.canManageUsers({ session }) || session.itemId === item.id
+  editSelfOrHidden: ({ session, item }: ItemContext) =>
+    permissions.canManageUsersSession({ session }) ||
+    session?.itemId === item.id
       ? 'edit'
       : 'hidden',
 };
@@ -32,31 +38,29 @@ const fieldModes = {
 export const User = list({
   access: {
     operation: {
-      create: ({ session, context, listKey, operation }: SessionFrame) => true,
-      query: ({ session, context, listKey, operation }: SessionFrame) => true,
-      update: ({ session, context, listKey, operation }: SessionFrame) =>
-        rules.operationCanManageUserList(session),
-      delete: ({ session, context, listKey, operation }: SessionFrame) =>
-        rules.operationCanManageUserList(session),
+      create: (frame: SessionFrame) => true,
+      query: (frame: SessionFrame) => true,
+      update: (frame: SessionFrame) => permissions.canManageUsers(frame),
+      delete: (frame: SessionFrame) => permissions.canManageUsers(frame),
     },
     filter: {
-      //update:  ({ session, context, listKey, operation } : SessionFrame) => rules.filterCanManageUserList(session),
+      update: (frame: SessionFrame) => permissions.canManageUsers(frame),
       //delete: ({ session, context, listKey, operation } : SessionFrame) => rules.filterCanManageUserList(session)
     },
   },
 
   ui: {
     hideCreate: (session: SessionContext) =>
-      !permissions.canManageUsers(session),
+      !permissions.canManageUsersSession(session),
     hideDelete: (session: SessionContext) =>
-      !permissions.canManageUsers(session),
+      !permissions.canManageUsersSession(session),
     itemView: {
       defaultFieldMode: (context: SessionContext) =>
-        permissions.canManageUsers(context) ? 'edit' : 'hidden',
+        permissions.canManageUsersSession(context) ? 'edit' : 'hidden',
     },
     listView: {
       defaultFieldMode: (context: SessionContext) =>
-        permissions.canManageUsers(context) ? 'read' : 'hidden',
+        permissions.canManageUsersSession(context) ? 'read' : 'hidden',
     },
   },
   fields: {
@@ -69,8 +73,7 @@ export const User = list({
       isIndexed: 'unique',
       isFilterable: true,
       access: {
-        read: ({ session, context, listKey, operation }: SessionFrame) =>
-          rules.canManageUser(session),
+        read: (frame: SessionFrame) => permissions.canManageUsers(frame),
       },
       ui: {
         itemView: { fieldMode: fieldModes.editSelfOrHidden },
@@ -137,16 +140,13 @@ export const Role = list({
 
   access: {
     operation: {
-      query: ({ session, context, listKey, operation }: SessionFrame) =>
-        rules.operationCanManageUserList(session),
-      update: ({ session, context, listKey, operation }: SessionFrame) =>
-        rules.operationCanManageUserList(session),
-      delete: ({ session, context, listKey, operation }: SessionFrame) =>
-        rules.operationCanManageUserList(session),
+      query: (frame: SessionFrame) => permissions.canManageUsers(frame),
+      update: (frame: SessionFrame) => permissions.canManageUsers(frame),
+      delete: (frame: SessionFrame) => permissions.canManageUsers(frame),
     },
   },
   //permissions.canManageUsers,
   ui: {
-    isHidden: session => !permissions.canManageUsers(session),
+    isHidden: session => !permissions.canManageUsersSession(session),
   },
 });
