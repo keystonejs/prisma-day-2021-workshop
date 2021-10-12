@@ -5,7 +5,7 @@
   "scripts": {
     "clean": "rm -rf node_modules yarn.lock .keystone .next",
     "gitadd": "git add -u * ||:; git add * ||:",
-    "commit": "git commit -a -m $mesg",
+    "commit": "git commit -a -m ${mesg}",
     "push": "git push origin latest",
     "postinstall": "keystone-next postinstall && yarn next telemetry disable",
     "site:dev": "next dev -p 8000",
