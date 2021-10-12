@@ -555,10 +555,10 @@
     slate-history "^0.60.4"
     slate-react "^0.60.4"
 
-"@keystone-next/keystone@^26.1.0":
-  version "26.1.0"
-  resolved "https://registry.yarnpkg.com/@keystone-next/keystone/-/keystone-26.1.0.tgz#d1a66303286ea496564566c761751720a1867e24"
-  integrity sha512-mdk0QH6L/68yLwbR0GH3UBJxnHQV1jKH9ruiS+pzbxNH+EOrhm+oPlOF/eq8bqTiSPUJp7xlh3YSHhk+3EgF0Q==
+"@keystone-next/keystone@^26.1.1":
+  version "26.1.1"
+  resolved "https://registry.yarnpkg.com/@keystone-next/keystone/-/keystone-26.1.1.tgz#561b927c6818499121b8d4ad30fc30b474dae515"
+  integrity sha512-vKB3R3cSiem4cin+kR5A99ng1YuUm/ih+hVnE0B1QjjN6vhPBpdeINMQVnhsSxVBqmodggF1Vjc8nyDVkLF1Bw==
   dependencies:
     "@apollo/client" "^3.4.16"
     "@babel/core" "^7.15.5"

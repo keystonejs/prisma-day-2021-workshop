@@ -61,7 +61,7 @@ export const isBuildEnvir = (frame: SessionFrame): boolean => {
     warn('undefined frame.session');
     warn('Assuming an SSG or ISG build event.');
     warn(
-      'Blessing assumed next build authentication breach authorisation for super user queries.'
+      'Assumed next build authentication breach: Blessing next build with super user queries.'
     );
     warn('');
     //localWarn("withKeysone code", withKeystone)
@@ -139,8 +139,10 @@ export const FilterCanManageContentList = (frame: SessionFrame) => {
     //Give no information away that they have been noticed
     return PUBLISHED_POST_STATUS;
   }
-  if (isBuildEnvir(frame) || !!permissions?.canManageContent(frame.session))
+  if (isBuildEnvir(frame) || !!permissions?.canManageContent(frame.session)) {
+    success('Blessed super user access');
     return EVERY_POST_STATUS;
-
+  }
+  success('Client receives only published posts');
   return PUBLISHED_POST_STATUS;
 };

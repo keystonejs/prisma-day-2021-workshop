@@ -87,7 +87,7 @@ Production build status:
 ```
 Deductive filtering correctly identifies browswer based localhost traffic in testing. 
 
-Next build super user authorization to keystone, allowing for S/ISG tunneling.
+Next build super user authorization to keystone, allowing for SSR/SSG/ISR tunneling.
 
 Pre production testing release status: 
    Admin UI Authorization is incomplete, but overly tight. 
