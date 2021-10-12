@@ -1,6 +1,5 @@
 import {KeystoneContext} from '.keystone/types'
 
-const { withKeystone } = require("@keystone-next/keystone/next");
 
 declare type MaybePromise<T> = Promise<T> | T;
 
@@ -27,6 +26,7 @@ export type SessionFrame = {
 
 export type ItemContext = { item: any } & SessionContext;
 
+
 const unit = {}
 const rmap_va = (...props: any) => (f: any) => {
   props.forEach((element: any )=> {
@@ -36,31 +36,48 @@ const rmap_va = (...props: any) => (f: any) => {
 
 let colors = require('colors/safe');
 
+
+const success = (...obj: any) => 
+  rmap_va(obj) 
+    ((x : any) => 
+      console.log(colors.green(x.toString())))
+
+
 const warn = (...obj: any) => 
   rmap_va(obj) 
     ((x : any) => 
       console.log(colors.yellow(x.toString())))
 
+const report_security_incident = (...obj: any) => 
+      rmap_va(obj) 
+        ((x : any) => 
+          console.log(colors.red(x.toString())))
 
 const xwarn = (...obj: any) => unit
 
 
-export const IsBuildEnvir = (frame:  SessionFrame) : boolean =>
+export const isBuildEnvir = (frame:  SessionFrame) : boolean =>
 {
   if (frame.session === undefined)
   {
-    let localWarn = (...msgs: any) => warn ("Access::IsBuildEnvir: Undefined session:",...msgs)
+    //const headers = frame.context.req?.headers;
+    //const host = headers ? headers['x-forwarded-host'] || headers['host'] : null;
+    //const url = headers?.referer ? new URL(headers.referer) : undefined;
 
+    warn("access::isBuildEnvir: authentication breach:")
+    //warn( headers)
+    //warn(host)
+    //warn(url)
 
-    localWarn("authentication breach:", frame)
-    localWarn("Assuming next build event is an SSG or ISG event.")
-    localWarn("Blessing assumed next build authorisation breach permissisons for super user queries.")
+    warn("undefined frame.session") 
+    warn("Assuming an SSG or ISG build event.")
+    warn("Blessing assumed next build authentication breach authorisation for super user queries.")
+    warn("")
     //localWarn("withKeysone code", withKeystone)
     return true 
   }
   return false
 }
-
 
 
 export const isSignedIn = ({ session }: SessionContext) => {
@@ -82,7 +99,8 @@ export const rules = {
     return !!session?.data.role as MaybePromise<boolean>;
   },
   operationCanManageContentList: ({item}: ItemContext)  => {
-    console.log("rules.operationCanReadContentList");
+    warn("rules.operationCanReadContentList");
+    warn(item)
     if (!permissions.canManageContent(item)) return false;
  
     return true;
@@ -115,14 +133,23 @@ export const rules = {
   }
 };
 
-export const OperationCanManageContentList = ({ session, context, listKey, operation } : SessionFrame) => 
+export const OperationCanManageContentList = ({ session } : SessionFrame) => 
   rules.operationCanManageContentList(session)
 
-export const EVERYTHING = {status: {in: ['published','draft','archive']}}
+export const EVERY_POST_STATUS = {status: {in: ['published','draft','archive']}}
+export const UNIT_POST_STATUS = {status: {in: []}}
+export const PUBLISHED_POST_STATUS = {status: {in: ['published']}}
 
 export const FilterCanManageContentList = (frame: SessionFrame) => {
-   if (IsBuildEnvir(frame)) return EVERYTHING
-   if (!!permissions?.canManageContent( frame.session ) ) 
-      return EVERYTHING
-   return {status: {in: ['published']}} 
+   if (frame === undefined)
+   {
+      report_security_incident("Minor security breach: undefined frame: query downgraded to public.")
+      //Give no information away that they have been noticed
+      return PUBLISHED_POST_STATUS 
+
+   }
+   if (isBuildEnvir(frame) || !!permissions?.canManageContent( frame.session ) ) 
+      return EVERY_POST_STATUS
+
+   return PUBLISHED_POST_STATUS 
 }
