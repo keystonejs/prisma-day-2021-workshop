@@ -87,23 +87,25 @@ How to code where: true/false in gql without touching keystone core code.
 Extend WhereInput to be WhereInput | true | false ... is yet to be tested as a patch to core. Can this work as a local patch? To be investigated ...
 
 Production build status: 
-
+```
 Deductive filtering correctly identifies browswer based localhost traffic in testing, allowing next build super user access to the keystone, allowing for S/ISG tunneling.
 
 Pre production testing release status: Use as a production server in the current state is considered risky. Authorization is incomplete, but is overly tight. Expect missing functionality. 
 
 No proof exists that the correct firewalling of queries is correct, but it has passed preliminary security tests. Additional context information needs to be correctly decoded so the query firewall has the KeystoneContext correct.
+```
 
 Additional functionality from upstream main:
+```
 Polls fully working.
 Production build:
    next lint
    tailwind purge
    telemetry disable
    CI scripts: WIP
+```
 
-
-All testing/patches/security audits are welcome. Feel free to contribute to documenting the industry best practises for using keyst<3ne CMS.
+All testing/patches/security audits are welcome. Feel free to contribute to documenting the industry best practises for using keystone CMS.
 
 ## License
 
