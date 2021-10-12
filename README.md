@@ -88,11 +88,15 @@ Extend WhereInput to be WhereInput | true | false ... is yet to be tested as a p
 
 Production build status: 
 ```
-Deductive filtering correctly identifies browswer based localhost traffic in testing, allowing next build super user access to the keystone, allowing for S/ISG tunneling.
+Deductive filtering correctly identifies browswer based localhost traffic in testing. Next build super user authorization to keystone, allowing for S/ISG tunneling.
 
-Pre production testing release status: Use as a production server in the current state is considered risky. Authorization is incomplete, but is overly tight. Expect missing functionality. 
+Pre production testing release status: 
+   Admin UI Authorization is incomplete, but overly tight. 
+   Expect missing functionality. 
 
-No proof exists that the correct firewalling of queries is correct, but it has passed preliminary security tests. Additional context information needs to be correctly decoded so the query firewall has the KeystoneContext correct.
+No proof exists that the correct firewalling of queries is correct. 
+It has passed preliminary security tests. 
+Additional KeystoneContext information needs to be correctly decoded
 ```
 
 Additional functionality from upstream main:
@@ -103,6 +107,7 @@ Production build:
    tailwind purge
    telemetry disable
    CI scripts: WIP
+      Prettier applied in gitadd.
 ```
 
 All testing/patches/security audits are welcome. Feel free to contribute to documenting the industry best practises for using keystone CMS.
