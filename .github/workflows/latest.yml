@@ -40,6 +40,7 @@ jobs:
           dnf install postgresql yes        
           cd $GITHUB_WORKSPACE
           DATABASE_URL="postgres://postgres:changeme@localhost/$appname"
+          KEYSTONE_NEXTJS_BUILD_API_KEY="definitely_change_me2_make_a_non_postgres_user2"
           yes | yarn        
           yarn dev &         
           sleep 3          

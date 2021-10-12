@@ -1,3 +1,5 @@
+import { keystoneNextjsBuildApiKey } from './keystone';
+
 export const gql = ([content]: TemplateStringsArray) => content;
 
 export async function fetchGraphQL(
@@ -7,7 +9,10 @@ export async function fetchGraphQL(
   return fetch('http://localhost:3000/api/graphql', {
     method: 'POST',
     body: JSON.stringify({ query, variables }),
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': keystoneNextjsBuildApiKey,
+    },
   })
     .then(x => x.json())
     .then(({ data, errors }) => {

@@ -13,6 +13,10 @@ const sessionSecret =
   process.env.SESSION_SECERT ||
   'iLqbHhm7qwiBNc8KgL4NQ8tD8fFVhNhNqZ2nRdprgnKNjgJHgvitWx6DPoZJpYHa';
 
+export const keystoneNextjsBuildApiKey =
+  process.env.KEYSTONE_NEXTJS_BUILD_API_KEY ||
+  'utils.ts:_keystoneNextjsBuildApiKey_says_change_me_!!!!!!!_im_just_for_testing';
+
 const auth = createAuth({
   identityField: 'email',
   secretField: 'password',

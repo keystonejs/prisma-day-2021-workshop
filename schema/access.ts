@@ -1,4 +1,6 @@
 import { KeystoneContext } from '.keystone/types';
+import { useAuth } from '../components/auth';
+import { keystoneNextjsBuildApiKey } from '../keystone';
 
 declare type MaybePromise<T> = Promise<T> | T;
 
@@ -56,6 +58,7 @@ const report_security_incident = (...obj: any) =>
 
 //FIXME: Needs API key.
 export const isBuildEnvir = (frame: SessionFrame): boolean => {
+  const auth = useAuth();
   if (frame.session === undefined) {
     //const headers = frame.context.req?.headers;
     //const host = headers ? headers['x-forwarded-host'] || headers['host'] : null;
