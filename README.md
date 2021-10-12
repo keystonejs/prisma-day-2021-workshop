@@ -60,15 +60,53 @@ tailwind.config.js
 utils.js
 ```
 
+
+
+Latest branch:
+
+CI: Github actions in testing. Unseeded build.
+```
+yarn commit "message" ... adds files and commits.
+yarn push ... (auto push to origin latest)
+```
+Known Issues:
+
+Authorization: WIP. Strong typing keystone frame types.
+
+```
+yarn gitadd:
+```
+   Almost files are added, but latest.yaml didn't get auto added, even though !.github/ is in .gitignore
+
+Test code in access has to find a new home.
+
+Literal constants.
+
+How to code where: true/false in gql without touching keystone core code. 
+
+Extend WhereInput to be WhereInput | true | false ... is yet to be tested as a patch to core. Can this work as a local patch? To be investigated ...
+
+Production build status: 
+
+Deductive filtering correctly identifies browswer based localhost traffic in testing, allowing next build super user access to the keystone, allowing for S/ISG tunneling.
+
+Pre production testing release status: Use as a production server in the current state is considered risky. Authorization is incomplete, but is overly tight. Expect missing functionality. 
+
+No proof exists that the correct firewalling of queries is correct, but it has passed preliminary security tests. Additional context information needs to be correctly decoded so the query firewall has the KeystoneContext correct.
+
+Additional functionality from upstream main:
+Polls fully working.
+Production build:
+   next lint
+   tailwind purge
+   telemetry disable
+   CI scripts: WIP
+
+
+All testing/patches/security audits are welcome. Feel free to contribute to documenting the industry best practises for using keyst<3ne CMS.
+
 ## License
 
 Copyright (c) 2021 Thinkmill Labs Pty Ltd. Licensed under the MIT License.
 
-Latest branch:
-
-CI: Github actions in testing.
-Production build status: Deductive filtering correctly allows SSG and ISG. 
-Authorization: WIP. Strong typing keystone frame types.
-
-
-Additions (c) 2021 Fourcube Ltd. Licensed under the MIT License.
+Modifications: Copyright (c) 2021 Fourcube Ltd. Licensed under the MIT License.
