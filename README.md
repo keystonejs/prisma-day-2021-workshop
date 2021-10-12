@@ -63,3 +63,12 @@ utils.js
 ## License
 
 Copyright (c) 2021 Thinkmill Labs Pty Ltd. Licensed under the MIT License.
+
+Latest branch:
+
+CI: Github actions in testing.
+Production build status: Deductive filtering correctly allows SSG and ISG. 
+Authorization: WIP. Strong typing keystone frame types.
+
+
+Additions (c) 2021 Fourcube Ltd. Licensed under the MIT License.
