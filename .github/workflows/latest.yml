@@ -41,8 +41,7 @@ jobs:
           cd $GITHUB_WORKSPACE
           DATABASE_URL="postgres://postgres:changeme@localhost/$appname"
           yes | yarn        
-          yarn dev &  
-          yarn next lint        
+          yarn dev &         
           sleep 3          
           yarn site:build          
           echo "Build unseeded $appname:latest production succeded" 

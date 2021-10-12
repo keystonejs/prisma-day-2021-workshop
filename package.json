@@ -7,7 +7,7 @@
     "gitadd": "yarn format && git add . ||:",
     "commit": "yarn gitadd && git commit -a -m ",
     "push": "git push origin latest",
-    "postinstall": "keystone-next postinstall && yarn next telemetry disable",
+    "postinstall": "keystone-next postinstall && yarn next telemetry disable && yarn next lint",
     "site:dev": "next dev -p 8000",
     "site:build": "next build",
     "site:start": "next start -p 8000",
