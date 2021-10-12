@@ -71,3 +71,4 @@ ALTER INDEX "User.email_unique" RENAME TO "User_email_key";
 
 -- RenameIndex
 ALTER INDEX "User.role_index" RENAME TO "User_role_idx";
+

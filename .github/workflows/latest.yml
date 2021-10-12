@@ -30,7 +30,7 @@ jobs:
         run: echo "Unit testing:"
 
       # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Install monorepo and give it a spin
         run: |
           set -euo pipefail    
           appname="prisma_day_2021"
