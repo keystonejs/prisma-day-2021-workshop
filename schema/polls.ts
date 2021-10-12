@@ -34,7 +34,9 @@ export const Poll = list({
           const lists = context.query as KeystoneListsAPI;
           return lists.User.count({
             where: {
-              pollAnswers: { some: { poll: { id: { equals: poll.id.toString() } } } },
+              pollAnswers: {
+                some: { poll: { id: { equals: poll.id.toString() } } },
+              },
             },
           });
         },
@@ -50,7 +52,9 @@ export const Poll = list({
             const pollAnswers = await lists.PollAnswer.findMany({
               where: {
                 poll: { id: { equals: poll.id.toString() } },
-                answeredByUsers: { some: { id: { equals: context.session.itemId } } },
+                answeredByUsers: {
+                  some: { id: { equals: context.session.itemId } },
+                },
               },
             });
             return pollAnswers[0];
@@ -66,7 +70,7 @@ export const PollAnswer = list({
   ui: contentUIConfig,
   fields: {
     label: text(),
-    poll: relationship({isFilterable: true, ref: 'Poll.answers' }),
+    poll: relationship({ isFilterable: true, ref: 'Poll.answers' }),
     voteCount: virtual({
       field: graphql.field({
         type: graphql.Int,
@@ -74,7 +78,11 @@ export const PollAnswer = list({
           const lists = context.query as KeystoneListsAPI;
 
           return lists.User.count({
-            where: { pollAnswers: { some: { id: { equals: pollAnswer.id.toString() } } } },
+            where: {
+              pollAnswers: {
+                some: { id: { equals: pollAnswer.id.toString() } },
+              },
+            },
           });
         },
       }),

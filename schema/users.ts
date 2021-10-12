@@ -6,15 +6,17 @@ import {
   virtual,
 } from '@keystone-next/keystone/fields';
 
-import {graphql} from '@keystone-next/keystone';
+import { graphql } from '@keystone-next/keystone';
 import { list } from '@keystone-next/keystone';
 
-import { permissions, rules, SessionContext, SessionFrame, ItemContext} from './access';
+import {
+  permissions,
+  rules,
+  SessionContext,
+  SessionFrame,
+  ItemContext,
+} from './access';
 import { GitHubRepo, githubReposResolver } from './fields/githubRepos/field';
-
-
-
-
 
 const fieldModes = {
   editSelfOrRead: ({ session, item }: any) =>
@@ -30,21 +32,24 @@ const fieldModes = {
 export const User = list({
   access: {
     operation: {
-      create: ({ session, context, listKey, operation } : SessionFrame) => true,
-      query: ({ session, context, listKey, operation } : SessionFrame) => true,
-      update: ({ session, context, listKey, operation } : SessionFrame) => rules.operationCanManageUserList(session),
-      delete: ({ session, context, listKey, operation } : SessionFrame) => rules.operationCanManageUserList(session),
+      create: ({ session, context, listKey, operation }: SessionFrame) => true,
+      query: ({ session, context, listKey, operation }: SessionFrame) => true,
+      update: ({ session, context, listKey, operation }: SessionFrame) =>
+        rules.operationCanManageUserList(session),
+      delete: ({ session, context, listKey, operation }: SessionFrame) =>
+        rules.operationCanManageUserList(session),
     },
     filter: {
       //update:  ({ session, context, listKey, operation } : SessionFrame) => rules.filterCanManageUserList(session),
       //delete: ({ session, context, listKey, operation } : SessionFrame) => rules.filterCanManageUserList(session)
-    }
-
+    },
   },
 
   ui: {
-    hideCreate: (session: SessionContext) => !permissions.canManageUsers(session),
-    hideDelete: (session: SessionContext) => !permissions.canManageUsers(session),
+    hideCreate: (session: SessionContext) =>
+      !permissions.canManageUsers(session),
+    hideDelete: (session: SessionContext) =>
+      !permissions.canManageUsers(session),
     itemView: {
       defaultFieldMode: (context: SessionContext) =>
         permissions.canManageUsers(context) ? 'edit' : 'hidden',
@@ -61,10 +66,11 @@ export const User = list({
       },
     }),
     email: text({
-      isIndexed: 'unique', 
+      isIndexed: 'unique',
       isFilterable: true,
       access: {
-        read: ({ session, context, listKey, operation } : SessionFrame) => rules.canManageUser(session),
+        read: ({ session, context, listKey, operation }: SessionFrame) =>
+          rules.canManageUser(session),
       },
       ui: {
         itemView: { fieldMode: fieldModes.editSelfOrHidden },
@@ -96,8 +102,7 @@ export const User = list({
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'read' },
-        query:
-          '{ name htmlUrl description homepage stargazersCount }'
+        query: '{ name htmlUrl description homepage stargazersCount }',
       },
     }),
     authoredPosts: relationship({
@@ -122,25 +127,25 @@ export const User = list({
 });
 
 export const Role = list({
-  
-    
-    fields: {
-      name: text(),
-      canManageContent: checkbox({ defaultValue: false }),
-      canManageUsers: checkbox({ defaultValue: false }),
-      users: relationship({ ref: 'User.role', many: true })
+  fields: {
+    name: text(),
+    canManageContent: checkbox({ defaultValue: false }),
+    canManageUsers: checkbox({ defaultValue: false }),
+    users: relationship({ ref: 'User.role', many: true }),
+  },
+
+  access: {
+    operation: {
+      query: ({ session, context, listKey, operation }: SessionFrame) =>
+        rules.operationCanManageUserList(session),
+      update: ({ session, context, listKey, operation }: SessionFrame) =>
+        rules.operationCanManageUserList(session),
+      delete: ({ session, context, listKey, operation }: SessionFrame) =>
+        rules.operationCanManageUserList(session),
     },
-    
-    access: {  
-      operation: {
-        query: ({ session, context, listKey, operation } : SessionFrame) => rules.operationCanManageUserList(session),
-        update: ({ session, context, listKey, operation } : SessionFrame) => rules.operationCanManageUserList(session),
-        delete: ({ session, context, listKey, operation } : SessionFrame) => rules.operationCanManageUserList(session),
-    }
   },
   //permissions.canManageUsers,
   ui: {
-    isHidden:  (session) => !permissions.canManageUsers(session),
+    isHidden: session => !permissions.canManageUsers(session),
   },
-
 });

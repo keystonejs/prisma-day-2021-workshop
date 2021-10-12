@@ -1,10 +1,21 @@
-import { relationship, select, text, timestamp } from '@keystone-next/keystone/fields';
+import {
+  relationship,
+  select,
+  text,
+  timestamp,
+} from '@keystone-next/keystone/fields';
 import { document } from '@keystone-next/fields-document';
 import { list } from '@keystone-next/keystone';
 
-import { permissions, rules, SessionFrame, ItemContext, OperationCanManageContentList, FilterCanManageContentList } from './access';
+import {
+  permissions,
+  rules,
+  SessionFrame,
+  ItemContext,
+  OperationCanManageContentList,
+  FilterCanManageContentList,
+} from './access';
 import { componentBlocks } from '../schema/fields/content/components';
-
 
 export const contentUIConfig = {
   hideCreate: (session: any) => !permissions.canManageContent(session),
@@ -15,15 +26,13 @@ export const contentUIConfig = {
   },
 };
 
-export const contentListAccess =
-{
+export const contentListAccess = {
   operation: {
     create: OperationCanManageContentList,
     update: OperationCanManageContentList,
-    delete: OperationCanManageContentList
-  }
-}
-
+    delete: OperationCanManageContentList,
+  },
+};
 
 export const Label = list({
   access: contentListAccess,
@@ -42,30 +51,32 @@ export const Label = list({
 
 function defaultSlug({ context, inputData }: any) {
   const date = new Date();
-  return `${inputData?.title
-    ?.trim()
-    ?.toLowerCase()
-    ?.replace(/[^\w ]+/g, '')
-    ?.replace(/ +/g, '-') ?? ''
-    }-${date?.getFullYear() ?? ''}${date?.getMonth() + 1 ?? ''}${date?.getDate() ?? ''
-    }`;
+  return `${
+    inputData?.title
+      ?.trim()
+      ?.toLowerCase()
+      ?.replace(/[^\w ]+/g, '')
+      ?.replace(/ +/g, '-') ?? ''
+  }-${date?.getFullYear() ?? ''}${date?.getMonth() + 1 ?? ''}${
+    date?.getDate() ?? ''
+  }`;
 }
 
 function defaultTimestamp() {
   return new Date().toISOString();
 }
 
-
 export const Post = list({
   access: {
     operation: {
       create: OperationCanManageContentList,
       update: OperationCanManageContentList,
-      delete: OperationCanManageContentList
+      delete: OperationCanManageContentList,
     },
     filter: {
-      query: (frame: SessionFrame) => FilterCanManageContentList(frame)
-  }},
+      query: (frame: SessionFrame) => FilterCanManageContentList(frame),
+    },
+  },
   ui: contentUIConfig,
   fields: {
     title: text(),
@@ -78,8 +89,8 @@ export const Post = list({
             return defaultSlug({ context, inputData });
           }
           return resolvedData.slug;
-        }
-      }
+        },
+      },
     }),
     status: select({
       options: [
@@ -97,8 +108,8 @@ export const Post = list({
             return defaultTimestamp();
           }
           return resolvedData.slug;
-        }
-      }
+        },
+      },
     }),
     author: relationship({ ref: 'User.authoredPosts' }),
     labels: relationship({ ref: 'Label.posts', many: true }),
