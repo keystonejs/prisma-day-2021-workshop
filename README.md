@@ -62,7 +62,9 @@ utils.js
 
 
 
-Latest branch:
+## About the latest branch:
+
+This branch is dedicated to creating a solid foundation for a production build to extend keystone CMS from.
 
 CI: Github actions in testing. Unseeded build.
 ```
@@ -93,7 +95,7 @@ Pre production testing release status:
 
 No proof exists that the correct firewalling of queries is correct. 
 It has passed preliminary security tests. 
-Additional KeystoneContext information needs to be correctly decoded
+Additional KeystoneContext information needs to be correctly decoded.
 ```
 
 Additional functionality from upstream main:
@@ -107,7 +109,7 @@ Production build:
       Prettier applied in gitadd.
 ```
 
-All testing/patches/security audits are welcome. Feel free to contribute to documenting the industry best practises for using keystone CMS.
+All testing/patches/security audits are welcome. Feel free to contribute to documenting the industry best practises for using keystone CMS combined with the powerhouse front end nextjs.
 
 ## License
 

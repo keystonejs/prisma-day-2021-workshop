@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test_args":"node echo",
     "clean": "rm -rf node_modules yarn.lock .keystone .next",
     "gitadd": "yarn format && git add . ||:",
     "commit": "yarn gitadd && git commit -a -m ",
