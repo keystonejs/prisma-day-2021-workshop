@@ -88,7 +88,9 @@ Extend WhereInput to be WhereInput | true | false ... is yet to be tested as a p
 
 Production build status: 
 ```
-Deductive filtering correctly identifies browswer based localhost traffic in testing. Next build super user authorization to keystone, allowing for S/ISG tunneling.
+Deductive filtering correctly identifies browswer based localhost traffic in testing. 
+
+Next build super user authorization to keystone, allowing for S/ISG tunneling.
 
 Pre production testing release status: 
    Admin UI Authorization is incomplete, but overly tight. 
