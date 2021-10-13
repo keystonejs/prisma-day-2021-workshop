@@ -12,8 +12,8 @@ import { list } from '@keystone-next/keystone';
 import {
   permissions,
   SessionContext,
-  SessionFrame,
   ItemContext,
+  SessionFrame,
 } from './access';
 import { GitHubRepo, githubReposResolver } from './fields/githubRepos/field';
 

@@ -1,5 +1,8 @@
 import { KeystoneContext } from '.keystone/types';
-import { useAuth } from '../components/auth';
+import {
+  BaseGeneratedListTypes,
+  ListFilterAccessControl,
+} from '@keystone-next/keystone/types';
 import { keystoneNextjsBuildApiKey } from '../keystone';
 
 import {
@@ -62,6 +65,12 @@ export type SessionContext = {
   };
 };
 
+declare type BaseAccessArgs = {
+  session: any;
+  listKey: string;
+  context: KeystoneContext;
+};
+
 export type SessionFrame = {
   session: ItemContext;
   context: SessionContext;
@@ -69,43 +78,53 @@ export type SessionFrame = {
   operation: string;
 };
 
-export type KeystoneFrame = {
-  session: SessionContext;
-  context: KeystoneContext;
-  listKey: string;
-  operation: string;
-};
+export type xSessionFrame = BaseAccessArgs & { operation: string };
 
-export type KeystoneInputFrame = KeystoneFrame & { inputData: any };
-export type KeystoneInputItemFrame = KeystoneInputFrame & { item: any };
-export type KeystoneDeleteItemFrame = KeystoneFrame & { item: any };
+export type FilterQueryFrame = ListFilterAccessControl<
+  'query',
+  BaseGeneratedListTypes
+>;
+export type FilterUpdateFrame = ListFilterAccessControl<
+  'update',
+  BaseGeneratedListTypes
+>;
+export type FilterDeleteFrame = ListFilterAccessControl<
+  'delete',
+  BaseGeneratedListTypes
+>;
+
+export type FilterFrame =
+  | FilterQueryFrame
+  | FilterUpdateFrame
+  | FilterDeleteFrame;
 
 export type ItemContext = { item: any } & SessionContext;
 
 //FIXME: Needs API key.
 export const isBuildEnvir = (frame: SessionFrame): boolean => {
-  if (frame.session === undefined) {
+  if (frame?.session === undefined) {
     //const headers = frame.context.req?.headers;
     //const host = headers ? headers['x-forwarded-host'] || headers['host'] : null;
     //const url = headers?.referer ? new URL(headers.referer) : undefined;
 
-    warn('access::isBuildEnvir: authentication breach:');
-    //warn( headers)
-    //warn(host)
-    //warn(url)
+    let kontext = frame?.context as KeystoneContext;
+    let recvApiKey = kontext?.req?.headers['x-api-key'];
 
-    warn('undefined frame.session:');
-    warn('Assuming a next build event:');
-    warn(
-      'Assumed next build authentication breach: Will bless next build with super user queries:'
-    );
-    //Massive security hole to be fixed with a shared secret.
-
-    warn(
-      'Blessed super user access to next build: (without API token: Do not deploy yet.)'
-    );
-    //localWarn("withKeysone code", withKeystone)
-    return true;
+    if (recvApiKey === keystoneNextjsBuildApiKey) {
+      if (recvApiKey.includes('keystone')) {
+        warn('access: prototype api key: ' + recvApiKey);
+      }
+      success(
+        'access::isBuildEnvir: next build: api key matches: granting super user query access.'
+      );
+      return true;
+    } else {
+      warn('access::isBuildEnvir: authentication breach:');
+      success(
+        'access::isBuildEnvir: no additional authorisation granted to breach.'
+      );
+      return false;
+    }
   }
   return false;
 };

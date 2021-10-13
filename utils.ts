@@ -31,17 +31,17 @@ export const report_error = (...obj: any) =>
   rmap_va(obj)((x: any) => log(colors.red(x.toString())));
 
 //Useful for monadic typing. WIP
-const unit = {};
+export const unit = {};
 
 //Logical combinators: applicative, so type save.
-const ftrue = (a: any) => (b: any) => (c: any) => a(c);
-const ffalse = (a: any) => (b: any) => b;
-const fkeep = (a: any) => a;
-const fcompose = (a: any) => (b: any) => (c: any) => a(b(c));
+export const ftrue = (a: any) => (b: any) => (c: any) => a(c);
+export const ffalse = (a: any) => (b: any) => b;
+export const fkeep = (a: any) => a;
+export const fcompose = (a: any) => (b: any) => (c: any) => a(b(c));
 
 //Abstract away this very useful primitive into functional land
-const funIf = (val: any) => (!!val ? ftrue : ffalse);
-const keepIf = (val: any) => (!!val ? fkeep : ffalse);
+export const funIf = (val: any) => (!!val ? ftrue : ffalse);
+export const keepIf = (val: any) => (!!val ? fkeep : ffalse);
 
 // WIP: monadic functions set a challange for typing in ts. For the moment any will have to do to get things moving
 // FIXME: Strongly type me please! Basically its a string or a monad applied to a string, with the terminating string used to terminate props
@@ -50,7 +50,7 @@ const keepIf = (val: any) => (!!val ? fkeep : ffalse);
 // Note: Applicative anys are typesafe
 // Very quickly, thanks to Church et al, all core ts operators have been abstracted into a functional algebra, forcing the use of primitives that are known to work in adverse situations.
 // This lower the burnen of proof on security audits, since the code now has monadic/monoid structure, which is uniform to code in.
-const pure_string_monad =
+export const pure_string_monad =
   (termPredicate: any) =>
   (termString: any) =>
   (transferFun: any) =>
@@ -63,15 +63,16 @@ const pure_string_monad =
       )
     );
 
-const fcmpString = (termString: string) => (next_delta: string) =>
+export const fcmpString = (termString: string) => (next_delta: string) =>
   funIf(next_delta === termString);
 
-const spaceJoinStrings = (a: string) => (b: string) => a + ' ' + b;
+export const spaceJoinStrings = (a: string) => (b: string) => a + ' ' + b;
 
-const renderTailwind = (cname: string) => (tailwindCompositeStyle: string) =>
-  cname + '=' + tailwindCompositeStyle;
+export const renderTailwind =
+  (cname: string) => (tailwindCompositeStyle: string) =>
+    cname + '=' + tailwindCompositeStyle;
 
-const renderState = (cname: string) => (state: string) => state;
+export const renderState = (cname: string) => (state: string) => state;
 
 export const renderLog = (cname: string) => (logLine: string) =>
   console.log(logLine);
@@ -89,11 +90,17 @@ export const errorCol = colors.red;
 
 //Testing the new logging api.
 export const emitLog = 'emitLog';
+
 const utilsLog = logMonadClos('utils');
 const utilsWarning = (a: string) => utilsLog(warningCol(a));
 const utilsError = (a: string) => utilsLog(errorCol(a));
 const utilsSuccess = (a: string) => utilsLog(successCol(a));
 // The above is a fully featured monadic tailwind compiler :)
+
+const accessLog = logMonadClos('access');
+const accessWarning = (a: string) => accessLog(warningCol(a));
+const accessError = (a: string) => accessLog(errorCol(a));
+const accessSuccess = (a: string) => accessLog(successCol(a));
 
 export const gql = ([content]: TemplateStringsArray) => content;
 

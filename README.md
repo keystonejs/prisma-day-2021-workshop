@@ -71,46 +71,48 @@ CI: Github actions in testing. Unseeded build.
 yarn commit "message" ... adds files and commits.
 yarn push ... (auto push to origin latest)
 ```
+
+
+✅ Authorization: Strong typing keystone frame types (bar one C++ style typecast)
+
+✅ Test code in access has a new temporary home in utils.
+
+
+
+Production build status: ✅ Pre release: Testing.
+
+```
+✅ Next build super user authorization to keystone, allowing for SSR/SSG/ISR tunneling.
+      A shout out to Jed for explaining the keystone way.
+
+✅ Next build api key: tested and working
+
+✅ Api key connected to workflow. 
+
+✅ Pre production testing release status: 
+✅   Admin UI Authorization has passed preliminary testing. 
+
+✅ Ready for exhaustive testing. Bug reports welcome!
+```
+
+```
 Known Issues:
-
-Authorization: WIP. Strong typing keystone frame types.
-
-Test code in access has to find a new home.
-
 Refactor literals.
+
+Code can siliently fail in a ?. chain. 
+The ?. construction is convenient, but not suitable for production logging, error trapping.
+To be replaced with a maybe sytle monad.
 
 How to code where: true/false in gql without touching keystone core code. 
 
 Extend WhereInput to be WhereInput | true | false ... is yet to be tested as a patch to core. Can this work as a local patch? To be investigated ...
 
-Production build status: 
-```
-Deductive filtering correctly identifies browswer based localhost traffic in testing. 
-
-Next build super user authorization to keystone, allowing for SSR/SSG/ISR tunneling.
-   USE CASE: TESTING BUILD FUNCTIONALITY ONLY. 
-
-Api key connected to workflow. Injected into a better location, in utils.ts. 
 Self descriptive localised logging: Nonclemanture: Pure functional, but with caveats: 
    Trying to find optimal mix of pure functional code and useful ts semantics.
-
-Pre production testing release status: 
-   Admin UI Authorization has passed preliminary testing. 
-   DRY permissions. Rules deprecation. Some tidying up stil to be done.
-   Ready for exhaustive testing.
-
-Issues: Code can siliently fail in the ?. chain. 
-The ?. construction is convenient, but not suitable for production logging, error trapping.
-To be replaced with a maybe sytle monad.
-
-The current implementation of build process api's is a hack. A shout out to Jed for explaining the keystone way. WIP.
-It has passed only the most preliminary of security tests, determining localhost web from build, i.e. a proof of concept.
-Now to get it all linked up ... one last push!
-
-Additional KeystoneContext auth information and a shared API key, set in via process .env: 
-   needs to be correctly handed down in the headers to the last line of defense, access: filter.
-
+   DRY permissions. Some tidying up stil to be done. WIP
 ```
+
+
 
 Additional functionality from upstream main:
 ```
