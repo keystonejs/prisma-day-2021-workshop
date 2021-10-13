@@ -88,7 +88,7 @@ export const warningCol = colors.yellow;
 export const errorCol = colors.red;
 
 //Testing the new logging api.
-const emitLog = 'emitLog';
+export const emitLog = 'emitLog';
 const utilsLog = logMonadClos('utils');
 const utilsWarning = (a: string) => utilsLog(warningCol(a));
 const utilsError = (a: string) => utilsLog(errorCol(a));

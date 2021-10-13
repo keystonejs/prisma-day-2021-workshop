@@ -90,15 +90,22 @@ Deductive filtering correctly identifies browswer based localhost traffic in tes
 Next build super user authorization to keystone, allowing for SSR/SSG/ISR tunneling.
    USE CASE: TESTING BUILD FUNCTIONALITY ONLY. 
 
-Api key connected to workflow. Injected into provably correct location, in utils.ts.
+Api key connected to workflow. Injected into a better location, in utils.ts. 
+Self descriptive localised logging: Nonclemanture: Pure functional, but with caveats: 
+   Trying to find optimal mix of pure functional code and useful ts semantics.
 
 Pre production testing release status: 
    Admin UI Authorization has passed preliminary testing. 
    DRY permissions. Rules deprecation. Some tidying up stil to be done.
    Ready for exhaustive testing.
 
+Issues: Code can siliently fail in the ?. chain. 
+The ?. construction is convenient, but not suitable for production logging, error trapping.
+To be replaced with a maybe sytle monad.
+
 The current implementation of build process api's is a hack. A shout out to Jed for explaining the keystone way. WIP.
 It has passed only the most preliminary of security tests, determining localhost web from build, i.e. a proof of concept.
+Now to get it all linked up ... one last push!
 
 Additional KeystoneContext auth information and a shared API key, set in via process .env: 
    needs to be correctly handed down in the headers to the last line of defense, access: filter.
