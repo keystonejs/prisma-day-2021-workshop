@@ -96,47 +96,60 @@ Production build status: ✅ Pre release: Testing.
 ```
 
 ## Security audit
-Status: Preliminary.
+Status: `Preliminary`.
 
 More informative logging, suitable for deployment.
-   Code coverage: partial
+   `Code coverage: partial`
 
+`any` issues:
 Low level ts/js security audit: Research and development has established many bugs hide in the rampantly polymorphic `any` type. 
 
-This dangerous construct is used in upstream auth. Roughly 50% of these situations reveals an unhandled case, hidden from lint. 
+This `dangerous construct` is used in upstream auth. Roughly 
+
+```
+50% of these situations reveals an unhandled case, hidden from lint. 
+```
 
 Currently developing a reader friendly notation for the rather awkward ts functional notation, to try to find ways to eliminte `any`. The most readable so far appears to be:
 
-export const fcompose = <A,B,C>(a: (maps: B) => A) => (b: (maps: C) => B) => (c: C) => 
-   a(b(c));
+`export const fcompose = <A,B,C>(a: (maps: B) => A) => (b: (maps: C) => B) => (c: C) => 
+   a(b(c))`
 
 and for cartestian products:
 
-transferFun: (maps: T) => (cross: T) => T
+   `transferFun: (maps: T) => (cross: T) => T`
 
-obviously we would much rather write:
+obviously we would rather write:
 
-transferFun: T => T => T,
+   `transferFun: T => T => T,`
 
-but its a bit odd to, at least the ts reads a bit like the indended
+but its a bit odd to, at least the ts reads a bit like the intended,
 
-   transferFun: maps T cross T to T, 
+   `transferFun: maps T cross T to T,` 
 
-just the brackets are all in the wrong place.
+just all the brackets are in the wrong place for the eye to flow smoothly over it.
 
-The issue is we have to name variables for types which are not instantiated, and naming things is hard. 
+The issue here is we have to name variables for types which are `not instantiated`, and `naming things is hard`. 
 
-Using this convention, a free grammar is pinned down, in which the two new constructs make sense, and the rather clunky type specifications almost become readable, a bit like what tailwind does to css. cross is preferred to x: or X:. At first these looked good, then they didn't. x and X are heavily overused names.
+Using this convention, a free grammar is pinned down, in which the two new constructs make sense, and the rather clunky type specifications almost become readable, a bit like what tailwind does to css. cross is preferred for short defintions, opposed to x: or X:. At first these both looked excellent options, then they didn't. x is heavily overused. So of the two X looks better, but is in caps, I vote it runner up, and perhaps optimal for long type definitions. X in maths means the same thing, as does cross.
+
+But when printed, the shorter 
+   `transferFun: (maps: T) => (X: T) => T`
+
+doesn't seem to read as well as
+   `transferFun: (maps: T) => (cross: T) => T`
 
 When reviewing code, it can be hard to tell these dummy parameter names from important ones. That's the real point of this comment.
 
-The other problem is that <T>(a: T) is not the same as (a: any). The templated class can't echo undefined types, but `any` can! Another point is that as soon as `any` is used, the code becomes ... javascript. No more needs to be said. My mission against `any` is more than fully justified. However, some functional code doesn't seem to work properly without the total polymorphism `any` allows, and some ts functional code looks fine, ... but bizarrely doesn't work in all contexts. It might have to do with the inner depths of js module linkage. The places audits have to go!
+The other problem is that <T>(a: T) is not the same as (a: any). The templated class can't echo undefined types, but `any` can! Another point is that as soon as `any` is used, the code becomes ... javascript. No more needs to be said. My mission against `any` is more than fully justified. 
 
-There is also a dodgy C++ style cast, right where it's not needed ... TBC.
+However, some functional code doesn't seem to work properly without the total polymorphism `any` allows, and some ts functional code looks fine, ... but bizarrely doesn't work in all contexts. It might have to do with the inner depths of js module linkage. The places audits have to go ...
+
+There is also a `dodgy C++ style cast`, right where it's not needed ... `TBC`.
 
 Is it my imagination, or does C++ `auto` work better than `any`? What we really need is `auto` in ts, to avoid unecessary templating.
 
-With these caveats in mind, enjoy. 
+With these caveats in mind, enjoy, and be fully aware it is in a `testing` phase. 
 
 ```
 Known Issues:
