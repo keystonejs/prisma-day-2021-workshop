@@ -12,7 +12,6 @@ import {
   ItemContext,
   operationCanManageContentList,
   FilterCanManageContentList,
-  FilterQueryFrame,
   SessionFrame,
 } from './access';
 import { componentBlocks } from '../schema/fields/content/components';
