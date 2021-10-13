@@ -14,11 +14,6 @@ import {
   emitLog,
 } from '../utils';
 
-const localLog = logMonadClos('access');
-const localWarning = (a: string) => localLog(warningCol(a));
-const localError = (a: string) => localLog(errorCol(a));
-const localSuccess = (a: string) => localLog(successCol(a));
-
 /*
 export default config({
   lists: {
