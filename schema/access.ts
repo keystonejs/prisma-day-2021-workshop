@@ -2,7 +2,46 @@ import { KeystoneContext } from '.keystone/types';
 import { useAuth } from '../components/auth';
 import { keystoneNextjsBuildApiKey } from '../keystone';
 
-declare type MaybePromise<T> = Promise<T> | T;
+import {
+  success,
+  warn,
+  report_security_incident,
+  report_error,
+} from '../utils';
+
+/*
+export default config({
+  lists: {
+    ListKey: list({
+      access: {
+        item: {
+          create: ({ session, context, listKey, operation, inputData }) => true,
+          update: ({ session, context, listKey, operation, inputData, item }) => true,
+          delete: ({ session, context, listKey, operation, item }) => true,
+        }
+      },
+    }),
+  },
+});
+```
+
+?> Item-level access control is not available for `query` operations.
+Applying access control after fetching items would lead to inconsistent pagination behaviour and incorrect `count` results.
+
+### Function Arguments
+
+List-level access control functions are passed a collection of arguments which can be used to determine whether the operation is allowed.
+
+| Argument    | Description                                                                                                   |
+| ----------- | ------------------------------------------------------------------------------------------------------------- |
+| `session`   | The current session object. See the [Sessions API](./session) for details.                                    |
+| `context`   | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                               |
+| `listKey`   | The key of the list being operated on.                                                                        |
+| `operation` | The operation being performed (`'query'`, `'create'`, `'update'`, `'delete'`).                                |
+| `inputData` | For `create` and `update` operations, this is the value of `data` passed into the mutation. (Item level only) |
+| `item`      | The existing item being updated/deleted in `update` and `delete` operations. (Item level only)                |
+
+*/
 
 export type SessionContext = {
   session?: {
@@ -25,40 +64,21 @@ export type SessionFrame = {
   operation: string;
 };
 
+export type KeystoneFrame = {
+  session: SessionContext;
+  context: KeystoneContext;
+  listKey: string;
+  operation: string;
+};
+
+export type KeystoneInputFrame = KeystoneFrame & { inputData: any };
+export type KeystoneInputItemFrame = KeystoneInputFrame & { item: any };
+export type KeystoneDeleteItemFrame = KeystoneFrame & { item: any };
+
 export type ItemContext = { item: any } & SessionContext;
-
-const unit = {};
-const rmap_va =
-  (...props: any) =>
-  (f: any) => {
-    props.forEach((element: any) => {
-      f(element);
-    });
-  };
-
-let colors = require('colors/safe');
-
-// Fix Me: Test code: Needs another home.
-//This is one place where any means it! The intent was object dumping code, down to
-//every leaf. A testground for DRY logging in ts.
-// Closures are good for logging, localising to particular files/functions/lines ... the issues of this short segment quickly shows why.
-// I have some multicol markup for logging, it bash though, so replaces console.log.
-// A markup standard for shell would be useful.
-
-const log = (s: string) => console.log(s);
-
-const success = (...obj: any) =>
-  rmap_va(obj)((x: any) => log(colors.green(x.toString())));
-
-const warn = (...obj: any) =>
-  rmap_va(obj)((x: any) => log(colors.yellow(x.toString())));
-
-const report_security_incident = (...obj: any) =>
-  rmap_va(obj)((x: any) => log(colors.red(x.toString())));
 
 //FIXME: Needs API key.
 export const isBuildEnvir = (frame: SessionFrame): boolean => {
-  const auth = useAuth();
   if (frame.session === undefined) {
     //const headers = frame.context.req?.headers;
     //const host = headers ? headers['x-forwarded-host'] || headers['host'] : null;
@@ -104,6 +124,8 @@ export const permissions = {
   canManageUsersSession: ({ session }: SessionContext): boolean => {
     return !!session?.data?.role?.canManageUsers;
   },
+  canManageContentItem: (item: ItemContext): boolean =>
+    !!item?.session?.data?.role?.canManageContent,
 };
 
 export const operationCanManageContentList = (frame: SessionFrame) =>
@@ -172,6 +194,10 @@ export const FilterCanManageContentList = (frame: SessionFrame) => {
 
     //In testing, bad username password combinations were reporting auth failure
     //immediately. A delay of a few seconds has an improved security model.
+
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!       Core Issues located:      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // auth/src/index.ts and related files in keystone core are triggering some "any" issues. Strong typing is (strongly) recommended.
+    // e.g.    const pageMiddleware: AdminUIConfig['pageMiddleware'] = async ({ context, isValidSession })
   }
   //Needs shared secret, set in bash, imported via process.env, usage tested in the CI workflow, which act as the base spec for a container to run keystone/next in.
   if (isBuildEnvir(frame)) {

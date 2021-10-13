@@ -90,6 +90,8 @@ Deductive filtering correctly identifies browswer based localhost traffic in tes
 Next build super user authorization to keystone, allowing for SSR/SSG/ISR tunneling.
    USE CASE: TESTING BUILD FUNCTIONALITY ONLY. 
 
+Api key connected to workflow. Injected into provably correct location, in utils.ts.
+
 Pre production testing release status: 
    Admin UI Authorization has passed preliminary testing. 
    DRY permissions. Rules deprecation. Some tidying up stil to be done.

@@ -1,7 +1,7 @@
 import { GetStaticPathsResult, GetStaticPropsContext } from 'next';
 import React from 'react';
 
-import { fetchGraphQL, gql } from '../../utils';
+import { fetchGraphQL_inject_api_key, gql } from '../../utils';
 import { DocumentRenderer } from '../../schema/fields/content/renderers';
 
 import { Container, HomeLink } from '../../components/ui/layout';
@@ -28,7 +28,7 @@ export default function Post({ post }: { post: any }) {
 }
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const data = await fetchGraphQL(
+  const data = await fetchGraphQL_inject_api_key(
     gql`
       query {
         posts {
@@ -44,7 +44,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
 }
 
 export async function getStaticProps({ params }: GetStaticPropsContext) {
-  const data = await fetchGraphQL(
+  const data = await fetchGraphQL_inject_api_key(
     gql`
       query ($slug: String!) {
         post(where: { slug: $slug }) {

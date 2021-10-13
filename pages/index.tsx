@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { GetStaticPropsContext } from 'next';
 
-import { fetchGraphQL, gql } from '../utils';
+import { fetchGraphQL_inject_api_key, gql } from '../utils';
 import { DocumentRenderer } from '../schema/fields/content/renderers';
 
 import { Container } from '../components/ui/layout';
@@ -64,7 +64,7 @@ export default function Home({ posts }: { posts: Post[] }) {
 }
 
 export async function getStaticProps({ params }: GetStaticPropsContext) {
-  const data = await fetchGraphQL(
+  const data = await fetchGraphQL_inject_api_key(
     gql`
       query {
         posts(

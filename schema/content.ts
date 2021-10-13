@@ -13,6 +13,10 @@ import {
   ItemContext,
   operationCanManageContentList,
   FilterCanManageContentList,
+  KeystoneInputFrame,
+  KeystoneInputItemFrame,
+  KeystoneDeleteItemFrame,
+  KeystoneFrame,
 } from './access';
 import { componentBlocks } from '../schema/fields/content/components';
 
@@ -22,8 +26,8 @@ import { componentBlocks } from '../schema/fields/content/components';
 // MaybeSessionFunction has something to do with the ts error.
 
 export const contentUIConfig = {
-  hideCreate: (session: any) => !permissions.canManageContent(session),
-  hideDelete: (session: any) => !permissions.canManageContent(session),
+  hideCreate: (session: any) => !permissions.canManageContentItem(session),
+  hideDelete: (session: any) => !permissions.canManageContentItem(session),
   itemView: {
     defaultFieldMode: (session: ItemContext) =>
       permissions.canManageContentSession(session) ? 'edit' : 'read',
