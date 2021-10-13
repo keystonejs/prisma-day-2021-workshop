@@ -1,4 +1,5 @@
 import { keystoneNextjsBuildApiKey } from './keystone';
+let colors = require('colors/safe');
 
 // Fix Me: Test code: Needs another home.
 //This is one place where any means it! The intent was object dumping code, down to
@@ -7,100 +8,57 @@ import { keystoneNextjsBuildApiKey } from './keystone';
 // I have some multicol markup for logging, it bash though, so replaces console.log.
 // A markup standard for shell would be useful.
 
-const log = (s: string) => console.log(s);
-//Very bad code, has to go soon. Monadic replacement.
-const rmap_va =
-  (...props: any) =>
-  (f: any) => {
-    props.forEach((element: any) => {
-      f(element);
-    });
-  };
-
-let colors = require('colors/safe');
-export const success = (...obj: any) =>
-  rmap_va(obj)((x: any) => log(colors.green(x.toString())));
-
-export const warn = (...obj: any) =>
-  rmap_va(obj)((x: any) => log(colors.yellow(x.toString())));
-
-export const report_security_incident = (...obj: any) =>
-  rmap_va(obj)((x: any) => log(colors.red(x.toString())));
-
-export const report_error = (...obj: any) =>
-  rmap_va(obj)((x: any) => log(colors.red(x.toString())));
-
-//Useful for monadic typing. WIP
-export const unit = {};
-
-//Logical combinators: applicative, so type save.
-export const ftrue = (a: any) => (b: any) => (c: any) => a(c);
-export const ffalse = (a: any) => (b: any) => b;
-export const fkeep = (a: any) => a;
-export const fcompose = (a: any) => (b: any) => (c: any) => a(b(c));
-
-//Abstract away this very useful primitive into functional land
-export const funIf = (val: any) => (!!val ? ftrue : ffalse);
-export const keepIf = (val: any) => (!!val ? fkeep : ffalse);
-
-// WIP: monadic functions set a challange for typing in ts. For the moment any will have to do to get things moving
-// FIXME: Strongly type me please! Basically its a string or a monad applied to a string, with the terminating string used to terminate props
-// and additional input to the render function to abstract away the names.
-// FIXME: Parameterise the type so that it becomes a general purpose monadic compiler.
-// Note: Applicative anys are typesafe
-// Very quickly, thanks to Church et al, all core ts operators have been abstracted into a functional algebra, forcing the use of primitives that are known to work in adverse situations.
-// This lower the burnen of proof on security audits, since the code now has monadic/monoid structure, which is uniform to code in.
-export const pure_string_monad =
-  (termPredicate: any) =>
-  (termString: any) =>
-  (transferFun: any) =>
-  (renderFun: any) =>
-  (state: string) =>
-  (next_delta: string) =>
-    termPredicate(next_delta)(termString)(renderFun(termString)(state))(
-      pure_string_monad(termPredicate)(termString)(transferFun)(renderFun)(
-        transferFun(state)(next_delta)
-      )
-    );
-
-export const fcmpString = (termString: string) => (next_delta: string) =>
-  funIf(next_delta === termString);
-
-export const spaceJoinStrings = (a: string) => (b: string) => a + ' ' + b;
-
-export const renderTailwind =
-  (cname: string) => (tailwindCompositeStyle: string) =>
-    cname + '=' + tailwindCompositeStyle;
-
-export const renderState = (cname: string) => (state: string) => state;
-
-export const renderLog = (cname: string) => (logLine: string) =>
-  console.log(logLine);
-
-export const tailwindMonad =
-  pure_string_monad(fcmpString)('class')(spaceJoinStrings)(renderTailwind);
-
-//Specialise for a file
-export const logMonadClos = (fileName: string) =>
-  pure_string_monad(fcmpString)(emitLog)(spaceJoinStrings)(renderLog);
+//const log = (s: string) => console.log(s);
+//Reverse mapping for var args, rest parameters ... handy but slightly disfunctional, forEach is not strongly typed.
 
 export const successCol = colors.green;
 export const warningCol = colors.yellow;
 export const errorCol = colors.red;
 
+const logContextInfo = (msg: string) => {
+  const e = new Error();
+  const errmsg = 'Unknown line and file!!';
+  const sep = ': ';
+  if (!e.stack) return errmsg;
+
+  const regex = /\((.*):(\d+):(\d+)\)$/;
+  const match = regex.exec(e?.stack?.split('\n')[2]);
+  const info = match
+    ? Date() + sep + match[1] + sep + match[2] + sep + match[3]
+    : errmsg;
+
+  console.log(info + sep + msg);
+};
+
+export const log = {
+  warning: (a: any) => logContextInfo(warningCol(a.toString())),
+  error: (a: any) => logContextInfo(errorCol(a.toString())),
+  success: (a: any) => logContextInfo(successCol(a.toString())),
+};
+
+//Right monadic action on vargs.
+const ract_va =
+  <Tprops>(...props: Tprops[]) =>
+  (f: (maps: Tprops) => void) =>
+    props.forEach((x: Tprops) => f(x));
+
+export const success = (...obj: any) =>
+  ract_va(obj)((x: any) => log.success(x));
+
+export const warn = (...obj: any) => ract_va(obj)((x: any) => log.warning(x));
+
+export const report_security_incident = (...obj: any) =>
+  ract_va(obj)((x: any) => log.warning(x));
+
+export const report_error = (...obj: any) =>
+  ract_va(obj)((x: any) => log.error(x));
+
 //Testing the new logging api.
-export const emitLog = 'emitLog';
+export const endLog = 'endLog';
 
-const utilsLog = logMonadClos('utils');
-const utilsWarning = (a: string) => utilsLog(warningCol(a));
-const utilsError = (a: string) => utilsLog(errorCol(a));
-const utilsSuccess = (a: string) => utilsLog(successCol(a));
-// The above is a fully featured monadic tailwind compiler :)
-
-const accessLog = logMonadClos('access');
-const accessWarning = (a: string) => accessLog(warningCol(a));
-const accessError = (a: string) => accessLog(errorCol(a));
-const accessSuccess = (a: string) => accessLog(successCol(a));
+const utilsWarning = (a: string) => logContextInfo(warningCol(a));
+const utilsError = (a: string) => logContextInfo(errorCol(a));
+const utilsSuccess = (a: string) => logContextInfo(successCol(a));
 
 export const gql = ([content]: TemplateStringsArray) => content;
 
@@ -108,9 +66,11 @@ export async function fetchGraphQL_inject_api_key(
   query: string,
   variables?: Record<string, any>
 ) {
-  funIf(keystoneNextjsBuildApiKey.includes('keystone'))(
-    utilsWarning('utils: prototype api key: ' + keystoneNextjsBuildApiKey)
-  )(utilsSuccess('Next build triggered: Api key injected.'))(emitLog);
+  keystoneNextjsBuildApiKey.includes('keystone')
+    ? utilsWarning('Prototype api key: ' + keystoneNextjsBuildApiKey)
+    : utilsSuccess(
+        'Next build triggered: Api key injected into x-api-key headers.'
+      );
 
   return fetch('http://localhost:3000/api/graphql', {
     method: 'POST',

@@ -10,11 +10,6 @@ import {
   warn,
   report_security_incident,
   report_error,
-  logMonadClos,
-  successCol,
-  warningCol,
-  errorCol,
-  emitLog,
 } from '../utils';
 
 /*
@@ -233,7 +228,6 @@ export const FilterCanManageContentList = (frame: SessionFrame) => {
   if (!!frame.context.session?.data?.role?.canManageContent) {
     success('Blessed super user access to the known content manager:');
     success(frame?.context?.session?.data?.name);
-    success('');
     return EVERY_POST_STATUS;
   }
 

@@ -95,6 +95,48 @@ Production build status: ✅ Pre release: Testing.
 ✅ Ready for exhaustive testing. Bug reports welcome!
 ```
 
+## Security audit
+Status: Preliminary.
+✅ More informative logging, suitable for deployment.
+   Code coverage: partial
+
+Low level ts/js security audit: Research and development has established many bugs hide in the rampantly polymorphic `any` type. 
+
+This dangerous construct is used in upstream auth. Roughly 50% of these situations reveals an unhandled case, hidden from lint. 
+
+Currently developing a reader friendly notation for the rather awkward ts functional notation, to try to find ways to eliminte `any`. The most readable so far appears to be:
+
+export const fcompose = <A,B,C>(a: (maps: B) => A) => (b: (maps: C) => B) => (c: C) => 
+   a(b(c));
+
+and for cartestian products:
+
+transferFun: (maps: T) => (cross: T) => T
+
+obviously we would much rather write:
+
+transferFun: T => T => T,
+
+but its a bit odd to, at least the ts reads a bit like the indended
+
+   transferFun: maps T cross T to T, 
+
+just the brackets are all in the wrong place.
+
+The issue is we have to name variables for types which are not instantiated, and naming things is hard. 
+
+Using this convention, a free grammar is pinned down, in which the two new constructs make sense, and the rather clunky type specifications almost become readable, a bit like what tailwind does to css. cross is preferred to x: or X:. At first these looked good, then they didn't. x and X are heavily overused names.
+
+When reviewing code, it can be hard to tell these dummy parameter names from important ones. That's the real point of this comment.
+
+The other problem is that <T>(a: T) is not the same as (a: any). The templated class can't echo undefined types, but `any` can! Another point is that as soon as `any` is used, the code becomes ... javascript. No more needs to be said. My mission against `any` is more than fully justified. However, some functional code doesn't seem to work properly without the total polymorphism `any` allows, and some ts functional code looks fine, ... but bizarrely doesn't work in all contexts. It might have to do with the inner depths of js module linkage. The places audits have to go!
+
+There is also a dodgy C++ style cast, right where it's not needed ... TBC.
+
+Is it my imagination, or does C++ `auto` work better than `any`? What we really need is `auto` in ts, to avoid unecessary templating.
+
+With these caveats in mind, enjoy. 
+
 ```
 Known Issues:
 Refactor literals.
@@ -107,9 +149,6 @@ How to code where: true/false in gql without touching keystone core code.
 
 Extend WhereInput to be WhereInput | true | false ... is yet to be tested as a patch to core. Can this work as a local patch? To be investigated ...
 
-Self descriptive localised logging: Nonclemanture: Pure functional, but with caveats: 
-   Trying to find optimal mix of pure functional code and useful ts semantics.
-   DRY permissions. Some tidying up stil to be done. WIP
 ```
 
 
@@ -118,10 +157,12 @@ Additional functionality from upstream main:
 ```
 Polls fully working.
 Production build:
+   Detailed logging: WIP
    next lint
    tailwind purge
    telemetry disable
-   CI scripts: WIP
+   x-api-key for next build events
+   CI scripts: WIP: Seeding
       Prettier applied in gitadd.
 ```
 
