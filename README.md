@@ -97,7 +97,8 @@ Production build status: ✅ Pre release: Testing.
 
 ## Security audit
 Status: Preliminary.
-✅ More informative logging, suitable for deployment.
+
+More informative logging, suitable for deployment.
    Code coverage: partial
 
 Low level ts/js security audit: Research and development has established many bugs hide in the rampantly polymorphic `any` type. 
