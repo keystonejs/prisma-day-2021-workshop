@@ -72,16 +72,17 @@ yarn commit "message" ... adds files and commits.
 yarn push ... (auto push to origin latest)
 ```
 
+## Status report
 
 ✅ Authorization: Strong typing keystone frame types (bar one C++ style typecast)
 
 ✅ Test code in access has a new temporary home in utils.
 
 
+Production build status: 
 
-Production build status: ✅ Pre release: Testing.
+✅ Pre release: Testing: Builds and decodes static x-api-key. 
 
-```
 ✅ Next build super user authorization to keystone, allowing for SSR/SSG/ISR tunneling.
       A shout out to Jed for explaining the keystone way.
 
@@ -94,12 +95,16 @@ Production build status: ✅ Pre release: Testing.
 
 ✅ Ready for exhaustive testing. Bug reports welcome!
 ```
+More informative logging, suitable for deployment.
+   `Code coverage: partial`
+
 
 ## Security audit
 Status: `Preliminary`.
 
-More informative logging, suitable for deployment.
-   `Code coverage: partial`
+## TL;DR
+`<T>(a: T)` is a type safe replacement for `(a: any)`, because we need to trap the awkward `undefined` cases at build time. 
+
 
 `any` issues:
 Low level ts/js security audit: Research and development has established many bugs hide in the rampantly polymorphic `any` type. 
@@ -115,6 +120,11 @@ Currently developing a reader friendly notation for the rather awkward ts functi
 `export const fcompose = <A,B,C>(a: (maps: B) => A) => (b: (maps: C) => B) => (c: C) => 
    a(b(c))`
 
+and in second place,
+
+`export const fcompose = <A,B,C>(a: (X: B) => A) => (b: (maps: C) => B) => (c: C) => 
+   a(b(c))`
+
 and for cartestian products:
 
    `transferFun: (maps: T) => (cross: T) => T`
@@ -127,11 +137,11 @@ but its a bit odd to, at least the ts reads a bit like the intended,
 
    `transferFun: maps T cross T to T,` 
 
-just all the brackets are in the wrong place for the eye to flow smoothly over it.
+just all the brackets are in the wrong place for the eye to flow smoothly over it, and the one place we want a new dummy variable, `to`, `ts` forces `=>`. I'd prefer the Haskell style notation to read
 
-The issue here is we have to name variables for types which are `not instantiated`, and `naming things is hard`. 
+   `transferFun: T => T to T,`
 
-Using this convention, a free grammar is pinned down, in which the two new constructs make sense, and the rather clunky type specifications almost become readable, a bit like what tailwind does to css. cross is preferred for short defintions, opposed to x: or X:. At first these both looked excellent options, then they didn't. x is heavily overused. So of the two X looks better, but is in caps, I vote it runner up, and perhaps optimal for long type definitions. X in maths means the same thing, as does cross.
+since `=>` is somewhat overused. The return type is special in comparisson to intermediary closure parameters.
 
 But when printed, the shorter 
    `transferFun: (maps: T) => (X: T) => T`
@@ -139,17 +149,33 @@ But when printed, the shorter
 doesn't seem to read as well as
    `transferFun: (maps: T) => (cross: T) => T`
 
+The issue here is we have to name variables for types which are `not instantiated`, and `naming things is hard`. 
+
+
+
+Using this convention, a free grammar is pinned down, in which the two new constructs make sense, and the rather clunky type specifications almost become readable, a bit like what tailwind does to css. `cross:` is preferred for short defintions, opposed to `x:` or `X:`. At first these both looked excellent options, then they didn't. `x` is heavily overused. So of the two `X` looks better, but is in caps, so I vote it runner up, but perhaps optimal for long type definitions. `X` in maths means roughly the same thing, as does `cross`, but `cross` is far less likely to be mistaken for a real variable. This is subtle because we are talking about a morphism between the Cartesian product embedded in the closure algebra, and a perhaps a different model of the product i.e. `(a,b)`, or a purely functional list api.
+
+Also cross will match fewer searches when greping though code.
+
+
 When reviewing code, it can be hard to tell these dummy parameter names from important ones. That's the real point of this comment.
 
-The other problem is that <T>(a: T) is not the same as (a: any). The templated class can't echo undefined types, but `any` can! Another point is that as soon as `any` is used, the code becomes ... javascript. No more needs to be said. My mission against `any` is more than fully justified. 
+`<T>(a: T)` is not the same as `(a: any)`. The templated class can't echo undefined types, but `any` can! This is seen as a `very good thing`.
+
+`<T>(a: T)` is a type safe replacement for any, because we need to trap the awkward `undefined` cases at build time. Then the type inferrence become far more similar to `C++`, which works well until it hits recursive types (with the unfortunate side effect of nerfing monads/coroutines). 
+
+
+Another point is that as soon as `any` is used, the code becomes ... javascript. No more needs to be said. My mission against `any` is more than fully justified, and I'm not alone:
+
+https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html
 
 However, some functional code doesn't seem to work properly without the total polymorphism `any` allows, and some ts functional code looks fine, ... but bizarrely doesn't work in all contexts. It might have to do with the inner depths of js module linkage. The places audits have to go ...
 
 There is also a `dodgy C++ style cast`, right where it's not needed ... `TBC`.
 
-Is it my imagination, or does C++ `auto` work better than `any`? What we really need is `auto` in ts, to avoid unecessary templating.
 
-With these caveats in mind, enjoy, and be fully aware it is in a `testing` phase. 
+
+With these caveats in mind, enjoy, and be fully aware this release is in a `testing` phase. 
 
 ```
 Known Issues:
