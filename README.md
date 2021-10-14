@@ -144,7 +144,7 @@ just all the brackets are in the wrong place for the eye to flow smoothly over i
 since `=>` is somewhat overused. The return type is special in comparisson to intermediary closure parameters.
 
 But when printed, the shorter 
-   `transferFun: (maps: T) => (X: T) => T`
+   `transferFun: (maps: T) => (X: T) => T,`
 
 doesn't seem to read as well as
    `transferFun: (maps: T) => (cross: T) => T`
