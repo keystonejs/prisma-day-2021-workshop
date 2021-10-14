@@ -72,8 +72,10 @@ yarn commit "message" ... adds files and commits.
 yarn push ... (auto push to origin latest)
 ```
 
-## Known crash bugs
-Vote when not logged in: WIP
+## Known crash bug ... 
+
+A stale session led to the app throwing when voting occured. More defensive coding is required in the access filtering to handle such cases. WIP.
+
 
 ## Status report
 

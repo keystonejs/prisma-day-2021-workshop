@@ -1,9 +1,9 @@
 import { keystoneNextjsBuildApiKey } from './keystone';
-import { TestingHardenedAny } from './wrap_any';
+import { HardenedAny, RampantlyPolymorphic } from './wrap_any';
 import colors from 'colors/safe';
 
 // Fix Me: Test code: Needs another home.
-// Logging is one place where TestingHardenedAny needs it! The intent was object dumping code, down to
+// Logging is one place where HardenedAny is needed! The intent was object dumping code, down to
 //every leaf. A testground for DRY logging in ts.
 // Closures are good for logging, localising to particular files/functions/lines ... the issues of this short segment quickly shows why.
 // I have some multicol markup for logging, it bash though, so replaces console.log.
@@ -56,7 +56,7 @@ export const simpleLogger = (msg: string) => console.log(Date() + sep + msg);
 export const logContextInfoGen =
   (msgRenderer: LogEventRenderer) =>
   (col: ColFun) =>
-  (toBeLogged: TestingHardenedAny): Tunit => {
+  (toBeLogged: HardenedAny): Tunit => {
     if (toBeLogged === undefined)
       return logContextInfoGen(stackRenderer)(warningCol)(undefinedVariableMsg);
 
@@ -81,41 +81,25 @@ export const logContextInfoGen =
 
 const logContextInfo =
   (col: ColFun) =>
-  (a: TestingHardenedAny): void =>
+  (a: HardenedAny): void =>
     logContextInfoGen(fileLineRenderer)(col)(a);
 
 export const log = {
-  warning: (a: TestingHardenedAny) => logContextInfo(warningCol)(a),
-  error: (a: TestingHardenedAny) => logContextInfo(errorCol)(a.toString()),
-  success: (a: TestingHardenedAny) => logContextInfo(successCol)(a),
+  warning: (a: HardenedAny) => logContextInfo(warningCol)(a),
+  error: (a: HardenedAny) => logContextInfo(errorCol)(a),
+  success: (a: HardenedAny) => logContextInfo(successCol)(a),
+  reportSecurityIncident: (a: HardenedAny) => logContextInfo(errorCol)(a),
 };
-
-//Right monadic action on vargs.
-const ract_va =
-  <Tprops>(...props: Tprops[]) =>
-  (f: (maps: Tprops) => void) =>
-    props.forEach((x: Tprops) => f(x));
-
-export const success = (...obj: TestingHardenedAny) =>
-  ract_va(obj)((x: TestingHardenedAny) => log.success(x));
-
-export const warn = (...obj: TestingHardenedAny) =>
-  ract_va(obj)((x: TestingHardenedAny) => log.warning(x));
-
-export const report_security_incident = (...obj: TestingHardenedAny) =>
-  ract_va(obj)((x: TestingHardenedAny) => log.warning(x));
-
-export const report_error = (...obj: TestingHardenedAny) =>
-  ract_va(obj)((x: TestingHardenedAny) => log.error(x));
 
 export const gql = ([content]: TemplateStringsArray) => content;
 
 export async function fetchGraphQL_inject_api_key(
   query: string,
-  variables?: Record<string, TestingHardenedAny>
+  variables?: Record<string, HardenedAny>
 ) {
-  var x;
-  log.success(x);
+  //Intentionally create an undefined to test HardenedAny
+  //var x;
+  //log.success(x);
 
   keystoneNextjsBuildApiKey.includes('keystone')
     ? log.warning('Prototype api key: ' + keystoneNextjsBuildApiKey)
@@ -133,14 +117,16 @@ export async function fetchGraphQL_inject_api_key(
     .then(({ data, errors }) => {
       if (errors) {
         log.error(
-          'Next build: did not recieve static site data: About to throw: '
+          'Next build: did not recieve static site data: Attempting to stumble on. '
         );
+        /*
         //Is throwing the correct response? The db might be temporarily unavailble, and we have old pages to serve with.
         throw new Error(
           `GraphQL errors occurred:\n${errors
-            .map((x: TestingHardenedAny) => x.message)
+            .map((x: RampantlyPolymorphic) => x.message)
             .join('\n')}`
         );
+        */
       }
       return data;
     });

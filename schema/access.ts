@@ -4,12 +4,7 @@ import { keystoneNextjsBuildApiKey } from '../keystone';
 
 import { ItemType } from '../wrap_any';
 
-import {
-  success,
-  warn,
-  report_security_incident,
-  report_error,
-} from '../utils';
+import { log } from '../utils';
 
 export const PUBLISHED = 'published';
 export const DRAFT = 'draft';
@@ -49,15 +44,15 @@ export const isBuildEnvir = (frame: SessionFrame): boolean => {
 
     if (recvApiKey === keystoneNextjsBuildApiKey) {
       if (recvApiKey.includes('keystone')) {
-        warn('access: prototype api key: ' + recvApiKey);
+        log.warning('access: prototype api key: ' + recvApiKey);
       }
-      success(
+      log.success(
         'access::isBuildEnvir: next build: api key matches: granting super user query access.'
       );
       return true;
     } else {
-      warn('access::isBuildEnvir: authentication breach:');
-      success(
+      log.warning('access::isBuildEnvir: authentication breach:');
+      log.success(
         'access::isBuildEnvir: no additional authorisation granted to breach.'
       );
       return false;
@@ -105,7 +100,7 @@ export const PUBLISHED_POST_STATUS = { status: { in: [PUBLISHED] } };
 
 export const FilterCanManageContentList = (frame: SessionFrame) => {
   if (frame === undefined) {
-    report_security_incident(
+    log.reportSecurityIncident(
       'Minor security breach: potential auth bug. undefined frame: query downgraded to public.'
     );
     return PUBLISHED_POST_STATUS;
@@ -120,13 +115,13 @@ export const FilterCanManageContentList = (frame: SessionFrame) => {
   //The perms check is only running client side. Review: check the authorization props are checked
   //server side to.
   if (!!frame.context.session?.data?.role?.canManageContent) {
-    success('Blessed super user access to the known content manager:');
-    success(frame?.context?.session?.data?.name);
+    log.success('Blessed super user access to the known content manager:');
+    log.success(frame?.context?.session?.data?.name);
     return EVERY_POST_STATUS;
   }
 
-  success('Client receives only published posts:');
-  success(frame?.context?.session?.data?.name);
+  log.success('Client receives only published posts:');
+  log.success(frame?.context?.session?.data?.name);
   //success(frame.context.session?.data?.role?.canManageContent);
   return PUBLISHED_POST_STATUS;
 };
