@@ -53,8 +53,7 @@ export const report_security_incident = (...obj: any) =>
 export const report_error = (...obj: any) =>
   ract_va(obj)((x: any) => log.error(x));
 
-//Testing the new logging api.
-export const endLog = 'endLog';
+
 
 const utilsWarning = (a: string) => logContextInfo(warningCol(a));
 const utilsError = (a: string) => logContextInfo(errorCol(a));
@@ -83,6 +82,7 @@ export async function fetchGraphQL_inject_api_key(
     .then(x => x.json())
     .then(({ data, errors }) => {
       if (errors) {
+        utilsError("About to throw: ")
         throw new Error(
           `GraphQL errors occurred:\n${errors
             .map((x: any) => x.message)

@@ -13,14 +13,14 @@ import {
   operationCanManageContentList,
   FilterCanManageContentList,
   SessionFrame,
-
+  PUBLISHED,
+  DRAFT,
+  ARCHIVED
 } from './access';
 import { componentBlocks } from '../schema/fields/content/components';
 
 
-export const PUBLISHED = 'published'
-export const DRAFT = 'draft'
-export const ARCHIVED = 'archive'
+
 
 
 //FIXME:
