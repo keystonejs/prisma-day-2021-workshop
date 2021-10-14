@@ -15,13 +15,9 @@ import {
   SessionFrame,
   PUBLISHED,
   DRAFT,
-  ARCHIVED
+  ARCHIVED,
 } from './access';
 import { componentBlocks } from '../schema/fields/content/components';
-
-
-
-
 
 //FIXME:
 // These anys are causing issues. What is the strong type?

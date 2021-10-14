@@ -53,8 +53,6 @@ export const report_security_incident = (...obj: any) =>
 export const report_error = (...obj: any) =>
   ract_va(obj)((x: any) => log.error(x));
 
-
-
 const utilsWarning = (a: string) => logContextInfo(warningCol(a));
 const utilsError = (a: string) => logContextInfo(errorCol(a));
 const utilsSuccess = (a: string) => logContextInfo(successCol(a));
@@ -67,9 +65,7 @@ export async function fetchGraphQL_inject_api_key(
 ) {
   keystoneNextjsBuildApiKey.includes('keystone')
     ? utilsWarning('Prototype api key: ' + keystoneNextjsBuildApiKey)
-    : utilsSuccess(
-        'Next build: x-api-key: set'
-      );
+    : utilsSuccess('Next build: x-api-key: set');
 
   return fetch('http://localhost:3000/api/graphql', {
     method: 'POST',
@@ -82,7 +78,7 @@ export async function fetchGraphQL_inject_api_key(
     .then(x => x.json())
     .then(({ data, errors }) => {
       if (errors) {
-        utilsError("About to throw: ")
+        utilsError('About to throw: ');
         throw new Error(
           `GraphQL errors occurred:\n${errors
             .map((x: any) => x.message)
