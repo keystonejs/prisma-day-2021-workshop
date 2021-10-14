@@ -72,6 +72,9 @@ yarn commit "message" ... adds files and commits.
 yarn push ... (auto push to origin latest)
 ```
 
+## Known crash bugs
+Vote when not logged in: WIP
+
 ## Status report
 
 ✅ Authorization: Strong typing keystone frame types (bar one C++ style typecast)

@@ -3,13 +3,14 @@ import { KeystoneContext, PollWhereInput } from '.keystone/types';
 
 const gql = ([content]: TemplateStringsArray) => content;
 
+//Removed throw, which was crashing keystone
 async function clearVote(
   _context: KeystoneContext,
   pollFilter: PollWhereInput
 ) {
   const context = _context.sudo();
   if (!context.session) {
-    throw new Error('You must be signed in to vote');
+    new Error('You must be signed in to vote');
   }
 
   const answers = await context.db.PollAnswer.findMany({

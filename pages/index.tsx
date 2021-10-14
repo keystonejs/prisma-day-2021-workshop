@@ -9,13 +9,19 @@ import { Link } from '../components/ui/link';
 import { H1 } from '../components/ui/typography';
 import { useAuth } from '../components/auth';
 
+import { DocumentType } from '../wrap_any'
+
+
+
+
+
 type Post = {
   id: string;
   slug: string;
   title: string;
   publishedDate: string;
   intro: {
-    document: any;
+    document: DocumentType;
   };
   author: {
     name: string;

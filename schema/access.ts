@@ -2,6 +2,8 @@ import { KeystoneContext } from '.keystone/types';
 
 import { keystoneNextjsBuildApiKey } from '../keystone';
 
+import { ItemType } from '../wrap_any';
+
 import {
   success,
   warn,

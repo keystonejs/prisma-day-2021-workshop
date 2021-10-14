@@ -7,7 +7,11 @@ import {
   ReactNode,
 } from 'react';
 
-import { gql, useQuery, useMutation } from 'urql';
+import { gql, useQuery, useMutation, OperationResult} from 'urql';
+
+//Security audit:
+//Pushed an `any` one depth lower into urql.
+export type AuthenticationResponse = OperationResult<any,object>
 
 export type SignInArgs = { email: string; password: string };
 export type SignInResult =
@@ -70,11 +74,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   `);
 
+
+
   const signIn = async ({
     email,
     password,
   }: SignInArgs): Promise<SignInResult> => {
-    const result: any = await authenticate(
+    const result: AuthenticationResponse = await authenticate(
       { email, password },
       mutationContext
     );
