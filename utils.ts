@@ -69,7 +69,7 @@ export async function fetchGraphQL_inject_api_key(
   keystoneNextjsBuildApiKey.includes('keystone')
     ? utilsWarning('Prototype api key: ' + keystoneNextjsBuildApiKey)
     : utilsSuccess(
-        'Next build triggered: Api key injected into x-api-key headers.'
+        'Next build: x-api-key: set'
       );
 
   return fetch('http://localhost:3000/api/graphql', {

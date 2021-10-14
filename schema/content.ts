@@ -13,8 +13,15 @@ import {
   operationCanManageContentList,
   FilterCanManageContentList,
   SessionFrame,
+
 } from './access';
 import { componentBlocks } from '../schema/fields/content/components';
+
+
+export const PUBLISHED = 'published'
+export const DRAFT = 'draft'
+export const ARCHIVED = 'archive'
+
 
 //FIXME:
 // These anys are causing issues. What is the strong type?
@@ -98,9 +105,9 @@ export const Post = list({
     }),
     status: select({
       options: [
-        { label: 'Draft', value: 'draft' },
-        { label: 'Published', value: 'published' },
-        { label: 'Archived', value: 'archived' },
+        { label: 'Draft', value: DRAFT },
+        { label: 'Published', value: PUBLISHED },
+        { label: 'Archived', value: ARCHIVED },
       ],
       defaultValue: 'draft',
       ui: { displayMode: 'segmented-control' },

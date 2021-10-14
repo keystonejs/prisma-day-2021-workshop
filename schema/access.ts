@@ -1,8 +1,5 @@
 import { KeystoneContext } from '.keystone/types';
-import {
-  BaseGeneratedListTypes,
-  ListFilterAccessControl,
-} from '@keystone-next/keystone/types';
+
 import { keystoneNextjsBuildApiKey } from '../keystone';
 
 import {
@@ -12,39 +9,11 @@ import {
   report_error,
 } from '../utils';
 
-/*
-export default config({
-  lists: {
-    ListKey: list({
-      access: {
-        item: {
-          create: ({ session, context, listKey, operation, inputData }) => true,
-          update: ({ session, context, listKey, operation, inputData, item }) => true,
-          delete: ({ session, context, listKey, operation, item }) => true,
-        }
-      },
-    }),
-  },
-});
-```
-
-?> Item-level access control is not available for `query` operations.
-Applying access control after fetching items would lead to inconsistent pagination behaviour and incorrect `count` results.
-
-### Function Arguments
-
-List-level access control functions are passed a collection of arguments which can be used to determine whether the operation is allowed.
-
-| Argument    | Description                                                                                                   |
-| ----------- | ------------------------------------------------------------------------------------------------------------- |
-| `session`   | The current session object. See the [Sessions API](./session) for details.                                    |
-| `context`   | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                               |
-| `listKey`   | The key of the list being operated on.                                                                        |
-| `operation` | The operation being performed (`'query'`, `'create'`, `'update'`, `'delete'`).                                |
-| `inputData` | For `create` and `update` operations, this is the value of `data` passed into the mutation. (Item level only) |
-| `item`      | The existing item being updated/deleted in `update` and `delete` operations. (Item level only)                |
-
-*/
+import {
+  PUBLISHED,
+  DRAFT,
+  ARCHIVED
+} from './content'
 
 export type SessionContext = {
   session?: {
@@ -60,11 +29,6 @@ export type SessionContext = {
   };
 };
 
-declare type BaseAccessArgs = {
-  session: any;
-  listKey: string;
-  context: KeystoneContext;
-};
 
 export type SessionFrame = {
   session: ItemContext;
@@ -73,35 +37,16 @@ export type SessionFrame = {
   operation: string;
 };
 
-export type xSessionFrame = BaseAccessArgs & { operation: string };
-
-export type FilterQueryFrame = ListFilterAccessControl<
-  'query',
-  BaseGeneratedListTypes
->;
-export type FilterUpdateFrame = ListFilterAccessControl<
-  'update',
-  BaseGeneratedListTypes
->;
-export type FilterDeleteFrame = ListFilterAccessControl<
-  'delete',
-  BaseGeneratedListTypes
->;
-
-export type FilterFrame =
-  | FilterQueryFrame
-  | FilterUpdateFrame
-  | FilterDeleteFrame;
 
 export type ItemContext = { item: any } & SessionContext;
 
 //FIXME: Needs API key.
 export const isBuildEnvir = (frame: SessionFrame): boolean => {
   if (frame?.session === undefined) {
-    //const headers = frame.context.req?.headers;
-    //const host = headers ? headers['x-forwarded-host'] || headers['host'] : null;
-    //const url = headers?.referer ? new URL(headers.referer) : undefined;
 
+    // It's a bit confusing as to why this dodgy cast is needed. It took ages to get api keys working because of the
+    // obscuriy of the workaround. 
+    // The top level query prefers SessionFrame, and does not build against KeystoneFrame (same, bar KeystoneContext for context)
     let kontext = frame?.context as KeystoneContext;
     let recvApiKey = kontext?.req?.headers['x-api-key'];
 
@@ -129,6 +74,7 @@ export const isSignedIn = ({ session }: SessionContext) => {
 };
 
 //!! and ?. everywhere to protect from undefined. ts picks this up unless any is used.
+//They can't easy be expressed in terms of the more elementary functions either. undefined issues.
 export const permissions = {
   canUseAdminUI: ({ session }: SessionContext): boolean =>
     !!session?.data?.role,
@@ -139,22 +85,30 @@ export const permissions = {
 
   canManageContentSession: ({ session }: SessionContext): boolean => {
     return !!session?.data?.role?.canManageContent;
-  },
+  },  
+  canManageContentItem: (item: ItemContext): boolean =>
+    !!item?.session?.data?.role?.canManageContent,
+
+
   canManageUsersSession: ({ session }: SessionContext): boolean => {
     return !!session?.data?.role?.canManageUsers;
   },
-  canManageContentItem: (item: ItemContext): boolean =>
-    !!item?.session?.data?.role?.canManageContent,
+
 };
 
 export const operationCanManageContentList = (frame: SessionFrame) =>
   permissions.canManageContent(frame);
 
+//This is the fastest workaround I could find for not being able to return (where:) true (all records), or false (for no records).
+
+
+
 export const EVERY_POST_STATUS = {
-  status: { in: ['published', 'draft', 'archive'] },
+  status: { in: [PUBLISHED, DRAFT, ARCHIVED] },
 };
-export const UNIT_POST_STATUS = { status: { in: [] } };
-export const PUBLISHED_POST_STATUS = { status: { in: ['published'] } };
+
+//export const UNIT_POST_STATUS = { status: { in: [] } };
+export const PUBLISHED_POST_STATUS = { status: { in: [PUBLISHED] } };
 
 export const FilterCanManageContentList = (frame: SessionFrame) => {
   if (frame === undefined) {
@@ -165,6 +119,27 @@ export const FilterCanManageContentList = (frame: SessionFrame) => {
     //Give no information away that they have been noticed, but if there's no frame
     //it's hard to imagine where the reply is going to go ... if exec ever gets here, it's close
     //to a fatal error. What is the best thing to do here? Nothing? throw?
+
+
+  }
+  //Needs shared secret, set in bash, imported via process.env, usage tested in the CI workflow, which act as the base spec for a container to run keystone/next in.
+  if (isBuildEnvir(frame)) {
+    return EVERY_POST_STATUS;
+  }
+  //The perms check is only running client side. Review: check the authorization props are checked
+  //server side to.
+  if (!!frame.context.session?.data?.role?.canManageContent) {
+    success('Blessed super user access to the known content manager:');
+    success(frame?.context?.session?.data?.name);
+    return EVERY_POST_STATUS;
+  }
+
+  success('Client receives only published posts:');
+  success(frame?.context?.session?.data?.name);
+  //success(frame.context.session?.data?.role?.canManageContent);
+  return PUBLISHED_POST_STATUS;
+};
+
 
     //The front line security audit: Initial musings:
 
@@ -217,22 +192,3 @@ export const FilterCanManageContentList = (frame: SessionFrame) => {
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!       Core Issues located:      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // auth/src/index.ts and related files in keystone core are triggering some "any" issues. Strong typing is (strongly) recommended.
     // e.g.    const pageMiddleware: AdminUIConfig['pageMiddleware'] = async ({ context, isValidSession })
-  }
-  //Needs shared secret, set in bash, imported via process.env, usage tested in the CI workflow, which act as the base spec for a container to run keystone/next in.
-  if (isBuildEnvir(frame)) {
-    success('');
-    return EVERY_POST_STATUS;
-  }
-  //The perms check is only running client side. Review: check the authorization props are checked
-  //server side to.
-  if (!!frame.context.session?.data?.role?.canManageContent) {
-    success('Blessed super user access to the known content manager:');
-    success(frame?.context?.session?.data?.name);
-    return EVERY_POST_STATUS;
-  }
-
-  success('Client receives only published posts:');
-  success(frame?.context?.session?.data?.name);
-  //success(frame.context.session?.data?.role?.canManageContent);
-  return PUBLISHED_POST_STATUS;
-};
