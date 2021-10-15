@@ -62,7 +62,7 @@ utils.js
 
 
 
-## About the latest branch: ![workflow_badge](https://github.com/github/docs/actions/workflows/latest.yml/badge.svg)
+## About the latest branch: ![workflow](https://github.com/qfunq/prisma-day-2021-workshop/actions/workflows/latest.yml/badge.svg)
 
 This branch is dedicated to creating a solid foundation for a production build to extend keystone CMS from.
 
