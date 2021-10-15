@@ -19,14 +19,18 @@ import {
 } from './access';
 import { componentBlocks } from '../schema/fields/content/components';
 
+import { ItemSession, GraphQLInput } from '../wrap_any';
+
 //FIXME:
 // These anys are causing issues. What is the strong type?
 // The deduced type from permissions api is SessionFrame, but that doesn't work ...
 // MaybeSessionFunction has something to do with the ts error.
 
 export const contentUIConfig = {
-  hideCreate: (session: any) => !permissions.canManageContentItem(session),
-  hideDelete: (session: any) => !permissions.canManageContentItem(session),
+  hideCreate: (session: ItemSession) =>
+    !permissions.canManageContentItem(session),
+  hideDelete: (session: ItemSession) =>
+    !permissions.canManageContentItem(session),
   itemView: {
     defaultFieldMode: (session: ItemContext) =>
       permissions.canManageContentSession(session) ? 'edit' : 'read',
@@ -56,7 +60,7 @@ export const Label = list({
   },
 });
 
-function defaultSlug({ context, inputData }: any) {
+function defaultSlug(inputData: GraphQLInput) {
   const date = new Date();
   return `${
     inputData?.title

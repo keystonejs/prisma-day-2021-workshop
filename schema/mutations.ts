@@ -1,5 +1,10 @@
 import { graphQLSchemaExtension } from '@keystone-next/keystone';
-import { KeystoneContext, PollWhereInput } from '.keystone/types';
+import {
+  KeystoneContext,
+  PollWhereInput,
+  PollWhereUniqueInput,
+} from '.keystone/types';
+import { Poll, PollAnswer } from './polls';
 import { log } from '../utils';
 
 const gql = ([content]: TemplateStringsArray) => content;
@@ -24,7 +29,7 @@ async function clearVote(
 
   if (answers.length) {
     await context.db.PollAnswer.updateMany({
-      data: answers.map((answer: any) => ({
+      data: answers.map((answer: PollWhereUniqueInput) => ({
         where: { id: answer.id },
         data: {
           answeredByUsers: { set: [] },

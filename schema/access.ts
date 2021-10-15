@@ -31,7 +31,7 @@ export type SessionFrame = {
   operation: string;
 };
 
-export type ItemContext = { item: any } & SessionContext;
+export type ItemContext = { item: ItemType } & SessionContext;
 
 //FIXME: Needs API key.
 export const isBuildEnvir = (frame: SessionFrame): boolean => {

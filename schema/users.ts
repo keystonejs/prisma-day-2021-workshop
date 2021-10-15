@@ -20,7 +20,7 @@ import { GitHubRepo, githubReposResolver } from './fields/githubRepos/field';
 // Removed an any, revealed an extra ? was required ! any = js ;) any is to be avoid like the plague unless trying to type compose ;)
 // strong type for any type.
 // That generic "cant assign to Maybe..." error seems be trying to say "There's an any, which is potentially undefined, but is not triggering a type error"
-// On that not, I counted occurence of ": any" in the repo. 5902 results in 793 files :-O. Not good, since each hides a potential bug that is hiding
+// On that not, I counted occurence of "any" in the repo. 5902 results in 793 files :-O. Not good, since each hides a potential bug that is hiding
 // from ts, like occured here.
 const fieldModes = {
   editSelfOrRead: ({ session, item }: ItemContext) =>

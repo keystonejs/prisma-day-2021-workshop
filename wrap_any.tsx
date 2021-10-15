@@ -20,6 +20,8 @@ export type DocumentType = WrappedRampantlyPolymorphic
 
 export type ItemType = WrappedRampantlyPolymorphic
 
+export type ItemSession = WrappedRampantlyPolymorphic
 
+export type GraphQLInput = Record<string, any>;
 
 
