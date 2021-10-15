@@ -1,5 +1,6 @@
 import { graphQLSchemaExtension } from '@keystone-next/keystone';
 import { KeystoneContext, PollWhereInput } from '.keystone/types';
+import { log } from '../utils';
 
 const gql = ([content]: TemplateStringsArray) => content;
 
@@ -10,7 +11,9 @@ async function clearVote(
 ) {
   const context = _context.sudo();
   if (!context.session) {
-    new Error('You must be signed in to vote');
+    log.warning('You must be signed in to vote');
+    //new Error('You must be signed in to vote');
+    return;
   }
 
   const answers = await context.db.PollAnswer.findMany({

@@ -1,5 +1,6 @@
 import { keystoneNextjsBuildApiKey } from './keystone';
 import { HardenedAny, RampantlyPolymorphic } from './wrap_any';
+
 import colors from 'colors/safe';
 
 // Fix Me: Test code: Needs another home.
@@ -11,6 +12,7 @@ import colors from 'colors/safe';
 
 //const log = (s: string) => console.log(s);
 //Reverse mapping for var args, rest parameters ... handy but slightly disfunctional, forEach is not strongly typed.
+export const fix = <T>(x: T) => x;
 
 export const successCol = colors.green;
 export const warningCol = colors.yellow;
@@ -88,6 +90,7 @@ export const log = {
   warning: (a: HardenedAny) => logContextInfo(warningCol)(a),
   error: (a: HardenedAny) => logContextInfo(errorCol)(a),
   success: (a: HardenedAny) => logContextInfo(successCol)(a),
+  trace: (a: HardenedAny) => logContextInfoGen(stackRenderer)(fix)(a),
   reportSecurityIncident: (a: HardenedAny) => logContextInfo(errorCol)(a),
 };
 
@@ -103,7 +106,7 @@ export async function fetchGraphQL_inject_api_key(
 
   keystoneNextjsBuildApiKey.includes('keystone')
     ? log.warning('Prototype api key: ' + keystoneNextjsBuildApiKey)
-    : log.success('Next build: x-api-key: set');
+    : log.success('Next build: x-api-key: tx');
 
   return fetch('http://localhost:3000/api/graphql', {
     method: 'POST',
@@ -114,20 +117,11 @@ export async function fetchGraphQL_inject_api_key(
     },
   })
     .then(x => x.json())
-    .then(({ data, errors }) => {
-      if (errors) {
-        log.error(
-          'Next build: did not recieve static site data: Attempting to stumble on. '
-        );
-        /*
-        //Is throwing the correct response? The db might be temporarily unavailble, and we have old pages to serve with.
-        throw new Error(
-          `GraphQL errors occurred:\n${errors
-            .map((x: RampantlyPolymorphic) => x.message)
-            .join('\n')}`
-        );
-        */
-      }
+    .then(({ data }) => {
+      log.success('Next build: json: rx');
       return data;
-    });
+    })
+    .catch(msg =>
+      log.error('Next build: did not recieve static site data: ' + sep + msg)
+    );
 }

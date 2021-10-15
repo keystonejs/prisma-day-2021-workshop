@@ -72,9 +72,7 @@ yarn commit "message" ... adds files and commits.
 yarn push ... (auto push to origin latest)
 ```
 
-## Known crash bug ... 
 
-A stale session led to the app throwing when voting occured. More defensive coding is required in the access filtering to handle such cases. WIP.
 
 
 ## Status report
@@ -102,6 +100,14 @@ Production build status:
 ```
 More informative logging, suitable for deployment.
    `Code coverage: partial`
+
+## Resiliance testing
+
+✅ A stale session led to the app throwing when voting occured.  
+
+Rejigged fetch command because some failure tracks were never been called.
+
+More defensive coding is required to check the are no more cases of this.
 
 
 ## Security audit
@@ -181,6 +187,9 @@ There is also a `dodgy C++ style cast`, right where it's not needed ... `TBC`.
 
 
 With these caveats in mind, enjoy, and be fully aware this release is in a `testing` phase. 
+
+
+
 
 ```
 Known Issues:
