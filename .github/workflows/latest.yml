@@ -54,9 +54,6 @@ jobs:
 
           DATABASE_URL="postgres://$KEYSTONE_USERNAME:$POSTGRES_PASSWORD@localhost/$KEYSTONE_DATABASE"
 
-          echo "ubuntu dependent CI:"
-          sudo apt-get update
-          sudo apt install curl git
 
   
           cd $GITHUB_WORKSPACE
