@@ -64,5 +64,5 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
     `,
     { slug: params!.slug }
   );
-  return { props: { post: data?.post }, revalidate: 60 };
+  return { props: { post: data!.post }, revalidate: 60 };
 }

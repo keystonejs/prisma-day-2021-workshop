@@ -92,5 +92,6 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
       }
     `
   );
-  return { props: { posts: data.posts }, revalidate: 60 };
+  const postsRx = data? data.posts : [];
+  return { props: { posts: postsRx }, revalidate: 60 };
 }
