@@ -16,9 +16,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
-
-  postgres:
+  prisma_day_2021:
     runs-on: ubuntu-latest
     container: node:14.18.1-bullseye
     services:
@@ -39,6 +37,7 @@ jobs:
     steps:
       - name: Setup keystone
         run: |
+          uses: actions/checkout@v2
           apt-get update
           apt-get install --yes postgresql-client
       
