@@ -6,7 +6,7 @@ import { lists, extendGraphqlSchema } from './schema';
 import { permissions } from './schema/access';
 
 const dbUrl =
-  `postgres://postgres_user:change_me_in_multiple_places@pg/prisma_day_2021_latest` ||
+  //  `postgres://postgres_user:change_me_in_multiple_places@pg/prisma_day_2021_latest` ||
   `${process.env.DATABASE_URL}` ||
   `postgres://${process.env?.POSTGRES_USER}:${process.env?.POSTGRES_PASSWORD}@${process.env?.POSTGRES_HOST}/${process.env?.POSTGRES_DB}`;
 
