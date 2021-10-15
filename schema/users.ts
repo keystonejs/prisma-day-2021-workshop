@@ -14,25 +14,23 @@ import {
   SessionContext,
   ItemContext,
   SessionFrame,
+  EDIT,
+  READ,
+  HIDDEN,
 } from './access';
 import { GitHubRepo, githubReposResolver } from './fields/githubRepos/field';
 
-// Removed an any, revealed an extra ? was required ! any = js ;) any is to be avoid like the plague unless trying to type compose ;)
-// strong type for any type.
-// That generic "cant assign to Maybe..." error seems be trying to say "There's an any, which is potentially undefined, but is not triggering a type error"
-// On that not, I counted occurence of "any" in the repo. 5902 results in 793 files :-O. Not good, since each hides a potential bug that is hiding
-// from ts, like occured here.
 const fieldModes = {
   editSelfOrRead: ({ session, item }: ItemContext) =>
     permissions.canManageUsersSession({ session }) ||
     session?.itemId === item.id
-      ? 'edit'
-      : 'read',
+      ? EDIT
+      : READ,
   editSelfOrHidden: ({ session, item }: ItemContext) =>
     permissions.canManageUsersSession({ session }) ||
     session?.itemId === item.id
-      ? 'edit'
-      : 'hidden',
+      ? EDIT
+      : HIDDEN,
 };
 
 export const User = list({
@@ -56,11 +54,11 @@ export const User = list({
       !permissions.canManageUsersSession(session),
     itemView: {
       defaultFieldMode: (context: SessionContext) =>
-        permissions.canManageUsersSession(context) ? 'edit' : 'hidden',
+        permissions.canManageUsersSession(context) ? EDIT : HIDDEN,
     },
     listView: {
       defaultFieldMode: (context: SessionContext) =>
-        permissions.canManageUsersSession(context) ? 'read' : 'hidden',
+        permissions.canManageUsersSession(context) ? READ : HIDDEN,
     },
   },
   fields: {
@@ -103,9 +101,9 @@ export const User = list({
       }),
       ui: {
         views: require.resolve('./fields/githubRepos/components'),
-        createView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
+        createView: { fieldMode: HIDDEN },
+        listView: { fieldMode: HIDDEN },
+        itemView: { fieldMode: READ },
         query: '{ name htmlUrl description homepage stargazersCount }',
       },
     }),
@@ -114,7 +112,7 @@ export const User = list({
       isFilterable: true,
       many: true,
       ui: {
-        createView: { fieldMode: 'hidden' },
+        createView: { fieldMode: HIDDEN },
       },
     }),
     pollAnswers: relationship({
@@ -124,7 +122,7 @@ export const User = list({
       access: permissions.canManageUsers,
       ui: {
         hideCreate: true,
-        createView: { fieldMode: 'hidden' },
+        createView: { fieldMode: HIDDEN },
       },
     }),
   },

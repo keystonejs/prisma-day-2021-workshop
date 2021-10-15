@@ -10,6 +10,19 @@ export const PUBLISHED = 'published';
 export const DRAFT = 'draft';
 export const ARCHIVED = 'archive';
 
+export const EDIT = 'edit';
+export const READ = 'read';
+export const HIDDEN = 'hidden';
+
+//This is the fastest workaround I could find for not being able to return (where:) true (all records), or false (for no records).
+
+export const EVERY_POST_STATUS = {
+  status: { in: [PUBLISHED, DRAFT, ARCHIVED] },
+};
+
+//export const UNIT_POST_STATUS = { status: { in: [] } };
+export const PUBLISHED_POST_STATUS = { status: { in: [PUBLISHED] } };
+
 export type SessionContext = {
   session?: {
     data: {
@@ -88,15 +101,6 @@ export const permissions = {
 
 export const operationCanManageContentList = (frame: SessionFrame) =>
   permissions.canManageContent(frame);
-
-//This is the fastest workaround I could find for not being able to return (where:) true (all records), or false (for no records).
-
-export const EVERY_POST_STATUS = {
-  status: { in: [PUBLISHED, DRAFT, ARCHIVED] },
-};
-
-//export const UNIT_POST_STATUS = { status: { in: [] } };
-export const PUBLISHED_POST_STATUS = { status: { in: [PUBLISHED] } };
 
 export const FilterCanManageContentList = (frame: SessionFrame) => {
   if (frame === undefined) {

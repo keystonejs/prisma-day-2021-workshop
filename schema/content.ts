@@ -16,6 +16,9 @@ import {
   PUBLISHED,
   DRAFT,
   ARCHIVED,
+  EDIT,
+  READ,
+  HIDDEN,
 } from './access';
 import { componentBlocks } from '../schema/fields/content/components';
 
@@ -33,7 +36,7 @@ export const contentUIConfig = {
     !permissions.canManageContentItem(session),
   itemView: {
     defaultFieldMode: (session: ItemContext) =>
-      permissions.canManageContentSession(session) ? 'edit' : 'read',
+      permissions.canManageContentSession(session) ? EDIT : READ,
   },
 };
 
@@ -92,7 +95,7 @@ export const Post = list({
   fields: {
     title: text(),
     slug: text({
-      ui: { createView: { fieldMode: 'hidden' } },
+      ui: { createView: { fieldMode: HIDDEN } },
       isIndexed: 'unique',
       hooks: {
         resolveInput: ({ operation, resolvedData, inputData, context }) => {

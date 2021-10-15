@@ -4,20 +4,19 @@ import {
   PollWhereInput,
   PollWhereUniqueInput,
 } from '.keystone/types';
-import { Poll, PollAnswer } from './polls';
+
 import { log } from '../utils';
 
 const gql = ([content]: TemplateStringsArray) => content;
 
-//Removed throw, which was crashing keystone
 async function clearVote(
   _context: KeystoneContext,
   pollFilter: PollWhereInput
 ) {
   const context = _context.sudo();
   if (!context.session) {
-    log.warning('You must be signed in to vote');
-    //new Error('You must be signed in to vote');
+    //Removed throw, which was crashing keystone
+    log.warning('Stale context: you must be signed in to vote');
     return;
   }
 

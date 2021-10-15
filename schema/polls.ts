@@ -2,7 +2,7 @@ import { relationship, text, virtual } from '@keystone-next/keystone/fields';
 import { graphql, list } from '@keystone-next/keystone';
 import { KeystoneListsAPI, KeystoneDbAPI } from '.keystone/types';
 
-import { isSignedIn, permissions } from './access';
+import { isSignedIn, permissions, HIDDEN } from './access';
 import { contentListAccess, contentUIConfig } from './content';
 
 export const Poll = list({
@@ -87,7 +87,7 @@ export const PollAnswer = list({
         },
       }),
       ui: {
-        itemView: { fieldMode: 'hidden' },
+        itemView: { fieldMode: HIDDEN },
       },
     }),
     answeredByUsers: relationship({
@@ -97,8 +97,8 @@ export const PollAnswer = list({
       access: { read: permissions.canManageContent },
       ui: {
         displayMode: 'count',
-        createView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
+        createView: { fieldMode: HIDDEN },
+        listView: { fieldMode: HIDDEN },
       },
     }),
   },
