@@ -17,7 +17,7 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
-jobs:
+
   postgres:
     runs-on: ubuntu-latest
     container: node:14.18.1-bullseye
