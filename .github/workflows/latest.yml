@@ -45,6 +45,8 @@ jobs:
           echo "ubuntu dependent CI:"
           sudo apt-get update
           sudo apt install curl postgresql git
+          systemctl start postgres.service
+          
           cd ~
           curl -sL https://deb.nodesource.com/setup_14.x -o setup_14.sh
           chmod +x ./setup_14.sh
