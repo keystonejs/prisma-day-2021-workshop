@@ -40,8 +40,10 @@ jobs:
         uses: actions/checkout@v2
       - name: Run yarn
         run: |   
-          echo $POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/$POSTGRES_DB      
+          DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/$POSTGRES_DB      
+          echo $DATABASE_URL
           cd $GITHUB_WORKSPACE
+          ls -alt
           yarn      
       - name: Start keystone  
         run: |  

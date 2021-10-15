@@ -6,8 +6,8 @@ import { lists, extendGraphqlSchema } from './schema';
 import { permissions } from './schema/access';
 
 const dbUrl =
-  `postgres://${process.env?.POSTGRES_USER}:${process.env?.POSTGRES_PASSWORD}@${process.env?.POSTGRES_HOST}/${process.env?.POSTGRES_DB}` ||
-  '${process.env.DATABASE_URL}';
+  `${process.env.DATABASE_URL}` ||
+  `postgres://${process.env?.POSTGRES_USER}:${process.env?.POSTGRES_PASSWORD}@${process.env?.POSTGRES_HOST}/${process.env?.POSTGRES_DB}`;
 
 console.log(`Database url: ${dbUrl}`);
 
