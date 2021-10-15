@@ -57,7 +57,9 @@ jobs:
           sudo ./setup_14.sh     
           sudo apt install nodejs      
           cd $GITHUB_WORKSPACE
-
+          
+          export PGPASSWORD=admin 
+          
           sudo psql -X -h localhost -U postgres -t -c "create user user_name with encrypted password '$KEYSTONE_PGPASSWORD';"
           sudo psql -X -h localhost -U postgres -t -c "CREATE DATABASE $KEYSTONE_DATABASE;"
           sudo psql -X -h localhost -U postgres -t -c "grant all privileges on database $KEYSTONE_DATABASE to $KEYSTONE_USERNAME;"
