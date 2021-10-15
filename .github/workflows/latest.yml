@@ -33,23 +33,34 @@ jobs:
       - name: Install monorepo and give it a spin
         run: |
           set -euo pipefail    
-          appname="prisma_day_2021"
-          echo "Build unseeded production server: $appname"  
+          APPNAME="prisma_day_2021_latest"
+          POSTGRES_PASSWORD="changeme"
+          KEYSTONE_PGPASSWORD="changeme2"
+          KEYSTONE_DATABASE=$APPNAME
+          KEYSTONE_USERNAME="keystone_db_user"
+          KEYSTONE_NEXTJS_BUILD_API_KEY="keystone_change_me2_make_a_non_postgres_user2"
+
+          DATABASE_URL="postgres://$KEYSTONE_USERNAME:$POSTGRES_PASSWORD@localhost/$KEYSTONE_DATABASE"
+
+          echo "ubuntu dependent CI:"
           sudo apt-get update
           sudo apt install curl postgresql git
           cd ~
           curl -sL https://deb.nodesource.com/setup_14.x -o setup_14.sh
-          pwd
-          ls
           chmod +x ./setup_14.sh
           sudo ./setup_14.sh     
           sudo apt install nodejs      
           cd $GITHUB_WORKSPACE
-          DATABASE_URL="postgres://postgres:changeme@localhost/$appname"
-          KEYSTONE_NEXTJS_BUILD_API_KEY="keystone_change_me2_make_a_non_postgres_user2"
+
+          psql -X -U postgres -t -c "create user user_name with encrypted password '$KEYSTONE_PGPASSWORD';"
+          psql -X -U postgres -t -c "CREATE DATABASE $KEYSTONE_DATABASE;"
+          psql -X -U postgres -t -c "grant all privileges on database $KEYSTONE_DATABASE to $KEYSTONE_USERNAME;"
+          psql -X -U postgres -t -c "ALTER USER postgres PASSWORD '$POSTGRES_PASSWORD';"
+
           yarn        
           yarn dev &         
-          sleep 3          
+          sleep 5   
+          echo "Building unseeded production server: $APPNAME"       
           yarn site:build          
           echo "Build unseeded $appname:latest production succeded" 
 
