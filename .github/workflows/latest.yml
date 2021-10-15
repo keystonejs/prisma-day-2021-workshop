@@ -46,7 +46,7 @@ jobs:
           sudo apt-get update
           sudo apt install curl postgresql  git
  
-          service postgresql start
+          sudo service postgresql start
           
           echo $(netstat -an | grep postgresql)
           echo $(ps -ax | grep postgresql)
