@@ -226,10 +226,12 @@ The definitive install instructions, assuming fedora, bar seeding, are in the wo
 
    https://github.com/qfunq/prisma-day-2021-workshop/blob/latest/.github/workflows/latest.yml
 
-Install it like this and you know you will get the latest CI build.
+Install it like this and you know you will get the latest CI build. ![workflow](https://github.com/qfunq/prisma-day-2021-workshop/actions/workflows/latest.yml/badge.svg)
+
+If for some reason, the latest CI build is failing (it happens!), find the last good build.
 
 Seeding and post seeding CI unit tests: WIP. This is a high priority if anyone wants to take it on.
-I have some scripts that can boot the process, but they are bash/pqsql, not quite the keystone way, but they are tried, tested, lightweight and effective.
+I have some scripts that can boot the process, but they are bash/pqsql, not quite the Keystone way, but they are tried, tested, lightweight and effective.
 
 
 All testing/patches/security audits are welcome. Feel free to contribute to documenting the industry best practises for using keystone CMS combined with the powerhouse front end nextjs.
