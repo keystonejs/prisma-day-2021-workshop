@@ -20,13 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     container: node:14.18.1-bullseye
     services:
-      db:
+      pg:
         image: postgres:latest
-        env:
-          POSTGRES_DB: prisma_day_2021_latest
-          POSTGRES_PASSWORD: change_me_in_multiple_places
-          POSTGRES_PORT: 5432
-          POSTGRES_USER: postgres_user
         ports:
           - 5432:5432
         options: >-
@@ -34,17 +29,21 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        env:
+          POSTGRES_DB: prisma_day_2021_latest
+          POSTGRES_PASSWORD: change_me_in_multiple_places
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: postgres_user
+        
     steps:
       - name: Checkout application
         uses: actions/checkout@v2
       - name: Run yarn
         run: |         
-          DATABASE_URL="postgres://$KEYSTONE_USERNAME:$PGPASSWORD@db/$APPNAME"
           cd $GITHUB_WORKSPACE
           yarn      
       - name: Start keystone  
         run: |  
-
           yarn dev &         
           sleep 5  
       - name: Start next build  
@@ -54,8 +53,9 @@ jobs:
           echo "Build unseeded $APPNAME:latest production succeded" 
 
         env:
-          PGPASSWORD: change_me_in_multiple_places
-          KEYSTONE_USERNAME: postgres_user
-          APPNAME: prisma_day_2021_latest
+          POSTGRES_PASSWORD: change_me_in_multiple_places
+          USER: postgres_user
+          POSTGRES_DB: prisma_day_2021_latest
           KEYSTONE_NEXTJS_BUILD_API_KEY: keystone_change_me2
+          PG_HOST: pg
       # Deploy:
