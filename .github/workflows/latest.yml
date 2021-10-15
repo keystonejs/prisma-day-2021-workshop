@@ -45,8 +45,8 @@ jobs:
           echo "ubuntu dependent CI:"
           sudo apt-get update
           sudo apt install curl postgresql git
-          systemctl start postgres.service
-          
+          sudo systemctl start postgres.service
+
           cd ~
           curl -sL https://deb.nodesource.com/setup_14.x -o setup_14.sh
           chmod +x ./setup_14.sh
@@ -54,10 +54,10 @@ jobs:
           sudo apt install nodejs      
           cd $GITHUB_WORKSPACE
 
-          psql -X -U postgres -t -c "create user user_name with encrypted password '$KEYSTONE_PGPASSWORD';"
-          psql -X -U postgres -t -c "CREATE DATABASE $KEYSTONE_DATABASE;"
-          psql -X -U postgres -t -c "grant all privileges on database $KEYSTONE_DATABASE to $KEYSTONE_USERNAME;"
-          psql -X -U postgres -t -c "ALTER USER postgres PASSWORD '$POSTGRES_PASSWORD';"
+          sudo psql -X -U postgres -t -c "create user user_name with encrypted password '$KEYSTONE_PGPASSWORD';"
+          sudo psql -X -U postgres -t -c "CREATE DATABASE $KEYSTONE_DATABASE;"
+          sudo psql -X -U postgres -t -c "grant all privileges on database $KEYSTONE_DATABASE to $KEYSTONE_USERNAME;"
+          sudo psql -X -U postgres -t -c "ALTER USER postgres PASSWORD '$POSTGRES_PASSWORD';"
 
           yarn        
           yarn dev &         
