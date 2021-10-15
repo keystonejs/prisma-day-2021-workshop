@@ -37,17 +37,13 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
-      - name: Install PostgreSQL client
+      - name: Setup keystone
         run: |
           apt-get update
           apt-get install --yes postgresql-client
       
-      - name: Query database
-        run: psql -h postgres -d prisma_day_2021_latest -U postgres_user -c 'SELECT 1;'
+          psql -h postgres -d prisma_day_2021_latest -U postgres_user -c 'SELECT 1;'
 
-
-      --name: Setup keystone
-        run: |
           set -euo pipefail    
           APPNAME="prisma_day_2021_latest"
           POSTGRES_PASSWORD="change_me_in_multiple_places"
