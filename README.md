@@ -73,6 +73,7 @@ This branch is dedicated to creating a solid foundation for a production build t
 `yarn commit "message" && yarn push` is what lands up being used most often.
 
 ## Production status report
+```
 ✅ CI: Github actions runner working in a test framework. Unseeded build cases handled (any bugs fixed!)
 ✅ Pre release: Testing
 
@@ -84,8 +85,9 @@ Full k8s spec: WIP.
 ✅ Refactored literals.
 ✅ Authorization: Strong typing for keystone auth frame types 
 ✅ Next build super user authorization to keystone, allowing SSR/SSG/ISR tunneling.
-   A shout out to Jed for explaining the keystone way.
 
+```
+A shout out to Jed for explaining the keystone way.
 Ready for exhaustive testing. Bug reports welcome!
 
 
