@@ -66,7 +66,7 @@ utils.js
 
 This branch is dedicated to creating a solid foundation for a production build to extend Keystone 6 CMS from.
 
-`yarn commit "message"` fires off the CI pipeline and only commits if unit tests are passed locally. Requires yarn dev running without the main next front end, since yarn site:build is the primary unit test.
+`yarn commit "message"` fires off the CI pipeline and only commits if unit tests are passed locally. No longer requires yarn dev running without the main next front end, since yarn site:build is the primary unit test. "fastcommit" is considered dangerous, and needs some additional logic to be CI safe. Its been the cause of a few red crosses. For that reason, it is being prefixed by an `x`, so commands in the history buffer do not trigger it. 
 
 `yarn push` auto push to origin latest
 
@@ -118,7 +118,7 @@ Status: `Preliminary`.
 
 ## any is shouting: I AM WRITTEN IN JAVASCRIPT ... listen to it, and recode it ASAP
 
-`wrap_any.ts` is an ugly name for an ugly file. It might change to become even more noticable. It has the sole role of wrapping `any` subtypes that can't be deduced for some reason. It has proved to be a very
+`wrap_any.ts` is an ugly name for an ugly file. It might change names to become even more noticable. Its sole role is wrapping `any` subtypes that can't be deduced for some reason. It has proved to be a very
 practical way of localising `any` issues. Give the usage a name, and fixed location, right under the peer review spot light. Have varying degree of `anyness`. Take a look at the file, it's a toxic dump of puzzles and types best avoided, and attempts to handle them at a distance. There are more radical approaches that I'm looking at, but they are alien.
 
 `any` issues:
@@ -229,7 +229,9 @@ Production build:
    tailwind purge
    telemetry disable
    x-api-key for next build events
-   CI scripts: WIP: Seeding
+   CI scripts:
+      Unseeded corner case working. 
+      WIP: Seeding
       Prettier applied in gitadd.
 ```
 

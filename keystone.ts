@@ -8,17 +8,15 @@ import { permissions } from './schema/access';
 
 import colors from 'colors/safe';
 
-// Fix Me: Test code: Needs another home.
+// Fix Me: Logging needs another home again. It also needs to be right near the top of the dependencies, or linkage issues occur.
+// Schema might be a good place?
 // Logging is one place where HardenedAny is needed! The intent was object dumping code, down to
-//every leaf. A testground for DRY logging in ts.
-// Closures are good for logging, localising to particular files/functions/lines ... the issues of this short segment quickly shows why.
-// I have some multicol markup for logging, it bash though, so replaces console.log.
-// A markup standard for shell would be useful.
+// every leaf, in a hardened way. A testground for DRY logging in ts.
+// Closures are good for logging, localising to particular files/functions/lines, and returning a continuation.
 
-//const log = (s: string) => console.log(s);
-//Reverse mapping for var args, rest parameters ... handy but slightly disfunctional, forEach is not strongly typed.
 export const fix = <T>(x: T) => x;
 
+//These are functions string => string
 export const successCol = colors.green;
 export const warningCol = colors.yellow;
 export const errorCol = colors.red;
@@ -56,6 +54,8 @@ export const stackRenderer = (e: CleanError) => e.stack;
 
 export const simpleLogger = (msg: string) => console.log(Date() + sep + msg);
 
+// This apparently simple operation, logging, has a fairly rich monadic structure.
+// FIXME: TYPEME: return type. It seems to be a recursive union.
 export const logContextInfoGen =
   (msgRenderer: LogEventRenderer) =>
   (col: ColFun) =>
