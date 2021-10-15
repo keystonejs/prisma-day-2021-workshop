@@ -87,11 +87,11 @@ Full k8s spec: WIP.
    A shout out to Jed for explaining the keystone way.
 
 Ready for exhaustive testing. Bug reports welcome!
-```
+
 
 
 ## Resiliance testing
-
+```
 ✅ A stale session led to the app throwing when voting occured. 
 Code fixed by a log.warning and return.  
 
@@ -103,6 +103,7 @@ Tested and working.
 ✅ Next builds even when there is no static data, i.e. an empty database. Requires precise
 handling of `any`.
 ✅ More issues tracked down using the empty database technique. It triggers every `any`.
+```
 
 ## Security audit
 Status: `Preliminary`.
@@ -117,7 +118,7 @@ practical way of localising `any` issues.
 `any` issues:
 Low level ts/js security audit: Research and development has established many bugs hide in the rampantly polymorphic `any` type. 
 
-This `dangerous construct` is used in upstream auth. Roughly 
+This `dangerous construct` is used in upstream auth. 
 
 ```
 Approximately 75% of these situations reveal an unhandled case, hidden from lint. 
@@ -192,7 +193,7 @@ With these caveats in mind, enjoy, and be fully aware this release is in a `test
 Known Issues:
 
 
-Code can siliently fail in a ?. chain. 
+Code can siliently fail in a ?. chain. WIP
 The ?. construction is convenient, but not suitable for production logging, error trapping.
 To be replaced with a maybe sytle monad.
 
