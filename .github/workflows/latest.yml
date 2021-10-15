@@ -58,11 +58,11 @@ jobs:
           sudo apt install nodejs      
           cd $GITHUB_WORKSPACE
           
-          
-          PGPASSWORD=admin psql -X -h localhost -U postgres -t -c "create user user_name with encrypted password '$KEYSTONE_PGPASSWORD';"
-          PGPASSWORD=admin psql -X -h localhost -U postgres -t -c "CREATE DATABASE $KEYSTONE_DATABASE;"
-          PGPASSWORD=admin psql -X -h localhost -U postgres -t -c "grant all privileges on database $KEYSTONE_DATABASE to $KEYSTONE_USERNAME;"
-          PGPASSWORD=admin psql -X -h localhost -U postgres -t -c "ALTER USER postgres PASSWORD '$POSTGRES_PASSWORD';"
+          PG=sudo su - postgres psql -X -h localhost -U postgres -t -c 
+          $PG "create user user_name with encrypted password '$KEYSTONE_PGPASSWORD';"
+          $PG "CREATE DATABASE $KEYSTONE_DATABASE;"
+          $PG "grant all privileges on database $KEYSTONE_DATABASE to $KEYSTONE_USERNAME;"
+          $PG "ALTER USER postgres PASSWORD '$POSTGRES_PASSWORD';"
 
           yarn        
           yarn dev &         
