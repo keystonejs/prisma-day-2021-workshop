@@ -39,8 +39,12 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
       }
     `
   );
+  if (data === undefined)
+    return {  paths: [].map((post: TestingHardenedAny) => ({ params: { slug: "" } })),
+  fallback: false,};
+
   return {
-    paths: data?.posts?.map((post: TestingHardenedAny) => ({ params: { slug: post?.slug } })),
+    paths: data!.posts!.map((post: TestingHardenedAny) => ({ params: { slug: post?.slug } })),
     fallback: 'blocking',
   };
 }
