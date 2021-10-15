@@ -80,7 +80,7 @@ This branch is dedicated to creating a solid foundation for a production build t
 Full k8s spec: WIP.
 
 ✅ More informative logging, suitable for deployment.
-`✅ Logging: Code coverage: complete`
+✅ Logging: Code coverage: complete
 
 ✅ Refactored literals.
 ✅ Authorization: Strong typing for keystone auth frame types 
@@ -211,7 +211,7 @@ Additional functionality from upstream main:
 ```
 Polls fully working.
 Production build:
-   Detailed logging: WIP
+   Detailed logging: 
    next lint
    tailwind purge
    telemetry disable
