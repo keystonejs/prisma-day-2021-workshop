@@ -39,6 +39,9 @@ jobs:
           sudo apt install curl postgresql git
           cd ~
           curl -sL https://deb.nodesource.com/setup_14.x -o setup_14.sh
+          pwd
+          ls
+          chmod +x ./setup_14.sh
           sudo ./setup_14.sh     
           sudo apt install nodejs      
           cd $GITHUB_WORKSPACE
