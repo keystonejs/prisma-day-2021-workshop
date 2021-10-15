@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     container: node:14.18.1-bullseye
     services:
-      postgres:
+      db:
         image: postgres:latest
         env:
           POSTGRES_DB: prisma_day_2021_latest
@@ -43,20 +43,10 @@ jobs:
           apt-get update
           apt-get install --yes postgresql-client
       
-          psql -h postgres -d prisma_day_2021_latest -U postgres_user -c 'SELECT 1;'
+          psql -h postgres -d $APPNAME -U postgres_user -c 'SELECT 1;
 
-          set -euo pipefail    
-          APPNAME="prisma_day_2021_latest"
-          POSTGRES_PASSWORD="change_me_in_multiple_places"
-          KEYSTONE_PGPASSWORD="changeme2"
-          KEYSTONE_DATABASE=$APPNAME
-          KEYSTONE_USERNAME="postgres_user"
-          KEYSTONE_NEXTJS_BUILD_API_KEY="keystone_change_me2_make_a_non_postgres_user2"
+          DATABASE_URL="postgres://$KEYSTONE_USERNAME:$PGPASSWORD@db/$APPNAME"
 
-          DATABASE_URL="postgres://$KEYSTONE_USERNAME:$POSTGRES_PASSWORD@localhost/$KEYSTONE_DATABASE"
-
-
-  
           cd $GITHUB_WORKSPACE
           yarn        
           yarn dev &         
@@ -67,5 +57,7 @@ jobs:
 
         env:
           PGPASSWORD: change_me_in_multiple_places
-
+          KEYSTONE_USERNAME: postgres_user
+          APPNAME: prisma_day_2021_latest
+          KEYSTONE_NEXTJS_BUILD_API_KEY: keystone_change_me2
       # Deploy:
