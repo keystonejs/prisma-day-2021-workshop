@@ -64,19 +64,19 @@ utils.js
 
 ## About the latest branch: ![workflow](https://github.com/qfunq/prisma-day-2021-workshop/actions/workflows/latest.yml/badge.svg)
 
-This branch is dedicated to creating a solid foundation for a production build to extend keystone CMS from.
+This branch is dedicated to creating a solid foundation for a production build to extend Keystone 6 CMS from.
 
-
-
-`yarn commit "message"` fires of CI pipeline and only commits if unit tests passed. Requires yarn dev running without the main next front end, since yarn site:build is the primary unit test.
+`yarn commit "message"` fires off the CI pipeline and only commits if unit tests are passed locally. Requires yarn dev running without the main next front end, since yarn site:build is the primary unit test.
 
 `yarn push` auto push to origin latest
 
-`yarn commit "message" && yarn push` is what lands up being used.
+`yarn commit "message" && yarn push` is what lands up being used most often.
 
 ## Production status report
-✅ CI: Github actions runner working in a test application. Unseeded build cases handled (any bugs fixed!)
+✅ CI: Github actions runner working in a test framework. Unseeded build cases handled (any bugs fixed!)
 ✅ Pre release: Testing
+
+Full k8s spec: WIP.
 
 ✅ More informative logging, suitable for deployment.
 `✅ Logging: Code coverage: complete`
@@ -95,10 +95,12 @@ Ready for exhaustive testing. Bug reports welcome!
 ✅ A stale session led to the app throwing when voting occured. Code fixed by a log.warning and return.  
 
 ✅ Rejigged fetch command because some failure continuations were never been called. Tested and working.
-    Yields a clean model for managing the fetch continuations.
+✅ Yields a clean model for managing the fetch continuations.
 
 ✅ Only throws were in polls and static data fetch. Both have been refactored.
 
+✅ Next builds even when there is no static data, i.e. an empty database. Requires precise
+handling of `any`.
 
 ## Security audit
 Status: `Preliminary`.
@@ -106,7 +108,7 @@ Status: `Preliminary`.
 ## TL;DR
 `<T>(a: T)` is a type safe replacement for `(a: any)`, because we need to trap the awkward `undefined` cases at build time. 
 
-wrap_any.ts has the sole role of wrapping types that cant be deduced for some reason. It has proved to be a very
+`wrap_any.ts` has the sole role of wrapping types that cant be deduced for some reason. It has proved to be a very
 practical way of localising `any` issues.
 
 
@@ -116,10 +118,10 @@ Low level ts/js security audit: Research and development has established many bu
 This `dangerous construct` is used in upstream auth. Roughly 
 
 ```
-50% of these situations reveals an unhandled case, hidden from lint. 
+Approximately 75% of these situations reveal an unhandled case, hidden from lint. 
 ```
 
-Currently developing a reader friendly notation for the rather awkward ts functional notation, to try to find ways to eliminte `any`. The most readable so far appears to be:
+Currently developing a reader friendly notation for the rather awkward `ts functional notation`, to try to find ways to eliminte `any`. The most readable so far appears to be:
 
 `export const fcompose = <A,B,C>(a: (maps: B) => A) => (b: (maps: C) => B) => (c: C) => 
    a(b(c))`

@@ -36,8 +36,15 @@ jobs:
           POSTGRES_USER: postgres_user
         
     steps:
+      - name: Dump github context
+        run:   echo "$GITHUB_CONTEXT"
+        shell: bash
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+
       - name: Checkout application
         uses: actions/checkout@v2
+
       - name: Run yarn
         run: | 
           cd $GITHUB_WORKSPACE

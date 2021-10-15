@@ -1,10 +1,7 @@
 import { KeystoneContext } from '.keystone/types';
-
-import { keystoneNextjsBuildApiKey } from '../keystone';
+import { keystoneNextjsBuildApiKey, log } from '../keystone';
 
 import { ItemType } from '../wrap_any';
-
-import { log } from '../utils';
 
 export const PUBLISHED = 'published';
 export const DRAFT = 'draft';
@@ -66,10 +63,11 @@ export const isBuildEnvir = (frame: SessionFrame): boolean => {
       );
       return true;
     } else {
-      log.warning('access::isBuildEnvir: authentication breach:');
-      log.success(
-        'access::isBuildEnvir: no additional authorisation granted to breach.'
-      );
+      log
+        .warning('access::isBuildEnvir: authentication breach:')
+        .success(
+          'access::isBuildEnvir: no additional authorisation granted to breach.'
+        );
       return false;
     }
   }
@@ -121,13 +119,15 @@ export const FilterCanManageContentList = (frame: SessionFrame) => {
   //The perms check is only running client side. Review: check the authorization props are checked
   //server side to.
   if (!!frame.context.session?.data?.role?.canManageContent) {
-    log.success('Blessed super user access to the known content manager:');
-    log.success(frame?.context?.session?.data?.name);
+    log
+      .success('Blessed super user access to the known content manager:')
+      .success(frame?.context?.session?.data?.name);
     return EVERY_POST_STATUS;
   }
 
-  log.success('Client receives only published posts:');
-  log.success(frame?.context?.session?.data?.name);
+  log
+    .success('Client receives only published posts:')
+    .success(frame?.context?.session?.data?.name);
   //success(frame.context.session?.data?.role?.canManageContent);
   return PUBLISHED_POST_STATUS;
 };
