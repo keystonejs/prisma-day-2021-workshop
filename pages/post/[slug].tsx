@@ -8,7 +8,7 @@ import { Container, HomeLink } from '../../components/ui/layout';
 import { Link } from '../../components/ui/link';
 import { H1 } from '../../components/ui/typography';
 
-import { TestingHardenedAny } from '../../wrap_any'
+import { HardenedAny } from '../../wrap_any'
 
 export default function Post({ post }: { post: any }) {
   return (
@@ -40,11 +40,11 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
     `
   );
   if (data === undefined)
-    return {  paths: [].map((post: TestingHardenedAny) => ({ params: { slug: "" } })),
+    return {  paths: [].map((post: HardenedAny) => ({ params: { slug: "" } })),
   fallback: false,};
 
   return {
-    paths: data!.posts!.map((post: TestingHardenedAny) => ({ params: { slug: post?.slug } })),
+    paths: data!.posts!.map((post: HardenedAny) => ({ params: { slug: post?.slug } })),
     fallback: 'blocking',
   };
 }

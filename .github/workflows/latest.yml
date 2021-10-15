@@ -58,7 +58,7 @@ jobs:
         run: | 
           echo "Building unseeded production server: "       
           yarn site:build          
-          echo "Build unseeded $POSTGRES_DB:latest production succeded" 
+          echo "✅ Build unseeded $POSTGRES_DB:latest production success" 
 
         env:
           KEYSTONE_NEXTJS_BUILD_API_KEY: keystone_change_me2

@@ -1,5 +1,5 @@
 import { keystoneNextjsBuildApiKey } from './keystone';
-import { HardenedAny, RampantlyPolymorphic } from './wrap_any';
+import { HardenedAny } from './wrap_any';
 
 import colors from 'colors/safe';
 

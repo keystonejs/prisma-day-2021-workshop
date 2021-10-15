@@ -62,11 +62,11 @@ utils.js
 
 
 
-## About the latest branch:
+## About the latest branch: ![workflow_badge](https://github.com/github/docs/actions/workflows/latest.yml/badge.svg)
 
 This branch is dedicated to creating a solid foundation for a production build to extend keystone CMS from.
 
-CI: Github actions runner timed out. Local CI fully functional. Unseeded build.
+
 
 `yarn commit "message"` fires of CI pipeline and only commits if unit tests passed. Requires yarn dev running without the main next front end, since yarn site:build is the primary unit test.
 
@@ -75,6 +75,7 @@ CI: Github actions runner timed out. Local CI fully functional. Unseeded build.
 `yarn commit "message" && yarn push` is what lands up being used.
 
 ## Production status report
+✅ CI: Github actions runner working in a test application. Unseeded build cases handled (any bugs fixed!)
 ✅ Pre release: Testing
 
 ✅ More informative logging, suitable for deployment.
