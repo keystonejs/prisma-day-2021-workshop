@@ -41,13 +41,14 @@ jobs:
         run: |         
           DATABASE_URL="postgres://$KEYSTONE_USERNAME:$PGPASSWORD@db/$APPNAME"
           cd $GITHUB_WORKSPACE
-          yarn        
-      -name: Start keystone  
-       run: |  
+          yarn      
+      - name: Start keystone  
+        run: |  
+
           yarn dev &         
           sleep 5  
-      -name: Start next build  
-       run: | 
+      - name: Start next build  
+        run: | 
           echo "Building unseeded production server: $APPNAME"       
           yarn site:build          
           echo "Build unseeded $APPNAME:latest production succeded" 
