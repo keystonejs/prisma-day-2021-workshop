@@ -36,7 +36,7 @@ jobs:
           appname="prisma_day_2021"
           echo "Build unseeded production server: $appname"  
           sudo apt-get update
-          sudo apt install curl postgresql yes git
+          sudo apt install curl postgresql git
           cd ~
           curl -sL https://deb.nodesource.com/setup_14.x -o setup_14.sh
           sudo ./setup_14.sh     
