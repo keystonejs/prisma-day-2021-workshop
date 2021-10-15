@@ -66,48 +66,37 @@ utils.js
 
 This branch is dedicated to creating a solid foundation for a production build to extend keystone CMS from.
 
-CI: Github actions in testing. Unseeded build.
+CI: Github actions runner timed out. Local CI fully functional. Unseeded build.
+
+`yarn commit "message"` fires of CI pipeline and only commits if unit tests passed. Requires yarn dev running without the main next front end, since yarn site:build is the primary unit test.
+
+`yarn push` auto push to origin latest
+
+`yarn commit "message" && yarn push` is what lands up being used.
+
+## Production status report
+✅ Pre release: Testing
+
+✅ More informative logging, suitable for deployment.
+`✅ Logging: Code coverage: complete`
+
+✅ Refactored literals.
+✅ Authorization: Strong typing for keystone auth frame types 
+✅ Next build super user authorization to keystone, allowing SSR/SSG/ISR tunneling.
+   A shout out to Jed for explaining the keystone way.
+
+Ready for exhaustive testing. Bug reports welcome!
 ```
-yarn commit "message" ... adds files and commits.
-yarn push ... (auto push to origin latest)
-```
 
-
-
-
-## Status report
-
-✅ Authorization: Strong typing keystone frame types (bar one C++ style typecast)
-
-✅ Test code in access has a new temporary home in utils.
-
-
-Production build status: 
-
-✅ Pre release: Testing: Builds and decodes static x-api-key. 
-
-✅ Next build super user authorization to keystone, allowing for SSR/SSG/ISR tunneling.
-      A shout out to Jed for explaining the keystone way.
-
-✅ Next build api key: tested and working
-
-✅ Api key connected to workflow. 
-
-✅ Pre production testing release status: 
-✅   Admin UI Authorization has passed preliminary testing. 
-
-✅ Ready for exhaustive testing. Bug reports welcome!
-```
-More informative logging, suitable for deployment.
-   `Code coverage: partial`
 
 ## Resiliance testing
 
-✅ A stale session led to the app throwing when voting occured.  
+✅ A stale session led to the app throwing when voting occured. Code fixed by a log.warning and return.  
 
-Rejigged fetch command because some failure tracks were never been called.
+✅ Rejigged fetch command because some failure continuations were never been called. Tested and working.
+    Yields a clean model for managing the fetch continuations.
 
-More defensive coding is required to check the are no more cases of this.
+✅ Only throws were in polls and static data fetch. Both have been refactored.
 
 
 ## Security audit
@@ -115,6 +104,9 @@ Status: `Preliminary`.
 
 ## TL;DR
 `<T>(a: T)` is a type safe replacement for `(a: any)`, because we need to trap the awkward `undefined` cases at build time. 
+
+wrap_any.ts has the sole role of wrapping types that cant be deduced for some reason. It has proved to be a very
+practical way of localising `any` issues.
 
 
 `any` issues:
@@ -193,7 +185,7 @@ With these caveats in mind, enjoy, and be fully aware this release is in a `test
 
 ```
 Known Issues:
-Refactor literals.
+
 
 Code can siliently fail in a ?. chain. 
 The ?. construction is convenient, but not suitable for production logging, error trapping.

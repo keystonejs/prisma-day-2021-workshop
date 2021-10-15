@@ -52,6 +52,8 @@ export const isBuildEnvir = (frame: SessionFrame): boolean => {
     // It's a bit confusing as to why this dodgy cast is needed. It took ages to get api keys working because of the
     // obscuriy of the workaround.
     // The top level query prefers SessionFrame, and does not build against KeystoneFrame (same, bar KeystoneContext for context)
+    // This does appear to be the right way to access the context, but why do we need to
+    // cast something as important as this?
     let kontext = frame?.context as KeystoneContext;
     let recvApiKey = kontext?.req?.headers['x-api-key'];
 
