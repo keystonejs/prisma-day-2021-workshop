@@ -17,55 +17,54 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
+jobs:
+  postgres:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    container: node:14.18.1-bullseye
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: prisma_day_2021_latest
+          POSTGRES_PASSWORD: change_me_in_multiple_places
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: postgres_user
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: Install PostgreSQL client
+        run: |
+          apt-get update
+          apt-get install --yes postgresql-client
+      
+      - name: Query database
+        run: psql -h postgres -d prisma_day_2021_latest -U postgres_user -c 'SELECT 1;'
+        env:
+          PGPASSWORD: change_me_in_multiple_places
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo "Unit testing:"
-
-      # Runs a set of commands using the runners shell
-      - name: Install monorepo and give it a spin
+      --name: Setup keystone
         run: |
           set -euo pipefail    
           APPNAME="prisma_day_2021_latest"
-          POSTGRES_PASSWORD="changeme"
+          POSTGRES_PASSWORD="change_me_in_multiple_places"
           KEYSTONE_PGPASSWORD="changeme2"
           KEYSTONE_DATABASE=$APPNAME
-          KEYSTONE_USERNAME="keystone_db_user"
+          KEYSTONE_USERNAME="postgres_user"
           KEYSTONE_NEXTJS_BUILD_API_KEY="keystone_change_me2_make_a_non_postgres_user2"
 
           DATABASE_URL="postgres://$KEYSTONE_USERNAME:$POSTGRES_PASSWORD@localhost/$KEYSTONE_DATABASE"
 
           echo "ubuntu dependent CI:"
           sudo apt-get update
-          sudo apt install curl postgresql  git
- 
-          sudo service postgresql start
-          
-          echo $(netstat -an | grep postgresql)
-          echo $(ps -ax | grep postgresql)
+          sudo apt install curl git
 
-          cd ~
-          curl -sL https://deb.nodesource.com/setup_14.x -o setup_14.sh
-          chmod +x ./setup_14.sh
-          sudo ./setup_14.sh     
-          sudo apt install nodejs      
+  
           cd $GITHUB_WORKSPACE
-          
-          PG() {
-            sudo su - postgres "psql -X -h localhost -U postgres -t -c \"$@\""
-          }
-          PG "create user user_name with encrypted password '$KEYSTONE_PGPASSWORD';"
-          PG "CREATE DATABASE $KEYSTONE_DATABASE;"
-          PG "grant all privileges on database $KEYSTONE_DATABASE to $KEYSTONE_USERNAME;"
-          PG "ALTER USER postgres PASSWORD '$POSTGRES_PASSWORD';"
-
           yarn        
           yarn dev &         
           sleep 5   
