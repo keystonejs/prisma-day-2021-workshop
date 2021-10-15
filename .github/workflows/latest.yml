@@ -44,10 +44,13 @@ jobs:
 
           echo "ubuntu dependent CI:"
           sudo apt-get update
-          sudo apt install curl postgresql  postgresql-contrib git
+          sudo apt install curl postgresql  git
           sudo pg_ctlcluster 12 main start
+          service postgresql start
           
-          
+          echo $(netstat -an | grep postgresql)
+          echo $(ps -ax | grep postgresql)
+
           cd ~
           curl -sL https://deb.nodesource.com/setup_14.x -o setup_14.sh
           chmod +x ./setup_14.sh
