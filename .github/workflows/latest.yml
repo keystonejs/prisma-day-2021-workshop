@@ -40,8 +40,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Run yarn
         run: |  
-          echo "Installing unseeded production server: $POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/$POSTGRES_DB" 
-          DATABASE_URL=$(echo postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/$POSTGRES_DB)      
+          echo "Installing unseeded production services: " 
+      
           echo $DATABASE_URL
           cd $GITHUB_WORKSPACE
           ls -alt
@@ -52,7 +52,7 @@ jobs:
           sleep 5  
       - name: Start next build  
         run: | 
-          echo "Building unseeded production server: $POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/$POSTGRES_DB"       
+          echo "Building unseeded production server: "       
           yarn site:build          
           echo "Build unseeded $POSTGRES_DB:latest production succeded" 
 
@@ -61,5 +61,6 @@ jobs:
           POSTGRES_USER: postgres_user
           POSTGRES_DB: prisma_day_2021_latest
           KEYSTONE_NEXTJS_BUILD_API_KEY: keystone_change_me2
+          DATABASE_URL: postgres://postgres_user:keystone_change_me2@pg/prisma_day_2021_latest
           POSTGRES_HOST: pg
       # Deploy:
