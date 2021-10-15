@@ -35,11 +35,12 @@ jobs:
           set -euo pipefail    
           appname="prisma_day_2021"
           echo "Build unseeded production server: $appname"  
+          sudo apt-get update
+          sudo apt install curl postgresql yes git
           cd ~
           curl -sL https://deb.nodesource.com/setup_14.x -o setup_14.sh
-          sudo ./setup_14.sh
-          sudo apt-get update  
-          sudo apt install nodejs postgresql yes git       
+          sudo ./setup_14.sh     
+          sudo apt install nodejs      
           cd $GITHUB_WORKSPACE
           DATABASE_URL="postgres://postgres:changeme@localhost/$appname"
           KEYSTONE_NEXTJS_BUILD_API_KEY="keystone_change_me2_make_a_non_postgres_user2"
