@@ -44,8 +44,7 @@ jobs:
       
       - name: Query database
         run: psql -h postgres -d prisma_day_2021_latest -U postgres_user -c 'SELECT 1;'
-        env:
-          PGPASSWORD: change_me_in_multiple_places
+
 
       --name: Setup keystone
         run: |
@@ -71,5 +70,8 @@ jobs:
           echo "Building unseeded production server: $APPNAME"       
           yarn site:build          
           echo "Build unseeded $appname:latest production succeded" 
+
+        env:
+          PGPASSWORD: change_me_in_multiple_places
 
       # Deploy:
