@@ -54,6 +54,7 @@ export const Label = list({
   fields: {
     name: text(),
     posts: relationship({
+      isFilterable: true,
       ref: 'Post.labels',
       many: true,
       ui: {

@@ -18,7 +18,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: fedora:latest
+    runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -35,12 +35,14 @@ jobs:
           set -euo pipefail    
           appname="prisma_day_2021"
           echo "Build unseeded production server: $appname"  
-          dnf reset nodejs
-          dnf module install nodejs:14/development
-          dnf install postgresql yes        
+          cd ~
+          curl -sL https://deb.nodesource.com/setup_14.x -o setup_14.sh
+          sudo ./setup_14.sh
+          sudo apt-get update  
+          sudo apt install nodejs postgresql yes git       
           cd $GITHUB_WORKSPACE
           DATABASE_URL="postgres://postgres:changeme@localhost/$appname"
-          KEYSTONE_NEXTJS_BUILD_API_KEY="definitely_change_me2_make_a_non_postgres_user2"
+          KEYSTONE_NEXTJS_BUILD_API_KEY="keystone_change_me2_make_a_non_postgres_user2"
           yes | yarn        
           yarn dev &         
           sleep 3          
