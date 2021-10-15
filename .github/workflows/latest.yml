@@ -47,7 +47,7 @@ jobs:
           cd $GITHUB_WORKSPACE
           DATABASE_URL="postgres://postgres:changeme@localhost/$appname"
           KEYSTONE_NEXTJS_BUILD_API_KEY="keystone_change_me2_make_a_non_postgres_user2"
-          yes | yarn        
+          yarn        
           yarn dev &         
           sleep 3          
           yarn site:build          
