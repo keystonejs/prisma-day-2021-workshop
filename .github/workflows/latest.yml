@@ -45,7 +45,7 @@ jobs:
           echo "ubuntu dependent CI:"
           sudo apt-get update
           sudo apt install curl postgresql  git
-          sudo pg_ctlcluster 12 main start
+ 
           service postgresql start
           
           echo $(netstat -an | grep postgresql)
