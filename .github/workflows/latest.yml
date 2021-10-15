@@ -58,7 +58,9 @@ jobs:
           sudo apt install nodejs      
           cd $GITHUB_WORKSPACE
           
-          PG() {su - postgres "psql -X -h localhost -U postgres -t -c \"$@\""}
+          PG() {
+            su - postgres "psql -X -h localhost -U postgres -t -c \"$@\""
+          }
           PG "create user user_name with encrypted password '$KEYSTONE_PGPASSWORD';"
           PG "CREATE DATABASE $KEYSTONE_DATABASE;"
           PG "grant all privileges on database $KEYSTONE_DATABASE to $KEYSTONE_USERNAME;"
