@@ -9,6 +9,8 @@ const dbUrl =
   `postgres://${process.env?.POSTGRES_USER}:${process.env?.POSTGRES_PASSWORD}@${process.env?.POSTGRES_HOST}/${process.env?.POSTGRES_DB}` ||
   '${process.env.DATABASE_URL}';
 
+console.log(`Database url: ${dbUrl}`);
+
 const sessionSecret =
   process.env.SESSION_SECERT ||
   'iLqbHhm7qwiBNc8KgL4NQ8tD8fFVhNhNqZ2nRdprgnKNjgJHgvitWx6DPoZJpYHa';

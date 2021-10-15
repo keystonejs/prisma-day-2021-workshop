@@ -48,14 +48,14 @@ jobs:
           sleep 5  
       - name: Start next build  
         run: | 
-          echo "Building unseeded production server: $APPNAME"       
+          echo "Building unseeded production server: $POSTGRES_DB"       
           yarn site:build          
           echo "Build unseeded $APPNAME:latest production succeded" 
 
         env:
           POSTGRES_PASSWORD: change_me_in_multiple_places
-          USER: postgres_user
+          POSTGRES_USER: postgres_user
           POSTGRES_DB: prisma_day_2021_latest
           KEYSTONE_NEXTJS_BUILD_API_KEY: keystone_change_me2
-          PG_HOST: pg
+          POSTGRES_HOST: pg
       # Deploy:
