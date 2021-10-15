@@ -92,15 +92,17 @@ Ready for exhaustive testing. Bug reports welcome!
 
 ## Resiliance testing
 
-✅ A stale session led to the app throwing when voting occured. Code fixed by a log.warning and return.  
+✅ A stale session led to the app throwing when voting occured. 
+Code fixed by a log.warning and return.  
 
-✅ Rejigged fetch command because some failure continuations were never been called. Tested and working.
-✅ Yields a clean model for managing the fetch continuations.
+✅ Rejigged fetch command because some failure continuations were never been called. 
+Tested and working.
 
 ✅ Only throws were in polls and static data fetch. Both have been refactored.
 
 ✅ Next builds even when there is no static data, i.e. an empty database. Requires precise
 handling of `any`.
+✅ More issues tracked down using the empty database technique. It triggers every `any`.
 
 ## Security audit
 Status: `Preliminary`.
