@@ -8,6 +8,8 @@ import { Container, HomeLink } from '../../components/ui/layout';
 import { Link } from '../../components/ui/link';
 import { H1 } from '../../components/ui/typography';
 
+import { TestingHardenedAny } from '../../wrap_any'
+
 export default function Post({ post }: { post: any }) {
   return (
     <Container>
@@ -38,7 +40,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
     `
   );
   return {
-    paths: data.posts.map((post: any) => ({ params: { slug: post.slug } })),
+    paths: data?.posts?.map((post: TestingHardenedAny) => ({ params: { slug: post?.slug } })),
     fallback: 'blocking',
   };
 }
@@ -62,5 +64,5 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
     `,
     { slug: params!.slug }
   );
-  return { props: { post: data.post }, revalidate: 60 };
+  return { props: { post: data?.post }, revalidate: 60 };
 }
