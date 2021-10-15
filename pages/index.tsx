@@ -45,7 +45,7 @@ export default function Home({ posts }: { posts: Post[] }) {
       )}
 
       <div>
-        {posts.map(post => {
+        {posts?.map(post => {
           const date = post.publishedDate
             ? new Date(post.publishedDate).toLocaleDateString()
             : null;
@@ -92,6 +92,7 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
       }
     `
   );
-  const postsRx = data? data.posts : [];
+  const postsRx = data?.posts || null;
+  
   return { props: { posts: postsRx }, revalidate: 60 };
 }
