@@ -1,4 +1,4 @@
-import { HardenedAny } from './wrap_any';
+import { HardenedAny, RecursiveTypeAny } from './wrap_any';
 import { config } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
@@ -59,7 +59,7 @@ export const simpleLogger = (msg: string) => console.log(Date() + sep + msg);
 export const logContextInfoGen =
   (msgRenderer: LogEventRenderer) =>
   (col: ColFun) =>
-  (toBeLogged: HardenedAny): HardenedAny => {
+  (toBeLogged: HardenedAny): RecursiveTypeAny => {
     if (toBeLogged === undefined)
       return logContextInfoGen(stackRenderer)(warningCol)(undefinedVariableMsg);
 

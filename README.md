@@ -92,7 +92,7 @@ Ready for exhaustive testing. Bug reports welcome!
 
 
 
-## Resiliance testing
+## Resiliance testing, unit testing
 ```
 ✅ A stale session led to the app throwing when voting occured. 
 Code fixed by a log.warning and return.  
@@ -104,18 +104,22 @@ Tested and working.
 
 ✅ Next builds even when there is no static data, i.e. an empty database. Requires precise
 handling of `any`.
-✅ More issues tracked down using the empty database technique. It triggers every `any`.
+
+✅ Any issues tracked down using the empty database technique. It triggers every any bug, with a vengeance.
+   Strongly recommended as a unit testing technique.
 ```
 
 ## Security audit
 Status: `Preliminary`.
 
 ## TL;DR
-`<T>(a: T)` is a type safe replacement for `(a: any)`, because we need to trap the awkward `undefined` cases at build time. 
+`<T>(a: T)` is a type safe replacement for many cases of `(a: any)`, because we need to trap the awkward `undefined` cases at build time. 
 
-`wrap_any.ts` has the sole role of wrapping types that cant be deduced for some reason. It has proved to be a very
-practical way of localising `any` issues.
 
+## any is shouting: I AM WRITTEN IN JAVASCRIPT ... listen to it, and recode it ASAP
+
+`wrap_any.ts` is an ugly name for an ugly file. It might change to become even more noticable. It has the sole role of wrapping `any` subtypes that can't be deduced for some reason. It has proved to be a very
+practical way of localising `any` issues. Give the usage a name, and fixed location, right under the peer review spot light. Have varying degree of `anyness`. Take a look at the file, it's a toxic dump of puzzles and types best avoided, and attempts to handle them at a distance. There are more radical approaches that I'm looking at, but they are alien.
 
 `any` issues:
 Low level ts/js security audit: Research and development has established many bugs hide in the rampantly polymorphic `any` type. 
@@ -126,25 +130,25 @@ This `dangerous construct` is used in upstream auth.
 Approximately 75% of these situations reveal an unhandled case, hidden from lint. 
 ```
 
-Currently developing a reader friendly notation for the rather awkward `ts functional notation`, to try to find ways to eliminte `any`. The most readable so far appears to be:
+Currently developing a reader friendly notation for the rather awkward `ts functional notation`, to try to find ways to eliminte `any`, in all bar recursive types (which are labelled as such, by an `any` subtype). The most readable so far appears to be:
 
 `export const fcompose = <A,B,C>(a: (maps: B) => A) => (b: (maps: C) => B) => (c: C) => 
    a(b(c))`
 
 and in second place,
 
-`export const fcompose = <A,B,C>(a: (X: B) => A) => (b: (maps: C) => B) => (c: C) => 
+`export const fcompose = <A,B,C>(a: (X: B) => A) => (b: (X: C) => B) => (c: C) => 
    a(b(c))`
 
-and for cartestian products:
+For cartestian products:
 
    `transferFun: (maps: T) => (cross: T) => T`
 
-obviously we would rather write:
+we would rather write:
 
    `transferFun: T => T => T,`
 
-but its a bit odd to, at least the ts reads a bit like the intended,
+but its a bit odd too, at least the ts reads a bit like the intended,
 
    `transferFun: maps T cross T to T,` 
 
@@ -152,7 +156,7 @@ just all the brackets are in the wrong place for the eye to flow smoothly over i
 
    `transferFun: T => T to T,`
 
-since `=>` is somewhat overused. The return type is special in comparisson to intermediary closure parameters.
+since `=>` is somewhat overused. Also, the return type is special in comparisson to intermediary closure parameters.
 
 But when printed, the shorter 
    `transferFun: (maps: T) => (X: T) => T,`
@@ -184,11 +188,20 @@ However, some functional code doesn't seem to work properly without the total po
 
 There is also a `dodgy C++ style cast`, right where it's not needed ... `TBC`.
 
+The reason this is important is that `ts` offers us the `CCC` to programme in, (eliminating `any` completely), if we so desire. Then a programme can be proved to do exactly what it says it does, and this painfully pedantic style is fully justified.
 
+## On naming
+The Native American naming/language model is used. Functions are verbs, and are named by what they do. 
 
-With these caveats in mind, enjoy, and be fully aware this release is in a `testing` phase. 
+Categorical morphisms are weaker, polymorphic aliases to these concrete names, and are `only to be used in generic code`. If writing specific code, it is recommended to use the specific name. 
 
+There nothing worse than grepping through 60 pages of `process` matches, all processing something completely different, (a C++ example, but we have all been there, try searching for `: any` in the top of a node project ... ). 
 
+`then`, and `catch`, are heavily overused in all languages. IMHO, new apis need to avoid these keywords, but also supply categorical aliases, such as `bind`, `fmap`, `then`,`finally` if generic programming is required.
+
+I'm fairly new to `ts`, and like it a lot, but without a formal style, it can become unmanagable.
+
+With these caveats in mind, enjoy this latest release of @jeds prisma-day app, polished endlessly by @qfunq (it deserves it, Keystone 6 is the best CMS out there, Next, best in class, and same for prisma), and be fully aware this application is in a `testing` phase. 
 
 
 ```
