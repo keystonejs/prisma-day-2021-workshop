@@ -38,10 +38,8 @@ jobs:
       - name: Checkout application
         uses: actions/checkout@v2
       - name: Run yarn
-        run: |
-           
+        run: |         
           DATABASE_URL="postgres://$KEYSTONE_USERNAME:$PGPASSWORD@db/$APPNAME"
-
           cd $GITHUB_WORKSPACE
           yarn        
       -name: Start keystone  
@@ -52,7 +50,7 @@ jobs:
        run: | 
           echo "Building unseeded production server: $APPNAME"       
           yarn site:build          
-          echo "Build unseeded $appname:latest production succeded" 
+          echo "Build unseeded $APPNAME:latest production succeded" 
 
         env:
           PGPASSWORD: change_me_in_multiple_places
