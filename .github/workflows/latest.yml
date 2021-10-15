@@ -39,7 +39,8 @@ jobs:
       - name: Checkout application
         uses: actions/checkout@v2
       - name: Run yarn
-        run: |         
+        run: |   
+          echo $POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/$POSTGRES_DB      
           cd $GITHUB_WORKSPACE
           yarn      
       - name: Start keystone  
@@ -48,9 +49,9 @@ jobs:
           sleep 5  
       - name: Start next build  
         run: | 
-          echo "Building unseeded production server: $POSTGRES_DB"       
+          echo "Building unseeded production server: $POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/$POSTGRES_DB"       
           yarn site:build          
-          echo "Build unseeded $APPNAME:latest production succeded" 
+          echo "Build unseeded $POSTGRES_DB:latest production succeded" 
 
         env:
           POSTGRES_PASSWORD: change_me_in_multiple_places
