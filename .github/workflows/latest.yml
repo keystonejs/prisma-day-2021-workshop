@@ -39,9 +39,10 @@ jobs:
       - name: Checkout application
         uses: actions/checkout@v2
       - name: Run yarn
-        run: |   
-          export DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD\@$POSTGRES_HOST/$POSTGRES_DB      
-          echo "$DATABASE_URL"
+        run: |  
+          echo "Installing unseeded production server: $POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/$POSTGRES_DB" 
+          DATABASE_URL=$(echo postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/$POSTGRES_DB)      
+          echo $DATABASE_URL
           cd $GITHUB_WORKSPACE
           ls -alt
           yarn      
