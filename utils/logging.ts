@@ -25,7 +25,7 @@ export type ColFun = (maps: string) => string;
 
 export const sep = ': ';
 
-export const baseErrorMsg = 'utils: logContextInfoGen::' + sep;
+export const baseErrorMsg = '';
 export const undefinedVariableMsg =
   baseErrorMsg + 'Attempted to log an undefined variable.' + sep;
 export const nullVariableMsg =
@@ -46,7 +46,9 @@ export const fileLineRenderer = (e: CleanError) => {
 
 export const stackRenderer = (e: CleanError) => e.stack;
 
-export const simpleLogger = (msg: string) => console.log(Date() + sep + msg);
+export type LoggerFun = (maps: string) => void;
+export const simpleLogger = (msg: string) => console.log(msg);
+export const dateLogger = (msg: string) => simpleLogger(Date() + sep + msg);
 
 //export type MonadicType<T> = (maps: T) => MonadicType<T>
 // This apparently simple operation, logging, has a fairly rich monadic structure.
@@ -55,14 +57,15 @@ export const logContextInfoGen =
   <RetType>(retObj: RetType) =>
   (msgRenderer: LogEventRenderer) =>
   (col: ColFun) =>
+  (logger: LoggerFun) =>
   (toBeLogged: HardenedAny): RetType => {
     if (toBeLogged === undefined)
-      return logContextInfoGen(retObj)(stackRenderer)(warningCol)(
+      return logContextInfoGen(retObj)(stackRenderer)(warningCol)(logger)(
         undefinedVariableMsg
       );
 
     if (toBeLogged === null)
-      return logContextInfoGen(retObj)(stackRenderer)(warningCol)(
+      return logContextInfoGen(retObj)(stackRenderer)(warningCol)(logger)(
         nullVariableMsg
       );
     var cleanMessage: string;
@@ -76,11 +79,11 @@ export const logContextInfoGen =
     }
     const e = new Error();
     if (!e.stack) {
-      simpleLogger(errorCol(cantOpenErrorMsg) + cleanMessage);
+      logger(errorCol(cantOpenErrorMsg) + cleanMessage);
     } else {
       const ce = e as CleanError;
       const info = msgRenderer(ce);
-      simpleLogger(info + sep + cleanMessage);
+      logger(info + sep + cleanMessage);
     }
     return retObj;
   };
@@ -88,27 +91,35 @@ export const logContextInfoGen =
 const logContextInfo =
   <RetType>(retObj: RetType) =>
   (col: ColFun) =>
+  (logger: LoggerFun) =>
   (a: HardenedAny): RetType =>
-    logContextInfoGen(retObj)(fileLineRenderer)(col)(a);
+    logContextInfoGen(retObj)(fileLineRenderer)(col)(logger)(a);
 
 export class logclos {
   sep: string = sep;
+  depth: number = -1;
+
+  logger() {
+    this.depth = this.depth++;
+    return this.depth ? simpleLogger : dateLogger;
+  }
+
   warning(a: HardenedAny): this {
-    return logContextInfo(this)(warningCol)(a);
+    return logContextInfo(this)(warningCol)(this.logger())(a);
   }
   error(a: HardenedAny): this {
-    return logContextInfo(this)(errorCol)(a);
+    return logContextInfo(this)(errorCol)(this.logger())(a);
   }
   success(a: HardenedAny): this {
-    return logContextInfo(this)(successCol)(a);
+    return logContextInfo(this)(successCol)(this.logger())(a);
   }
   trace(a: HardenedAny): this {
-    return logContextInfoGen(this)(stackRenderer)(fix)(a);
+    return logContextInfoGen(this)(stackRenderer)(fix)(this.logger())(a);
   }
   info(a: HardenedAny): this {
-    return logContextInfoGen(this)(fileLineRenderer)(fix)(a);
+    return logContextInfoGen(this)(fileLineRenderer)(fix)(this.logger())(a);
   }
   reportSecurityIncident(a: HardenedAny): this {
-    return logContextInfo(this)(errorCol)(a);
+    return logContextInfo(this)(errorCol)(this.logger())(a);
   }
 }
