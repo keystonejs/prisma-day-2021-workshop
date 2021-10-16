@@ -1,5 +1,5 @@
-import { keystoneNextjsBuildApiKey, keyStoneHost, log } from './keystone';
-import { HardenedAny } from './wrap_any';
+import { keystoneNextjsBuildApiKey, keyStoneHost, log } from '../keystone';
+import { HardenedAny } from '../wrap_any';
 export const gql = ([content]: TemplateStringsArray) => content;
 
 export async function fetchGraphQL_inject_api_key(

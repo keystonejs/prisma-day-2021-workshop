@@ -1,15 +1,7 @@
-import { HardenedAny } from './wrap_any';
-import { config } from '@keystone-next/keystone';
-import { statelessSessions } from '@keystone-next/keystone/session';
-import { createAuth } from '@keystone-next/auth';
-
-import { lists, extendGraphqlSchema } from './schema';
-import { permissions } from './schema/access';
+import { HardenedAny } from '../wrap_any';
 
 import colors from 'colors/safe';
 
-// Fix Me: Logging needs another home again. It also needs to be right near the top of the dependencies, or linkage issues occur.
-// Schema might be a good place?
 // Logging is one place where HardenedAny is needed! The intent was object dumping code, down to
 // every leaf, in a hardened way. A testground for DRY logging in ts.
 // Closures are good for logging, localising to particular files/functions/lines, and returning a continuation.
@@ -36,6 +28,8 @@ export const sep = ': ';
 export const baseErrorMsg = 'utils: logContextInfoGen::' + sep;
 export const undefinedVariableMsg =
   baseErrorMsg + 'Attempted to log an undefined variable.' + sep;
+export const nullVariableMsg =
+  baseErrorMsg + 'Attempted to log a null variable.' + sep;
 export const unknownLineAndFileMsg =
   baseErrorMsg + 'Unknown line and file' + sep;
 export const cantOpenErrorMsg =
@@ -67,6 +61,10 @@ export const logContextInfoGen =
         undefinedVariableMsg
       );
 
+    if (toBeLogged === null)
+      return logContextInfoGen(retObj)(stackRenderer)(warningCol)(
+        nullVariableMsg
+      );
     var cleanMessage: string;
 
     if (typeof toBeLogged === 'string') {
@@ -114,64 +112,3 @@ export class logclos {
     return logContextInfo(this)(errorCol)(a);
   }
 }
-
-const dbUrl =
-  `${process.env.DATABASE_URL}` ||
-  `postgres://${process.env?.POSTGRES_USER}:${process.env?.POSTGRES_PASSWORD}@${process.env?.POSTGRES_HOST}/${process.env?.POSTGRES_DB}`;
-
-export const keyStoneHost = process.env?.KEYSTONE_HOST || 'localhost';
-
-export const log = new logclos();
-
-log
-  .info(`Database url: ${dbUrl}`)
-
-  .success(dbUrl)
-  .info(`Keystone host`)
-  .success(keyStoneHost);
-
-const sessionSecret =
-  process.env.SESSION_SECERT ||
-  'iLqbHhm7qwiBNc8KgL4NQ8tD8fFVhNhNqZ2nRdprgnKNjgJHgvitWx6DPoZJpYHa';
-
-export const keystoneNextjsBuildApiKey =
-  process.env.KEYSTONE_NEXTJS_BUILD_API_KEY ||
-  'keystone.ts:_NextjsBuildApiKey_says_change_me_!!!!!!!_im_just_for_testing_purposes';
-
-const auth = createAuth({
-  identityField: 'email',
-  secretField: 'password',
-  listKey: 'User',
-  sessionData: `id name role {
-    canManageContent
-    canManageUsers
-  }`,
-  initFirstItem: {
-    fields: ['name', 'email', 'password'],
-    itemData: {
-      role: {
-        create: {
-          name: 'Super User',
-          canManageContent: true,
-          canManageUsers: true,
-        },
-      },
-    },
-  },
-});
-
-export default auth.withAuth(
-  config({
-    db: {
-      url: dbUrl,
-      provider: 'postgresql',
-      useMigrations: true,
-    },
-    ui: { isAccessAllowed: permissions.canUseAdminUI },
-    lists,
-    session: statelessSessions({
-      secret: sessionSecret,
-    }),
-    extendGraphqlSchema,
-  })
-);

@@ -1,7 +1,7 @@
 import { GetStaticPathsResult, GetStaticPropsContext } from 'next';
 import React from 'react';
 
-import { fetchGraphQL_inject_api_key, gql } from '../../utils';
+import { fetchGraphQL_inject_api_key, gql } from '../../utils/fetchGraphQL';
 import { DocumentRenderer } from '../../schema/fields/content/renderers';
 
 import { Container, HomeLink } from '../../components/ui/layout';

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { GetStaticPropsContext } from 'next';
 
-import { fetchGraphQL_inject_api_key, gql } from '../utils';
+import { fetchGraphQL_inject_api_key, gql } from '../utils/fetchGraphQL';
 import { DocumentRenderer } from '../schema/fields/content/renderers';
 
 import { Container } from '../components/ui/layout';
