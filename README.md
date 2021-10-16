@@ -77,7 +77,7 @@ This branch is dedicated to creating a solid foundation for a production build t
 ✅ CI: Github actions runner working in a test framework. Unseeded build cases handled (any bugs fixed!)
 ✅ Pre release: Testing
 
-Full k8s spec: WIP.
+Full k8s spec: WIP. Deferred because its an endless task.
 
 ✅ More informative logging, suitable for deployment.
 ✅ Logging: Code coverage: complete
@@ -87,7 +87,7 @@ Full k8s spec: WIP.
 ✅ Next build super user authorization to keystone, allowing SSR/SSG/ISR tunneling.
 
 ```
-A shout out to Jed for explaining the keystone way.
+A shout out to @Jed for explaining the keystone way.
 Ready for exhaustive testing. Bug reports welcome!
 
 
@@ -202,6 +202,8 @@ There nothing worse than greping through 60 pages of `process` matches, all proc
 I'm fairly new to `ts`, and like it a lot, but without a formal style, it can become unmanagable.
 
 With these caveats in mind, enjoy this latest release of @jeds prisma-day app, polished endlessly by @qfunq (it deserves it, Keystone 6 is the best CMS out there, Next, best in class, and same for prisma), and be fully aware this application is in a `testing` phase. 
+
+
 
 
 ```

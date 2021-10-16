@@ -18,7 +18,7 @@ export type TestingHardenedAny = WrappedRampantlyPolymorphic;
 export type HardenedAny = WrappedRampantlyPolymorphic;
 
 //These functions set a puzzle to, TBC ...
-export type RecursiveTypeAny = WrappedRampantlyPolymorphic;
+// Solved
 
 // These are the problem functions
 // The task is to strongly type them. Some require upstream modifications

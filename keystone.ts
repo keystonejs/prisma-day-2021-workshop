@@ -1,4 +1,4 @@
-import { HardenedAny, RecursiveTypeAny } from './wrap_any';
+import { HardenedAny } from './wrap_any';
 import { config } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
@@ -54,14 +54,18 @@ export const stackRenderer = (e: CleanError) => e.stack;
 
 export const simpleLogger = (msg: string) => console.log(Date() + sep + msg);
 
+//export type MonadicType<T> = (maps: T) => MonadicType<T>
 // This apparently simple operation, logging, has a fairly rich monadic structure.
 // FIXME: TYPEME: return type. It seems to be a recursive union.
 export const logContextInfoGen =
+  <RetType>(retObj: RetType) =>
   (msgRenderer: LogEventRenderer) =>
   (col: ColFun) =>
-  (toBeLogged: HardenedAny): RecursiveTypeAny => {
+  (toBeLogged: HardenedAny): RetType => {
     if (toBeLogged === undefined)
-      return logContextInfoGen(stackRenderer)(warningCol)(undefinedVariableMsg);
+      return logContextInfoGen(retObj)(stackRenderer)(warningCol)(
+        undefinedVariableMsg
+      );
 
     var cleanMessage: string;
 
@@ -80,21 +84,36 @@ export const logContextInfoGen =
       const info = msgRenderer(ce);
       simpleLogger(info + sep + cleanMessage);
     }
-    return logContextInfoGen(stackRenderer)(warningCol);
+    return retObj;
   };
 
-const logContextInfo = (col: ColFun) => (a: HardenedAny) =>
-  logContextInfoGen(fileLineRenderer)(col)(a);
+const logContextInfo =
+  <RetType>(retObj: RetType) =>
+  (col: ColFun) =>
+  (a: HardenedAny): RetType =>
+    logContextInfoGen(retObj)(fileLineRenderer)(col)(a);
 
-export const log = {
-  sep: sep,
-  warning: (a: HardenedAny) => logContextInfo(warningCol)(a),
-  error: (a: HardenedAny) => logContextInfo(errorCol)(a),
-  success: (a: HardenedAny) => logContextInfo(successCol)(a),
-  trace: (a: HardenedAny) => logContextInfoGen(stackRenderer)(fix)(a),
-  info: (a: HardenedAny) => logContextInfo(fix)(a),
-  reportSecurityIncident: (a: HardenedAny) => logContextInfo(errorCol)(a),
-};
+export class logclos {
+  sep: string = sep;
+  warning(a: HardenedAny): this {
+    return logContextInfo(this)(warningCol)(a);
+  }
+  error(a: HardenedAny): this {
+    return logContextInfo(this)(errorCol)(a);
+  }
+  success(a: HardenedAny): this {
+    return logContextInfo(this)(successCol)(a);
+  }
+  trace(a: HardenedAny): this {
+    return logContextInfoGen(this)(stackRenderer)(fix)(a);
+  }
+  info(a: HardenedAny): this {
+    return logContextInfoGen(this)(fileLineRenderer)(fix)(a);
+  }
+  reportSecurityIncident(a: HardenedAny): this {
+    return logContextInfo(this)(errorCol)(a);
+  }
+}
 
 const dbUrl =
   `${process.env.DATABASE_URL}` ||
@@ -102,10 +121,14 @@ const dbUrl =
 
 export const keyStoneHost = process.env?.KEYSTONE_HOST || 'localhost';
 
-log.info(`Database url: ${dbUrl}`);
-log.success(dbUrl);
-log.info(`Keystone host`);
-log.success(keyStoneHost);
+export const log = new logclos();
+
+log
+  .info(`Database url: ${dbUrl}`)
+
+  .success(dbUrl)
+  .info(`Keystone host`)
+  .success(keyStoneHost);
 
 const sessionSecret =
   process.env.SESSION_SECERT ||
@@ -113,7 +136,7 @@ const sessionSecret =
 
 export const keystoneNextjsBuildApiKey =
   process.env.KEYSTONE_NEXTJS_BUILD_API_KEY ||
-  'utils.ts:_keystoneNextjsBuildApiKey_says_change_me_!!!!!!!_im_just_for_testing_purposes';
+  'keystone.ts:_NextjsBuildApiKey_says_change_me_!!!!!!!_im_just_for_testing_purposes';
 
 const auth = createAuth({
   identityField: 'email',
