@@ -1,4 +1,4 @@
-import { logclos } from './utils/logging'
+import { logclos } from './utils/logging';
 import { config } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
@@ -6,15 +6,13 @@ import { createAuth } from '@keystone-next/auth';
 import { lists, extendGraphqlSchema } from './schema';
 import { permissions } from './schema/access';
 
-
 const dbUrl =
   `${process.env.DATABASE_URL}` ||
   `postgres://${process.env?.POSTGRES_USER}:${process.env?.POSTGRES_PASSWORD}@${process.env?.POSTGRES_HOST}/${process.env?.POSTGRES_DB}`;
 
 export const keyStoneHost = process.env?.KEYSTONE_HOST || 'localhost';
 
-export const log = new logclos();
-
+export const log = () => new logclos();
 
 const sessionSecret =
   process.env.SESSION_SECERT ||
@@ -24,13 +22,13 @@ export const keystoneNextjsBuildApiKey =
   process.env.KEYSTONE_NEXTJS_BUILD_API_KEY ||
   'keystone.ts:_NextjsBuildApiKey_says_change_me_!!!!!!!_im_just_for_testing_purposes';
 
-log
+log()
   .info(null)
   .info(`Database url: ${dbUrl}`)
 
   .success(dbUrl)
   .info(`Keystone host`)
-  .success(keyStoneHost);  
+  .success(keyStoneHost);
 
 const auth = createAuth({
   identityField: 'email',

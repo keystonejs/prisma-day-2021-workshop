@@ -8,11 +8,11 @@ export async function fetchGraphQL_inject_api_key(
 ) {
   //Intentionally create an undefined to test HardenedAny
   //var x;
-  //log.success(x);
+  //log().success(x);
 
   keystoneNextjsBuildApiKey.includes('keystone')
-    ? log.warning('Prototype api key: ' + keystoneNextjsBuildApiKey)
-    : log.success('Next build: x-api-key: tx');
+    ? log().warning('Prototype api key: ' + keystoneNextjsBuildApiKey)
+    : log().success('Next build: x-api-key: tx');
 
   return fetch(`http://${keyStoneHost}:3000/api/graphql`, {
     method: 'POST',
@@ -24,12 +24,10 @@ export async function fetchGraphQL_inject_api_key(
   })
     .then(x => x.json())
     .then(({ data }) => {
-      log.success('Next build: json: rx');
+      log().success('Next build: json: rx');
       return data;
     })
     .catch(msg =>
-      log.error(
-        'Next build: did not recieve static site data: ' + log.sep + msg
-      )
+      log().error('Next build: did not recieve static site data: ' + msg)
     );
 }

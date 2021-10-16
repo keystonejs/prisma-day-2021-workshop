@@ -1,4 +1,5 @@
 import { HardenedAny } from '../wrap_any';
+import { shallowCopy } from './clone';
 
 import colors from 'colors/safe';
 
@@ -54,11 +55,11 @@ export const dateLogger = (msg: string) => simpleLogger(Date() + sep + msg);
 // This apparently simple operation, logging, has a fairly rich monadic structure.
 // FIXME: TYPEME: return type. It seems to be a recursive union.
 export const logContextInfoGen =
-  <RetType>(retObj: RetType) =>
+  <TretObj>(retObj: TretObj) =>
   (msgRenderer: LogEventRenderer) =>
   (col: ColFun) =>
   (logger: LoggerFun) =>
-  (toBeLogged: HardenedAny): RetType => {
+  (toBeLogged: HardenedAny): TretObj => {
     if (toBeLogged === undefined)
       return logContextInfoGen(retObj)(stackRenderer)(warningCol)(logger)(
         undefinedVariableMsg
@@ -85,18 +86,18 @@ export const logContextInfoGen =
       const info = msgRenderer(ce);
       logger(info + sep + cleanMessage);
     }
-    return retObj;
+
+    return shallowCopy(retObj);
   };
 
 const logContextInfo =
-  <RetType>(retObj: RetType) =>
+  <TretObj>(retObj: TretObj) =>
   (col: ColFun) =>
   (logger: LoggerFun) =>
-  (a: HardenedAny): RetType =>
+  (a: HardenedAny): TretObj =>
     logContextInfoGen(retObj)(fileLineRenderer)(col)(logger)(a);
 
 export class logclos {
-  sep: string = sep;
   depth: number = -1;
 
   logger() {

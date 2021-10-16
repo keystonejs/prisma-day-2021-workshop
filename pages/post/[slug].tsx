@@ -39,7 +39,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
       }
     `
   );
-  if (data === undefined || data.posts === undefined)
+  if (data === undefined || data.posts === undefined || data.posts === null)
     return {  paths: [].map((post: HardenedAny) => ({ params: { slug: "" } })),
   fallback: false,};
 

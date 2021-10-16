@@ -16,7 +16,7 @@ async function clearVote(
   const context = _context.sudo();
   if (!context.session) {
     //Removed throw, which was crashing keystone
-    log.warning('Stale context: you must be signed in to vote');
+    log().warning('Stale context: you must be signed in to vote');
     return;
   }
 
