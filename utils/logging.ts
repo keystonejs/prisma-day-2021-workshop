@@ -1,5 +1,4 @@
 import { HardenedAny } from '../wrap_any';
-import { shallowCopy } from './clone';
 
 import colors from 'colors/safe';
 
@@ -87,7 +86,7 @@ export const logContextInfoGen =
       logger(info + sep + cleanMessage);
     }
 
-    return shallowCopy(retObj);
+    return retObj;
   };
 
 const logContextInfo =
