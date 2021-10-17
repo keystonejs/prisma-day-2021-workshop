@@ -1,5 +1,5 @@
 import { keystoneNextjsBuildApiKey, keyStoneHost } from '../keystone';
-import { log } from '../utils/logging';
+import { log, xlog } from '../utils/logging';
 import { HardenedAny } from '../wrap_any';
 export const gql = ([content]: TemplateStringsArray) => content;
 

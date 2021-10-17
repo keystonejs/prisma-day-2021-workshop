@@ -1,6 +1,6 @@
 import { KeystoneContext } from '.keystone/types';
 import { keystoneNextjsBuildApiKey } from '../keystone';
-import { log } from '../utils/logging';
+import { log, xlog } from '../utils/logging';
 
 import { ItemType } from '../wrap_any';
 
