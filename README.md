@@ -190,6 +190,15 @@ There is also a `dodgy C++ style cast`, right where it's not needed ... `TBC`.
 
 The reason this is important is that `ts` offers us the `CCC` to programme in, (eliminating `any` completely), if we so desire. Then a programme can be proved to do exactly what it says it does, and this painfully pedantic style is fully justified.
 
+Research has demonstrated `ts` has issues expressing the `CCC`, but has fewer issues expressing the `CMC`, i.e. quantum categories. This is a slight
+surprise, but now known, the `CMC` is used exculsively. This means all transformations of objects are monadic. This is because 
+`ts` is call by reference, and objects cant be cloned easily, instead they are `entangled` when referred to twice. So its best to
+accept this, and make new objects using a class factory, to be modified by a monad (that that the object is trapped inside of), which cannot be cloned either. This is an efficient way to code closures, because passing the object pointer ensures only a minimum of copying environment is performed, at creation time.
+
+There are also positive benefits resulting from entanglement in the `CMC`, it can be used to model subscriptions.
+
+
+
 ## On naming
 The Native American naming/language model is used. Functions are verbs, and are named by what they do. 
 
@@ -211,7 +220,7 @@ With these caveats in mind, enjoy this latest release of @jeds prisma day worksh
 Known Issues:
 
 
-Code can siliently fail in a ?. chain. WIP
+Code can siliently fail in a ?. chain. CURRENT WIP
 The ?. construction is convenient, but not suitable for production logging, error trapping.
 To be replaced with a maybe sytle monad.
 
