@@ -1,4 +1,4 @@
-import { logclos } from './utils/logging';
+import { log } from './utils/logging';
 import { config } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
@@ -26,8 +26,6 @@ export const keystoneNextjsBuildApiKey =
 // using a class factory, in this case, logclos.
 // The resulting object is non-clonable, without entanglement, so is in the CMC, and not the CCC.
 // Since objects are so hard to clone it ts, this is not a big issue, indeed, ts seems better suited to the CMC
-
-export const log = () => new logclos();
 
 MaybeInputTests();
 

@@ -5,7 +5,7 @@ import {
   PollWhereUniqueInput,
 } from '.keystone/types';
 
-import { log } from '../keystone';
+import { log } from '../utils/logging';
 
 const gql = ([content]: TemplateStringsArray) => content;
 
