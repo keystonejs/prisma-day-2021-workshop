@@ -12,8 +12,6 @@ const dbUrl =
 
 export const keyStoneHost = process.env?.KEYSTONE_HOST || 'localhost';
 
-export const log = () => new logclos();
-
 const sessionSecret =
   process.env.SESSION_SECERT ||
   'iLqbHhm7qwiBNc8KgL4NQ8tD8fFVhNhNqZ2nRdprgnKNjgJHgvitWx6DPoZJpYHa';
@@ -21,6 +19,14 @@ const sessionSecret =
 export const keystoneNextjsBuildApiKey =
   process.env.KEYSTONE_NEXTJS_BUILD_API_KEY ||
   'keystone.ts:_NextjsBuildApiKey_says_change_me_!!!!!!!_im_just_for_testing_purposes';
+
+// Unless I'm missing something, its tricky to clone typescript objects
+// Fortunately theres a workaround for monad like objects, create a new one
+// using a class factory, in this case, logclos.
+// The resulting object is non-clonable, without entanglement, so is in the CMC, and not the CCC.
+// Since objects are so hard to clone it ts, this is not a big issue, indeed, ts seems better suited to the CMC
+
+export const log = () => new logclos();
 
 log()
   .info(`Database url: ${dbUrl}`)
