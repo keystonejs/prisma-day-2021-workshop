@@ -1,6 +1,7 @@
 import { HardenedAny } from '../wrap_any';
 
 import colors from 'colors/safe';
+import ErrorStackParser from 'error-stack-parser';
 
 // Logging is one place where HardenedAny is needed! The intent was object dumping code, down to
 // every leaf, in a hardened way. A testground for DRY logging in ts.
@@ -35,37 +36,70 @@ export const unknownLineAndFileMsg =
 export const cantOpenErrorMsg =
   baseErrorMsg + 'Cant access stack info from Error()' + sep;
 
-export const fileLineRenderer = (e: CleanError) => {
-  const regex = /\((.*):(\d+):(\d+)\)$/;
-  const match = regex.exec(e.stack);
-
-  return match
-    ? match[1] + sep + match[2] + sep + match[3]
-    : unknownLineAndFileMsg + sep + e.stack;
-};
-
-export const stackRenderer = (e: CleanError) => e.stack;
-
 export type LoggerFun = (maps: string) => void;
 export const simpleLogger = (msg: string) => console.log(msg);
-export const dateLogger = (msg: string) => simpleLogger(Date() + sep + msg);
+export const dateRenderer = (msg: string): string => {
+  return Date() + sep + msg;
+};
+
+export const fileLineRenderer = (e: CleanError) => {
+  const stackFrames = ErrorStackParser.parse(e);
+  const elem = stackFrames[0];
+
+  var scope =
+    elem.functionName === undefined ? 'file scope' : elem.functionName;
+  return dateRenderer(
+    elem.fileName +
+      sep +
+      scope +
+      sep +
+      elem.lineNumber +
+      sep +
+      elem.columnNumber
+  );
+};
+
+export const abbreviatedRenderer = (e: CleanError): string => {
+  return '';
+};
+
+export const stackRenderer = (e: CleanError): string => {
+  var str: string = '';
+
+  ErrorStackParser.parse(e)?.map((elem: ErrorStackParser.StackFrame) => {
+    var scope =
+      elem.functionName === undefined ? 'file scope' : elem.functionName;
+
+    str =
+      str +
+      '\n' +
+      elem?.fileName +
+      sep +
+      scope +
+      sep +
+      elem?.lineNumber +
+      sep +
+      elem?.columnNumber;
+  });
+  return dateRenderer(str);
+};
 
 //export type MonadicType<T> = (maps: T) => MonadicType<T>
 // This apparently simple operation, logging, has a fairly rich monadic structure.
 // FIXME: TYPEME: return type. It seems to be a recursive union.
 export const logContextInfoGen =
   <TretObj>(retObj: TretObj) =>
-  (msgRenderer: LogEventRenderer) =>
-  (col: ColFun) =>
   (logger: LoggerFun) =>
+  (col: ColFun) =>
+  (msgRenderer: LogEventRenderer) =>
   (toBeLogged: HardenedAny): TretObj => {
     if (toBeLogged === undefined)
-      return logContextInfoGen(retObj)(stackRenderer)(warningCol)(logger)(
+      return logContextInfoGen(retObj)(logger)(warningCol)(stackRenderer)(
         undefinedVariableMsg
       );
 
     if (toBeLogged === null)
-      return logContextInfoGen(retObj)(stackRenderer)(warningCol)(logger)(
+      return logContextInfoGen(retObj)(logger)(warningCol)(stackRenderer)(
         nullVariableMsg
       );
     var cleanMessage: string;
@@ -92,36 +126,58 @@ export const logContextInfoGen =
 const logContextInfo =
   <TretObj>(retObj: TretObj) =>
   (col: ColFun) =>
-  (logger: LoggerFun) =>
+  (msgRenderer: LogEventRenderer) =>
   (a: HardenedAny): TretObj =>
-    logContextInfoGen(retObj)(fileLineRenderer)(col)(logger)(a);
+    logContextInfoGen(retObj)(simpleLogger)(col)(msgRenderer)(a);
 
 export class logclos {
   depth: number = -1;
 
-  logger() {
+  renderer() {
     this.depth = this.depth + 1;
-    return this.depth ? simpleLogger : dateLogger;
+    return this.depth ? abbreviatedRenderer : fileLineRenderer;
   }
 
   warning(a: HardenedAny): this {
-    return logContextInfo(this)(warningCol)(this.logger())(a);
+    return logContextInfo(this)(warningCol)(this.renderer())(a);
   }
   error(a: HardenedAny): this {
-    return logContextInfo(this)(errorCol)(this.logger())(a);
+    return logContextInfo(this)(errorCol)(this.renderer())(a);
   }
   success(a: HardenedAny): this {
-    return logContextInfo(this)(successCol)(this.logger())(a);
+    return logContextInfo(this)(successCol)(this.renderer())(a);
   }
   trace(a: HardenedAny): this {
-    return logContextInfoGen(this)(stackRenderer)(fix)(this.logger())(a);
+    return logContextInfoGen(this)(simpleLogger)(fix)(stackRenderer)(a);
   }
   info(a: HardenedAny): this {
-    return logContextInfoGen(this)(fileLineRenderer)(fix)(this.logger())(a);
+    return logContextInfoGen(this)(simpleLogger)(fix)(fileLineRenderer)(a);
   }
   reportSecurityIncident(a: HardenedAny): this {
-    return logContextInfo(this)(errorCol)(this.logger())(a);
+    return logContextInfo(this)(errorCol)(this.renderer())(a);
+  }
+}
+
+export class xlogclos {
+  warning(a: HardenedAny): this {
+    return this;
+  }
+  error(a: HardenedAny): this {
+    return this;
+  }
+  success(a: HardenedAny): this {
+    return this;
+  }
+  trace(a: HardenedAny): this {
+    return this;
+  }
+  info(a: HardenedAny): this {
+    return this;
+  }
+  reportSecurityIncident(a: HardenedAny): this {
+    return this;
   }
 }
 
 export const log = () => new logclos();
+export const xlog = () => new xlogclos();

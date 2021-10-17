@@ -1,4 +1,4 @@
-import { log } from './utils/logging';
+import { log, xlog } from './utils/logging';
 import { config } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
@@ -26,7 +26,8 @@ export const keystoneNextjsBuildApiKey =
 // The resulting object is non-clonable, without entanglement, so is in the CMC, and not the CCC.
 // Since objects are so hard to clone it ts, this is not a big issue, indeed, ts seems better suited to the CMC
 
-log()
+//xlog makes a log trivial: this one is to check the URL is being properly decoded.
+xlog()
   .info(`Database url: ${dbUrl}`)
   .success(dbUrl)
   .info(`Keystone host`)
