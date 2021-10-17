@@ -23,9 +23,7 @@ export const keystoneNextjsBuildApiKey =
   'keystone.ts:_NextjsBuildApiKey_says_change_me_!!!!!!!_im_just_for_testing_purposes';
 
 log()
-  .info(null)
   .info(`Database url: ${dbUrl}`)
-
   .success(dbUrl)
   .info(`Keystone host`)
   .success(keyStoneHost);

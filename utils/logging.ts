@@ -101,7 +101,7 @@ export class logclos {
   depth: number = -1;
 
   logger() {
-    this.depth = this.depth++;
+    this.depth = this.depth + 1;
     return this.depth ? simpleLogger : dateLogger;
   }
 
