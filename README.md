@@ -227,7 +227,7 @@ To be replaced with a maybe sytle monad.
 The code to perform this is too complex to develop quickly. Instead, the code has been frozen to
 a version which is known to work in all cases tested. However, rigorous monadic code is to be preferred
 for hardened servers. Typescript appears too unwieldy to express the types required in a succinct manner, but
-early prototypes are working, albeit with a horribly precise/verbose grammar.
+early prototypes are working, albeit with a horribly precise/verbose grammar that seems to require interfaces as well as classes.
 
 https://www.youtube.com/watch?v=vkcxgagQ4bM
 
@@ -265,10 +265,11 @@ The definitive install instructions, assuming fedora, bar seeding, are in the wo
 
 Install it like this and you know you will get the latest CI build. ![workflow](https://github.com/qfunq/prisma-day-2021-workshop/actions/workflows/latest.yml/badge.svg)
 
-If for some reason, the latest CI build is failing (it happens!), find the last good build.
+If for some reason, the latest CI build is failing (it happens!), find the last good build. As it stands, the yml specifies a test, not a production framework.
 
-Seeding and post seeding CI unit tests: WIP. This is a high priority if anyone wants to take it on.
-I have some scripts that can boot the process, but they are bash/pqsql, not quite the Keystone way, but they are tried, tested, lightweight and effective.
+Seeding and post seeding CI unit tests: The harsh test of
+building the database unseeded works. This leaves the application agnostic on
+how data is seeded, since there are many ways to achieve this.
 
 
 All testing/patches/security audits are welcome. Feel free to contribute to documenting the industry best practises for using keystone CMS combined with the powerhouse front end nextjs.
