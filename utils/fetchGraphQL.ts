@@ -1,4 +1,5 @@
-import { keystoneNextjsBuildApiKey, keyStoneHost, log } from '../keystone';
+import { keystoneNextjsBuildApiKey, keyStoneHost } from '../keystone';
+import { log } from '../utils/logging';
 import { HardenedAny } from '../wrap_any';
 export const gql = ([content]: TemplateStringsArray) => content;
 
@@ -27,7 +28,8 @@ export async function fetchGraphQL_inject_api_key(
       log().success('Next build: json: rx');
       return data;
     })
-    .catch(msg =>
-      log().error('Next build: did not recieve static site data: ' + msg)
-    );
+    .catch(msg => {
+      log().error('Next build: did not recieve static site data: ' + msg);
+      return null;
+    });
 }

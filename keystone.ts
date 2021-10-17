@@ -5,6 +5,7 @@ import { createAuth } from '@keystone-next/auth';
 
 import { lists, extendGraphqlSchema } from './schema';
 import { permissions } from './schema/access';
+import { MaybeInputTests } from './utils/recursive_const';
 
 const dbUrl =
   `${process.env.DATABASE_URL}` ||
@@ -27,6 +28,8 @@ export const keystoneNextjsBuildApiKey =
 // Since objects are so hard to clone it ts, this is not a big issue, indeed, ts seems better suited to the CMC
 
 export const log = () => new logclos();
+
+MaybeInputTests();
 
 log()
   .info(`Database url: ${dbUrl}`)

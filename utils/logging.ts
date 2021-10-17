@@ -124,3 +124,5 @@ export class logclos {
     return logContextInfo(this)(errorCol)(this.logger())(a);
   }
 }
+
+export const log = () => new logclos();
