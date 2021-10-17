@@ -220,13 +220,23 @@ With these caveats in mind, enjoy this latest release of @jeds prisma day worksh
 Known Issues:
 
 
-Code can siliently fail in a ?. chain. CURRENT WIP
+Code can siliently fail in a ?. chain. Status: Research suspended.
 The ?. construction is convenient, but not suitable for production logging, error trapping.
-To be replaced with a maybe sytle monad.
+To be replaced with a maybe sytle monad. 
 
-How to code where: true/false in gql without touching keystone core code. 
+The code to perform this is too complex to develop quickly. Instead, the code has been frozen to
+a version which is known to work in all cases tested. However, rigorous monadic code is to be preferred
+for hardened servers. Typescript appears too unwieldy to express the types required in a succinct manner, but
+early prototypes are working, albeit with a horribly precise/verbose grammar.
 
-Extend WhereInput to be WhereInput | true | false ... is yet to be tested as a patch to core. Can this work as a local patch? To be investigated ...
+https://www.youtube.com/watch?v=vkcxgagQ4bM
+
+almost worked out the box, to give a rigorous foundation for Monadic IO, but rapidly ran into type complications because of `async`, `Maybe<Promise<T>>` etc. Getting a version of Bartosz's elegant code working under `ts` does look doable, but its also likely to run into subtle type issues. The lack of Haskell type matching makes providing a coroutine/Haskell sytle do notation to `ts` almost impossible imho. This is Bartosz's main point, imho. If you can't interpret recursively typed monadic code in terms of mutually recursive coroutines, your functional language will be severely limited (like the `C++` std library is). 
+
+How to code where: `true/false` in `gql` without touching keystone core code. 
+
+Extend type `WhereInput` to be `WhereInput` | `true` | `false` ... is yet to be tested as a patch to core. Can this work as a local patch? To be investigated ...
+
 
 ```
 
