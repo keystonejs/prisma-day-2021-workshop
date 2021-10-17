@@ -5,7 +5,6 @@ import { createAuth } from '@keystone-next/auth';
 
 import { lists, extendGraphqlSchema } from './schema';
 import { permissions } from './schema/access';
-import { MaybeInputTests } from './utils/recursive_const';
 
 const dbUrl =
   `${process.env.DATABASE_URL}` ||
@@ -26,8 +25,6 @@ export const keystoneNextjsBuildApiKey =
 // using a class factory, in this case, logclos.
 // The resulting object is non-clonable, without entanglement, so is in the CMC, and not the CCC.
 // Since objects are so hard to clone it ts, this is not a big issue, indeed, ts seems better suited to the CMC
-
-MaybeInputTests();
 
 log()
   .info(`Database url: ${dbUrl}`)
