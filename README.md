@@ -73,7 +73,7 @@ This branch is dedicated to creating a solid foundation for a production build t
 `yarn commit "message" && yarn push` is what lands up being used most often.
 
 ## Production status report
-```
+
 ✅ CI: Github actions runner working in a test framework. Unseeded build cases handled (any bugs fixed!)
 ✅ Pre release: Testing
 
@@ -86,7 +86,7 @@ Full k8s spec: WIP. Deferred because its an endless task.
 ✅ Authorization: Strong typing for keystone auth frame types 
 ✅ Next build super user authorization to keystone, allowing SSR/SSG/ISR tunneling.
 
-```
+
 A shout out to @jed for explaining the keystone way.
 Ready for exhaustive testing. Bug reports welcome!
 
@@ -219,7 +219,7 @@ With these caveats in mind, enjoy this latest release of @jeds prisma day worksh
 
 
 
-##Known Issues
+## Known Issues
 
 Code can siliently fail in a ?. chain. Status: WIP.
 The ?. construction is convenient, but not suitable for production logging, error trapping.
@@ -241,7 +241,7 @@ Extend type `WhereInput` to be `WhereInput` | `true` | `false` ... is yet to be 
 
 
 
-Additional functionality from upstream main:
+## Additional functionality from upstream main
 
 Polls fully working.
 Production build:
