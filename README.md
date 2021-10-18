@@ -219,7 +219,7 @@ With these caveats in mind, enjoy this latest release of @jeds prisma day worksh
 
 
 
-Known Issues:
+##Known Issues
 
 Code can siliently fail in a ?. chain. Status: WIP.
 The ?. construction is convenient, but not suitable for production logging, error trapping.
