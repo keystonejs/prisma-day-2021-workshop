@@ -93,7 +93,7 @@ Ready for exhaustive testing. Bug reports welcome!
 
 
 ## Resiliance testing, unit testing
-```
+
 ✅ A stale session led to the app throwing when voting occured. 
 Code fixed by a log.warning and return.  
 
@@ -107,7 +107,9 @@ handling of `any`.
 
 ✅ Any issues tracked down using the empty database technique. It triggers every any bug, with a vengeance.
    Strongly recommended as a unit testing technique.
-```
+
+✅ Polyfilled monadic logging parses variable Error() format. 
+   Localised abbreviated logging grammar for more readable logs. 
 
 ## Security audit
 Status: `Preliminary`.
@@ -216,46 +218,45 @@ With these caveats in mind, enjoy this latest release of @jeds prisma day worksh
 
 
 
-```
+
 Known Issues:
 
-
-Code can siliently fail in a ?. chain. Status: Research suspended.
+Code can siliently fail in a ?. chain. Status: WIP.
 The ?. construction is convenient, but not suitable for production logging, error trapping.
 To be replaced with a maybe sytle monad. 
 
-The code to perform this is too complex to develop quickly. Instead, the code has been frozen to
-a version which is known to work in all cases tested. However, rigorous monadic code is to be preferred
-for hardened servers. Typescript appears too unwieldy to express the types required in a succinct manner, but
-early prototypes are working, albeit with a horribly precise/verbose grammar that seems to require interfaces as well as classes.
+The Promise monad is a bit of a mess. The more general, recursive approach, without an explicit array, is outlined in `C++`:
 
 https://www.youtube.com/watch?v=vkcxgagQ4bM
 
-almost worked out the box, to give a rigorous foundation for Monadic IO, but rapidly ran into type complications because of `async`, `Maybe<Promise<T>>` etc. Getting a version of Bartosz's elegant code working under `ts` does look doable, but its also likely to run into subtle type issues. The lack of Haskell type matching makes providing a coroutine/Haskell sytle do notation to `ts` almost impossible imho. This is Bartosz's main point, imho. If you can't interpret recursively typed monadic code in terms of mutually recursive coroutines, your functional language will be severely limited (like the `C++` std library is). 
+and almost works out the box in `ts`. Currently investigating complications caused by interactions with `async`, `Promise<T>` etc. Getting a version of Bartosz's elegant code working under `ts` does look doable, but its also likely to run into subtle type issues. The lack of Haskell type matching makes providing a coroutine/Haskell sytle do notation to `ts` very fiddly. This is Bartosz's main point, imho. If you can't interpret recursively typed monadic code in terms of mutually recursive coroutines, your functional language will be limited (like the `C++` std library is). However, it is sufficient for non-recursive chains, and many use cases are.
+
 
 How to code where: `true/false` in `gql` without touching keystone core code. 
 
 Extend type `WhereInput` to be `WhereInput` | `true` | `false` ... is yet to be tested as a patch to core. Can this work as a local patch? To be investigated ...
 
 
-```
+
 
 
 
 Additional functionality from upstream main:
-```
+
 Polls fully working.
 Production build:
-   Detailed logging: 
+   Detailed logging: Date time and polyfilled stack parsing.
    next lint
    tailwind purge
-   telemetry disable
+   telemetry disable: interferes with logging.
    x-api-key for next build events
    CI scripts:
-      Unseeded corner case working. 
-      WIP: Seeding
+      Local CI, then remote CI if and only if local CI succeeds.
+      Unseeded corner case working in a test k8s framework. 
+      Seeding: Agnostic: there are multiple routes.
       Prettier applied in gitadd.
-```
+   Utils folder for additional code, informative naming.
+
 
 ## How to install the latest branch
 
