@@ -186,11 +186,11 @@ When reviewing code, it can be hard to tell these dummy parameter names from imp
 `<T>(a: T)` is a type safe replacement for any, because we need to trap the awkward `undefined` cases at build time. Then the type inferrence become far more similar to `C++`, which works well until it hits recursive types (with the unfortunate side effect of nerfing monads/coroutines). 
 
 
-Another point is that as soon as `any` is used, the code becomes ... javascript. No more needs to be said. My mission against `any` is more than fully justified, and I'm not alone:
+Another point is that as soon as `any` is used, the code becomes ... `javascript`. No more needs to be said. My mission against `any` is more than fully justified, and I'm not alone:
 
 https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html
 
-However, some functional code doesn't seem to work properly without the total polymorphism `any` allows, and some ts functional code looks fine, ... but bizarrely doesn't work in all contexts. It might have to do with the inner depths of js module linkage. The places audits have to go ...
+However, some functional code doesn't seem to work properly without the total polymorphism `any` allows.
 
 There is also a `dodgy C++ style cast`, right where it's not needed ... `TBC`.
 
@@ -225,15 +225,15 @@ With these caveats in mind, enjoy this latest release of @jeds prisma day worksh
 
 ## Known Issues
 
-Code can siliently fail in a ?. chain. Status: WIP.
-The ?. construction is convenient, but not suitable for production logging, error trapping.
+Code can siliently fail in a `?.` chain. Status: WIP.
+The `?.` construction is convenient, but not suitable for production logging, error trapping.
 To be replaced with a maybe sytle monad. 
 
 The Promise monad is a bit of a mess. The more general, recursive approach, without an explicit array, is outlined in `C++`:
 
 https://www.youtube.com/watch?v=vkcxgagQ4bM
 
-and almost works out the box in `ts`. Currently investigating complications caused by interactions with `async`, `Promise<T>` etc. Getting a version of Bartosz's elegant code working under `ts` does look doable, but its also likely to run into subtle type issues. The lack of Haskell type matching makes providing a coroutine/Haskell sytle do notation to `ts` very fiddly. This is Bartosz's main point, imho. If you can't interpret recursively typed monadic code in terms of mutually recursive coroutines, your functional language will be limited (like the `C++` std library is). However, it is sufficient for non-recursive chains, and many use cases are.
+and almost works out the box in `ts`. Currently investigating complications caused by interactions with `async`, `Promise<T>` etc. Getting a version of Bartosz's elegant code working under `ts` looks doable, but its also likely to run into subtle type issues. The lack of Haskell type matching makes providing a coroutine/Haskell sytle do notation to `ts` very fiddly. This is Bartosz's main point, imho. If you can't interpret recursively typed monadic code in terms of mutually recursive coroutines, your functional language will be limited (like the `C++` std library is). However, it is sufficient for non-recursive chains, and many use cases are.
 
 
 How to code where: `true/false` in `gql` without touching keystone core code. 
