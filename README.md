@@ -75,15 +75,19 @@ This branch is dedicated to creating a solid foundation for a production build t
 ## Production status report
 
 ✅ CI: Github actions runner working in a test framework. Unseeded build cases handled (any bugs fixed!)
+
 ✅ Pre release: Testing
 
 Full k8s spec: WIP. Deferred because its an endless task.
 
 ✅ More informative logging, suitable for deployment.
+
 ✅ Logging: Code coverage: complete
 
 ✅ Refactored literals.
+
 ✅ Authorization: Strong typing for keystone auth frame types 
+
 ✅ Next build super user authorization to keystone, allowing SSR/SSG/ISR tunneling.
 
 
