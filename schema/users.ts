@@ -57,12 +57,13 @@ export const User = list({
       update: (frame: SessionFrame) => permissions.canManageUsers(frame),
       delete: (frame: SessionFrame) => permissions.canManageUsers(frame),
     },
-    /*
+
     filter: {
-      update: (frame: SessionFrame) => permissions.canManageUsers(frame),
-      //delete: ({ session, context, listKey, operation } : SessionFrame) => rules.filterCanManageUserList(session)
+      query: (frame: SessionFrame) =>
+        permissions.filterCanManageUserList(frame),
+      update: (frame: SessionFrame) =>
+        permissions.filterCanManageUserList(frame),
     },
-    */
   },
 
   ui: {

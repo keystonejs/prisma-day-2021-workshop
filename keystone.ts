@@ -13,8 +13,6 @@ const dbUrl =
 export const keyStoneHost = process.env?.KEYSTONE_HOST || 'localhost';
 
 const sessionSecret = cuid() + cuid();
-//process.env.SESSION_SECERT ||
-//'iLqbHhm7qwiBNc8KgL4NQ8tD8fFVhNhNqZ2nRdprgnKNjgJHgvitWx6DPoZJpYHa';
 
 export const keystoneNextjsBuildApiKey =
   process.env.KEYSTONE_NEXTJS_BUILD_API_KEY ||

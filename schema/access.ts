@@ -130,6 +130,35 @@ export const permissions = {
     //success(frame.context.session?.data?.role?.canManageContent);
     return PUBLISHED_POST_STATUS;
   },
+  filterCanManageUserList: (frame: SessionFrame) => {
+    if (frame === undefined) {
+      log().reportSecurityIncident(
+        'Minor security breach: potential auth bug. undefined frame: query downgraded to public.'
+      );
+      return false;
+      //Give no information away that they have been noticed, but if there's no frame
+      //it's hard to imagine where the reply is going to go ... if exec ever gets here, it's close
+      //to a fatal error. What is the best thing to do here? Nothing? throw?
+    }
+    //Needs shared secret, set in bash, imported via process.env, usage tested in the CI workflow, which act as the base spec for a container to run keystone/next in.
+    if (isBuildEnvir(frame)) {
+      return true;
+    }
+    //The perms check is only running client side. Review: check the authorization props are checked
+    //server side to.
+    if (!!frame.context.session?.data?.role?.canManageUsers) {
+      log()
+        .success('Blessed super user access to the known user manager:')
+        .success(frame?.context?.session?.data?.name);
+      return true;
+    }
+
+    log()
+      .success('Client receives only their own user data:')
+      .success(frame?.context?.session?.data?.name);
+    //success(frame.context.session?.data?.role?.canManageContent);
+    return { id: { equals: frame.context.session?.itemId } };
+  },
 };
 
 //The front line security audit: Initial musings:
