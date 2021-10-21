@@ -11,7 +11,7 @@ import {
   permissions,
   ItemContext,
   operationCanManageContentList,
-  FilterCanManageContentList,
+  filterCanManageContentList,
   SessionFrame,
   PUBLISHED,
   DRAFT,
@@ -89,7 +89,7 @@ export const Post = list({
       delete: operationCanManageContentList,
     },
     filter: {
-      query: (frame: SessionFrame) => FilterCanManageContentList(frame),
+      query: (frame: SessionFrame) => filterCanManageContentList(frame),
     },
   },
   ui: contentUIConfig,

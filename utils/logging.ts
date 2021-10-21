@@ -109,7 +109,7 @@ export const logContextInfoGen =
     } else {
       // Strip anything else down to its source code, so we know what is being sent to us.
       // and print it plain, nothing is worse than red source code ...
-      cleanMessage = toBeLogged.toString();
+      cleanMessage = JSON.stringify(toBeLogged, null, 3);
     }
     const e = new Error();
     if (!e.stack) {

@@ -30,7 +30,9 @@ export default function Post({ post }: { post: any }) {
 }
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const data = await fetchGraphQL_inject_api_key(
+  const emptyResponse = {  paths: [].map((post: HardenedAny) => ({ params: { slug: "" } })), fallback: false};
+
+  try { const data = await fetchGraphQL_inject_api_key(
     gql`
       query {
         posts {
@@ -40,13 +42,17 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
     `
   );
   if (data === undefined || data.posts === undefined || data.posts === null)
-    return {  paths: [].map((post: HardenedAny) => ({ params: { slug: "" } })),
-  fallback: false,};
-
+    return emptyResponse;
   return {
     paths: data!.posts!.map((post: HardenedAny) => ({ params: { slug: post?.slug } })),
     fallback: 'blocking',
   };
+  }
+  catch (error: unknown)
+  {
+    return emptyResponse;
+  }
+
 }
 
 export async function getStaticProps({ params }: GetStaticPropsContext) {

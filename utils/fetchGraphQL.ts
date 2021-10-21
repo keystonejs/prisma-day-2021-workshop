@@ -30,7 +30,7 @@ export async function fetchGraphQL_inject_api_key(
       return data;
     })
     .catch(msg => {
-      log().error('Next build: did not recieve static site data: ' + msg);
+      log().warning('Next build: did not recieve static site data: ' + msg);
       return null;
     });
 }

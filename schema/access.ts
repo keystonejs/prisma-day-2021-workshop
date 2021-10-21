@@ -23,6 +23,7 @@ export const PUBLISHED_POST_STATUS = { status: { in: [PUBLISHED] } };
 export type SessionContext = {
   session?: {
     data: {
+      id: string;
       name: string;
       role: {
         canManageContent: boolean;
@@ -37,6 +38,13 @@ export type SessionContext = {
 export type SessionFrame = {
   session: ItemContext;
   context: SessionContext;
+  listKey: string;
+  operation: string;
+};
+
+export type FilterFrame = SessionFrame & {
+  session: SessionContext;
+  context: KeystoneContext;
   listKey: string;
   operation: string;
 };
@@ -102,7 +110,7 @@ export const permissions = {
 export const operationCanManageContentList = (frame: SessionFrame) =>
   permissions.canManageContent(frame);
 
-export const FilterCanManageContentList = (frame: SessionFrame) => {
+export const filterCanManageContentList = (frame: SessionFrame) => {
   if (frame === undefined) {
     log().reportSecurityIncident(
       'Minor security breach: potential auth bug. undefined frame: query downgraded to public.'
@@ -114,7 +122,7 @@ export const FilterCanManageContentList = (frame: SessionFrame) => {
   }
   //Needs shared secret, set in bash, imported via process.env, usage tested in the CI workflow, which act as the base spec for a container to run keystone/next in.
   if (isBuildEnvir(frame)) {
-    return EVERY_POST_STATUS;
+    return true;
   }
   //The perms check is only running client side. Review: check the authorization props are checked
   //server side to.
@@ -122,7 +130,7 @@ export const FilterCanManageContentList = (frame: SessionFrame) => {
     log()
       .success('Blessed super user access to the known content manager:')
       .success(frame?.context?.session?.data?.name);
-    return EVERY_POST_STATUS;
+    return true;
   }
 
   log()

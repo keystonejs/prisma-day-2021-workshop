@@ -4,6 +4,7 @@ import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 import { lists, extendGraphqlSchema } from './schema';
 import { permissions } from './schema/access';
+var cuid = require('cuid');
 
 const dbUrl =
   `${process.env.DATABASE_URL}` ||
@@ -11,9 +12,9 @@ const dbUrl =
 
 export const keyStoneHost = process.env?.KEYSTONE_HOST || 'localhost';
 
-const sessionSecret =
-  process.env.SESSION_SECERT ||
-  'iLqbHhm7qwiBNc8KgL4NQ8tD8fFVhNhNqZ2nRdprgnKNjgJHgvitWx6DPoZJpYHa';
+const sessionSecret = cuid() + cuid();
+//process.env.SESSION_SECERT ||
+//'iLqbHhm7qwiBNc8KgL4NQ8tD8fFVhNhNqZ2nRdprgnKNjgJHgvitWx6DPoZJpYHa';
 
 export const keystoneNextjsBuildApiKey =
   process.env.KEYSTONE_NEXTJS_BUILD_API_KEY ||

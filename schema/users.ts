@@ -6,19 +6,23 @@ import {
   virtual,
 } from '@keystone-next/keystone/fields';
 
-import { graphql } from '@keystone-next/keystone';
-import { list } from '@keystone-next/keystone';
+import { graphql, list } from '@keystone-next/keystone';
 
 import {
   permissions,
   SessionContext,
   ItemContext,
   SessionFrame,
+  FilterFrame,
   EDIT,
   READ,
   HIDDEN,
 } from './access';
 import { GitHubRepo, githubReposResolver } from './fields/githubRepos/field';
+
+import { KeystoneContext } from '.keystone/types';
+
+import { log } from '../utils/logging';
 
 const fieldModes = {
   editSelfOrRead: ({ session, item }: ItemContext) =>
@@ -31,6 +35,18 @@ const fieldModes = {
     session?.itemId === item.id
       ? EDIT
       : HIDDEN,
+};
+
+declare type BaseAccessArgs = {
+  session: any;
+  listKey: string;
+  context: KeystoneContext;
+};
+
+declare type LocalAccessArgs = {
+  session: SessionContext;
+  listKey: string;
+  context: KeystoneContext;
 };
 
 export const User = list({
