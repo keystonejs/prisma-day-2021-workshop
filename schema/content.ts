@@ -10,8 +10,6 @@ import { list } from '@keystone-next/keystone';
 import {
   permissions,
   ItemContext,
-  operationCanManageContentList,
-  filterCanManageContentList,
   SessionFrame,
   PUBLISHED,
   DRAFT,
@@ -42,9 +40,9 @@ export const contentUIConfig = {
 
 export const contentListAccess = {
   operation: {
-    create: operationCanManageContentList,
-    update: operationCanManageContentList,
-    delete: operationCanManageContentList,
+    create: permissions.canManageContentList,
+    update: permissions.canManageContentList,
+    delete: permissions.canManageContentList,
   },
 };
 
@@ -84,12 +82,13 @@ function defaultTimestamp() {
 export const Post = list({
   access: {
     operation: {
-      create: operationCanManageContentList,
-      update: operationCanManageContentList,
-      delete: operationCanManageContentList,
+      create: permissions.canManageContentList,
+      update: permissions.canManageContentList,
+      delete: permissions.canManageContentList,
     },
     filter: {
-      query: (frame: SessionFrame) => filterCanManageContentList(frame),
+      query: (frame: SessionFrame) =>
+        permissions.filterCanManageContentList(frame),
     },
   },
   ui: contentUIConfig,

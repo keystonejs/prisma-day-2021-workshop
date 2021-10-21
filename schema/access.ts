@@ -11,14 +11,7 @@ export const EDIT = 'edit';
 export const READ = 'read';
 export const HIDDEN = 'hidden';
 
-//This is the fastest workaround I could find for not being able to return (where:) true (all records), or false (for no records).
-
-export const EVERY_POST_STATUS = {
-  status: { in: [PUBLISHED, DRAFT, ARCHIVED] },
-};
-
-//export const UNIT_POST_STATUS = { status: { in: [] } };
-export const PUBLISHED_POST_STATUS = { status: { in: [PUBLISHED] } };
+export const PUBLISHED_POST_STATUS = { status: { eq: PUBLISHED } };
 
 export type SessionContext = {
   session?: {
@@ -105,39 +98,38 @@ export const permissions = {
   canManageUsersSession: ({ session }: SessionContext): boolean => {
     return !!session?.data?.role?.canManageUsers;
   },
-};
+  canManageContentList: (frame: SessionFrame) =>
+    permissions.canManageContent(frame),
 
-export const operationCanManageContentList = (frame: SessionFrame) =>
-  permissions.canManageContent(frame);
+  filterCanManageContentList: (frame: SessionFrame) => {
+    if (frame === undefined) {
+      log().reportSecurityIncident(
+        'Minor security breach: potential auth bug. undefined frame: query downgraded to public.'
+      );
+      return PUBLISHED_POST_STATUS;
+      //Give no information away that they have been noticed, but if there's no frame
+      //it's hard to imagine where the reply is going to go ... if exec ever gets here, it's close
+      //to a fatal error. What is the best thing to do here? Nothing? throw?
+    }
+    //Needs shared secret, set in bash, imported via process.env, usage tested in the CI workflow, which act as the base spec for a container to run keystone/next in.
+    if (isBuildEnvir(frame)) {
+      return true;
+    }
+    //The perms check is only running client side. Review: check the authorization props are checked
+    //server side to.
+    if (!!frame.context.session?.data?.role?.canManageContent) {
+      log()
+        .success('Blessed super user access to the known content manager:')
+        .success(frame?.context?.session?.data?.name);
+      return true;
+    }
 
-export const filterCanManageContentList = (frame: SessionFrame) => {
-  if (frame === undefined) {
-    log().reportSecurityIncident(
-      'Minor security breach: potential auth bug. undefined frame: query downgraded to public.'
-    );
-    return PUBLISHED_POST_STATUS;
-    //Give no information away that they have been noticed, but if there's no frame
-    //it's hard to imagine where the reply is going to go ... if exec ever gets here, it's close
-    //to a fatal error. What is the best thing to do here? Nothing? throw?
-  }
-  //Needs shared secret, set in bash, imported via process.env, usage tested in the CI workflow, which act as the base spec for a container to run keystone/next in.
-  if (isBuildEnvir(frame)) {
-    return true;
-  }
-  //The perms check is only running client side. Review: check the authorization props are checked
-  //server side to.
-  if (!!frame.context.session?.data?.role?.canManageContent) {
     log()
-      .success('Blessed super user access to the known content manager:')
+      .success('Client receives only published posts:')
       .success(frame?.context?.session?.data?.name);
-    return true;
-  }
-
-  log()
-    .success('Client receives only published posts:')
-    .success(frame?.context?.session?.data?.name);
-  //success(frame.context.session?.data?.role?.canManageContent);
-  return PUBLISHED_POST_STATUS;
+    //success(frame.context.session?.data?.role?.canManageContent);
+    return PUBLISHED_POST_STATUS;
+  },
 };
 
 //The front line security audit: Initial musings:
