@@ -25,6 +25,7 @@ export type HardenedAny = WrappedRampantlyPolymorphic;
 // Others are just puzzling, and might have a local solution.
 
 // A JSX type?
+
 export type DocumentType = WrappedRampantlyPolymorphic;
 
 // These have taken hours of time to resolve, with no joy, and have found a temporary home here ...
@@ -32,4 +33,4 @@ export type ItemType = WrappedRampantlyPolymorphic;
 export type ItemSession = WrappedRampantlyPolymorphic;
 
 //From deep down in the keystone types ...
-export type GraphQLInput = Record<string, WrappedRampantlyPolymorphic>;
+export type GraphQLOutput = Record<string, WrappedRampantlyPolymorphic>;
