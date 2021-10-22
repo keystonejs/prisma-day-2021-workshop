@@ -5,9 +5,10 @@
 // To ensure we only match any once in the top level of this app,
 // and give any a descriptive type name
 // This is the local alias for the dreaded `type`
-export type auto_aux<T> = T;
 
+// eslint-disable-line no-explicit-any
 type WrappedRampantlyPolymorphic = any;
+
 //Any any is immediately assigned the status RampantlyPolymorphic, which matches exactly what it means
 export type RampantlyPolymorphic = WrappedRampantlyPolymorphic;
 
@@ -45,3 +46,4 @@ export type GithubRepoAny = WrappedRampantlyPolymorphic;
 export type GithubResolverItemAny = WrappedRampantlyPolymorphic;
 
 export type SessionAny = WrappedRampantlyPolymorphic;
+export type LoggingAny = WrappedRampantlyPolymorphic;
