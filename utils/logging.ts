@@ -84,6 +84,16 @@ export const stackRenderer = (e: CleanError): string => {
   return dateRenderer(str);
 };
 
+export const cleanStackRenderer = (cleanMessage: string) => (e: Error) => {
+  if (!e.stack) {
+    dateRenderer(errorCol(cantOpenErrorMsg) + cleanMessage);
+  } else {
+    const ce = e as CleanError;
+    const info = stackRenderer(ce);
+    dateRenderer(info + sep + cleanMessage);
+  }
+};
+
 //export type MonadicType<T> = (maps: T) => MonadicType<T>
 // This apparently simple operation, logging, has a fairly rich monadic structure.
 // FIXME: TYPEME: return type. It seems to be a recursive union.
