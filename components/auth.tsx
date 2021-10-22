@@ -18,11 +18,18 @@ export type SignInResult =
   | { success: true }
   | { success: false; message: string };
 
+
+/* eslint-enable */
+
 type AuthContextType =
   | {
       ready: true;
       sessionData?: { id: string; name: string };
-      signIn: ({ email, password }: SignInArgs) => Promise<SignInResult>;
+      // eslint-disable-next-line no-alert
+      signIn: (maps: SignInArgs) => Promise<SignInResult>;
+ 
+
+
       signOut: () => void;
     }
   | {
@@ -32,7 +39,7 @@ type AuthContextType =
 const AuthContext = createContext<AuthContextType>({
   ready: false,
 });
-
+/* eslint-disable */
 export function useAuth() {
   return useContext(AuthContext);
 }
@@ -44,7 +51,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     []
   );
 
-  const [{ fetching, data: sessionData, error: sessionError }, refetch] =
+  const [{ fetching, data: sessionData, error: sessionError }/*, refetch*/] =
     useQuery({
       query: gql`
         query {
@@ -106,14 +113,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const [{}, signOutMutation] = useMutation(gql`
+  const [u, signOutMutation] = useMutation(gql`
     mutation {
       endSession
     }
   `);
 
   const signOut = () => {
-    signOutMutation(undefined, mutationContext);
+    signOutMutation(u, mutationContext);
   };
 
   useEffect(() => {

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { GetStaticPropsContext } from 'next';
+import React from 'react';
+
 
 import { fetchGraphQL_inject_api_key, gql } from '../utils/fetchGraphQL';
 import { DocumentRenderer } from '../schema/fields/content/renderers';
@@ -94,9 +94,9 @@ const fetchScript = makeIO (() =>
       }
     `
   ))
-.then (data => data!.posts);
+.then (data => data?.posts?? null);
 
-export async function getStaticProps({ params }: GetStaticPropsContext) {
+export async function getStaticProps() {
   return fetchScript
     .exec ([])
     .then (postsRx => { return { props: { posts: postsRx }, revalidate: 60 } })

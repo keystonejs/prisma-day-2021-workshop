@@ -5,7 +5,7 @@ import { Container, HomeLink } from '../components/ui/layout';
 import { H1 } from '../components/ui/typography';
 import { FieldContainer, FieldLabel, TextInput } from '../components/ui/forms';
 import { Link } from '../components/ui/link';
-import { useRouter } from 'next/router';
+//import { useRouter } from 'next/router';
 import { useAuth } from '../components/auth';
 
 export default function SigninPage() {

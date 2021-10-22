@@ -5,11 +5,11 @@ import { fetchGraphQL_inject_api_key, gql } from '../../utils/fetchGraphQL';
 import { DocumentRenderer } from '../../schema/fields/content/renderers';
 
 import { Container, HomeLink } from '../../components/ui/layout';
-import { Link } from '../../components/ui/link';
+//import { Link } from '../../components/ui/link';
 import { H1 } from '../../components/ui/typography';
 
 import { HardenedAny } from '../../wrap_any'
-import { log } from '../../utils/logging'
+//import { log } from '../../utils/logging'
 import { makeIO } from '../../utils/maybeIOPromise'
 
 export default function Post({ post }: { post: any }) {

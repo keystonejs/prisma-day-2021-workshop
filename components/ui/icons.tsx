@@ -3,7 +3,7 @@ import cx from 'classnames';
 
 export function ChevronLeft({
   className,
-  ...props
+  //...props
 }: SVGAttributes<SVGElement>) {
   const classes = cx('h-6 w-6', className);
   return (
