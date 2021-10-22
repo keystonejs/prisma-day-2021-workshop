@@ -9,6 +9,8 @@ import { Link } from '../../components/ui/link';
 import { H1 } from '../../components/ui/typography';
 
 import { HardenedAny } from '../../wrap_any'
+import { log } from '../../utils/logging'
+import { makeIO } from '../../utils/maybeIOPromise'
 
 export default function Post({ post }: { post: any }) {
   return (
@@ -29,50 +31,54 @@ export default function Post({ post }: { post: any }) {
   );
 }
 
-export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const emptyResponse = {  paths: [].map((post: HardenedAny) => ({ params: { slug: "" } })), fallback: false};
-
-  try { const data = await fetchGraphQL_inject_api_key(
-    gql`
-      query {
-        posts {
-          slug
-        }
+const fetchStaticPaths =  makeIO (() => fetchGraphQL_inject_api_key(
+  gql`
+    query {
+      posts {
+        slug
       }
-    `
-  );
-  if (data === undefined || data.posts === undefined || data.posts === null)
-    return emptyResponse;
-  return {
-    paths: data!.posts!.map((post: HardenedAny) => ({ params: { slug: post?.slug } })),
+    }
+  `
+))
+  .then( data => data!.posts)
+  .then(posts => {
+    return { paths: posts!.map((post: HardenedAny) => ({ params: { slug: post?.slug } })),
     fallback: 'blocking',
-  };
-  }
-  catch (error: unknown)
-  {
-    return emptyResponse;
-  }
+  }}
+)
 
+
+export async function getStaticPaths(): Promise<GetStaticPathsResult> {
+  return fetchStaticPaths
+    .exec({ paths: [], fallback: false });
 }
 
-export async function getStaticProps({ params }: GetStaticPropsContext) {
-  const data = await fetchGraphQL_inject_api_key(
-    gql`
-      query ($slug: String!) {
-        post(where: { slug: $slug }) {
-          title
-          content {
-            document(hydrateRelationships: true)
-          }
-          publishedDate
-          author {
-            id
-            name
-          }
+const fetchStaticProps = ({ params }: GetStaticPropsContext) => makeIO (() => 
+fetchGraphQL_inject_api_key(
+  gql`
+    query ($slug: String!) {
+      post(where: { slug: $slug }) {
+        title
+        content {
+          document(hydrateRelationships: true)
+        }
+        publishedDate
+        author {
+          id
+          name
         }
       }
-    `,
-    { slug: params!.slug }
-  );
-  return { props: { post: data!.post }, revalidate: 60 };
+    }
+  `,
+  { slug: params!.slug }
+))
+.then (data => data!.post);
+
+
+export async function getStaticProps({ params }: GetStaticPropsContext) {
+  return fetchStaticProps({params})
+    .exec({})
+    .then(match_post => {
+      return { props: { post: match_post }, revalidate: 60 }
+    })
 }

@@ -88,7 +88,9 @@ export const getStrM = (x: U) => IO.rootfun(getLine);
 
 export const pure = <T>(x: T) => IO.root(x);
 
-const prompt =
+export const prompt =
   <V>(str: string) =>
   (x: V) =>
     putStrM(str);
+
+export const ioRoot = IO.root(u);

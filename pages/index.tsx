@@ -9,6 +9,7 @@ import { Link } from '../components/ui/link';
 import { H1 } from '../components/ui/typography';
 import { useAuth } from '../components/auth';
 
+import { makeIO } from '../utils/maybeIOPromise'
 import { DocumentType } from '../wrap_any'
 
 
@@ -69,8 +70,9 @@ export default function Home({ posts }: { posts: Post[] }) {
   );
 }
 
-export async function getStaticProps({ params }: GetStaticPropsContext) {
-  const data = await fetchGraphQL_inject_api_key(
+//We can save a little time by compiling the functional code to a runtime constant
+const fetchScript = makeIO (() => 
+  fetchGraphQL_inject_api_key(
     gql`
       query {
         posts(
@@ -91,8 +93,11 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
         }
       }
     `
-  );
-  const postsRx = data?.posts || [];
-  
-  return { props: { posts: postsRx }, revalidate: 60 };
+  ))
+.then (data => data!.posts);
+
+export async function getStaticProps({ params }: GetStaticPropsContext) {
+  return fetchScript
+    .exec ([])
+    .then (postsRx => { return { props: { posts: postsRx }, revalidate: 60 } })
 }

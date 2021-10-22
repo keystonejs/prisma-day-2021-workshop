@@ -90,6 +90,14 @@ Full k8s spec: WIP. Deferred because its an endless task.
 
 ✅ Next build super user authorization to keystone, allowing SSR/SSG/ISR tunneling.
 
+✅ MaybeIOPromise rolled out for SSG/ISR. 
+    Returns expected values on failed query.
+
+✅ Catches any exceptions transparently and uniquely, at point of execution.
+    Runs deferred using a compiled monadic script that can never return a null or undefined value.
+    Use case guarantees low stack usage, which allows pure `CCC` code to run without coroutine optimizations.
+
+
 
 A shout out to @jed for explaining the keystone way.
 Ready for exhaustive testing. Bug reports welcome!
@@ -221,10 +229,9 @@ I'm fairly new to `ts`, and like it a lot, but without a formal style, it can be
 
 With these caveats in mind, enjoy this latest release of @jeds prisma day workshop app, ported to Keystone 26, with useful contrib from @Guatam Singh, and polished endlessly by qfunq (it deserves it, Keystone 6 is the best CMS out there, Next, best in class, the same for prisma, and jeds code pulls it all together in a very useful way), and be fully aware, however solid it seems, this application is still in a `testing` phase.
 
+## DRY = sole source of truth
 
-
-
-
+... and it sets deep theoretical/practical puzzles, part addressed in this code base. `typescript` is not ideal for `DRY`, but it suffices.
 
 ## Known Issues
 
@@ -232,13 +239,21 @@ Code can siliently fail in a `?.` chain. Status: WIP.
 The `?.` construction is convenient, but not suitable for production logging, error trapping.
 To be replaced with a maybe sytle monad. 
 
+✅ Currently being rolled out to all gql queries, which become much tidier as a result.
+
 The Promise monad is a bit of a mess. The more general, recursive approach, without an explicit array, is outlined in `C++`:
 
 https://www.youtube.com/watch?v=vkcxgagQ4bM
 
-and almost works out the box in `ts`. Currently investigating complications caused by interactions with `async`, `Promise<T>` etc. A version of Bartosz's elegant code working under `ts` is complete. The lack of Haskell type matching makes providing a coroutine/Haskell sytle do notation to `ts` very fiddly. This is Bartosz's main point, imho. If you can't interpret recursively typed monadic code in terms of mutually recursive coroutines, your functional language will be limited (like the `C++` std library is). However, it is sufficient for non-recursive chains, and many use cases are.
+and almost works out the box in `ts`. Currently investigating complications caused by interactions with `async`, `Promise<T>` etc. A version of Bartosz's elegant code working under `ts` is complete. The lack of Haskell type matching makes providing a coroutine/Haskell sytle do notation to `ts` very fiddly. This is Bartosz's main point, imho. If you can't interpret recursively typed monadic code in terms of mutually recursive coroutines, your functional language will be limited (like the `C++` std library is). However, it is sufficient for non-recursive chains, and many use cases are. 
+
+✅ `CCC` Implementation of MaybeIOPromise tested and working.
 
 Only trampolines left to implement in the MaybeIOPromise family of monads, which will be deployed for error checking, because they do this very well, even without a tramoline.
+
+✅ WIP: Rolling out MaybeIOPromise to all `gql` instances. Deploying this error trapping monad has already resolved unnoticed bugs, and further separates `gql` code from the core functional environment.
+
+Research has shown that the Keystone session data might have a recursive type, which prevents it being dumped as an object. In theory it can be represented as a dumpable tree, without looping back to itself. These loops make it hard to prove there is a well defined maximal subset of the context which is in the `CCC`. It's type is that exotic!
 
 
 ## Additional functionality from upstream main
@@ -256,6 +271,7 @@ Production build:
       Seeding: Agnostic: there are multiple routes.
       Prettier applied in gitadd.
    Utils folder for additional code, informative naming.
+   MaybeIO/Promise for DRY declarative specification of graphql parsing/error handling.
 
 
 ## How to install the latest branch
