@@ -16,7 +16,7 @@ const sessionSecret = cuid() + cuid();
 
 export const keystoneNextjsBuildApiKey =
   process.env.KEYSTONE_NEXTJS_BUILD_API_KEY ||
-  'keystone.ts:_NextjsBuildApiKey_says_change_me_!!!!!!!_im_just_for_testing_purposes';
+  'keystone.ts:_NextjsBuildApiKey_says_change_me__im_just_for_testing_purposes';
 
 // Unless I'm missing something, its tricky to clone typescript objects
 // Fortunately theres a workaround for monad like objects, create a new one

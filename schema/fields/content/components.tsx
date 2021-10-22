@@ -19,6 +19,8 @@ import {
   ToolbarSeparator,
 } from '@keystone-next/fields-document/primitives';
 
+import { PollAnswerAny } from '../../../wrap_any'
+
 const appearances = {
   info: {
     icon: InfoIcon,
@@ -49,7 +51,7 @@ const appearances = {
 export const componentBlocks = {
   callout: component({
     component: function Callout({ content, appearance }) {
-      const { palette, radii, spacing } = useTheme();
+      const { /*palette,*/ radii, spacing } = useTheme();
       const intentConfig = appearances[appearance.value];
 
       return (
@@ -179,7 +181,7 @@ export const componentBlocks = {
         <NotEditable>
           <h2>{poll.value.label}</h2>
           <ul>
-            {poll.value.data.answers.map((answer: any) => {
+            {poll.value.data.answers.map((answer: PollAnswerAny) => {
               return (
                 <li>
                   {answer.label} ({answer.voteCount} answers)

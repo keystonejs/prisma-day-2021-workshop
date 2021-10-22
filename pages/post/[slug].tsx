@@ -8,11 +8,11 @@ import { Container, HomeLink } from '../../components/ui/layout';
 //import { Link } from '../../components/ui/link';
 import { H1 } from '../../components/ui/typography';
 
-import { HardenedAny } from '../../wrap_any'
+import { PostAny } from '../../wrap_any'
 //import { log } from '../../utils/logging'
 import { makeIO } from '../../utils/maybeIOPromise'
 
-export default function Post({ post }: { post: any }) {
+export default function Post({ post }: { post: PostAny }) {
   return (
     <Container>
       <HomeLink />
@@ -42,7 +42,7 @@ const fetchStaticPaths =  makeIO (() => fetchGraphQL_inject_api_key(
 ))
   .then( data => data!.posts)
   .then(posts => {
-    return { paths: posts!.map((post: HardenedAny) => ({ params: { slug: post!.slug } })),
+    return { paths: posts!.map((post: PostAny) => ({ params: { slug: post!.slug } })),
     fallback: 'blocking',
   }}
 )

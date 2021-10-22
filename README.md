@@ -126,11 +126,16 @@ handling of `any`.
 ✅ Polyfilled monadic logging parses variable Error() format. 
    Localised abbreviated logging grammar for more readable logs. 
 
+✅ CI: Lint extend set to ["next/core-web-vitals","eslint:recommended"]
+
 ## Security audit
 Status: `Preliminary`.
 
 ## TL;DR
 `<T>(a: T)` is a type safe replacement for many cases of `(a: any)`, because we need to trap the awkward `undefined` cases at build time. 
+
+`Tfun<D,R>` eliminates the dummy variable in some functional type definitions, in a lint friendly way.
+This is both more succinct, and more appropriate for usage in point free type descriptions.
 
 
 ## any is shouting: I AM WRITTEN IN JAVASCRIPT ... listen to it, and recode it ASAP
@@ -148,6 +153,9 @@ Approximately 75% of these situations reveal an unhandled case, hidden from lint
 ```
 
 Currently developing a reader friendly notation for the rather awkward `ts functional notation`, to try to find ways to eliminte `any`, in all bar recursive types (which are labelled as such, by an `any` subtype). The most readable so far appears to be:
+
+`export const fcompose = <A,B,C>(a: (maps: B) => A) => (b: (maps: C) => B) => (c: C) => 
+   a(b(c))`
 
 `export const fcompose = <A,B,C>(a: (maps: B) => A) => (b: (maps: C) => B) => (c: C) => 
    a(b(c))`

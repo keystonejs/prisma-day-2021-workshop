@@ -13,7 +13,7 @@ import {
   SessionContext,
   ItemContext,
   SessionFrame,
-  FilterFrame,
+  //FilterFrame,
   EDIT,
   READ,
   HIDDEN,
@@ -21,8 +21,9 @@ import {
 import { GitHubRepo, githubReposResolver } from './fields/githubRepos/field';
 
 import { KeystoneContext } from '.keystone/types';
+import { SessionAny } from '../wrap_any';
 
-import { log } from '../utils/logging';
+//import { log } from '../utils/logging';
 
 const fieldModes = {
   editSelfOrRead: ({ session, item }: ItemContext) =>
@@ -38,7 +39,7 @@ const fieldModes = {
 };
 
 declare type BaseAccessArgs = {
-  session: any;
+  session: SessionAny;
   listKey: string;
   context: KeystoneContext;
 };

@@ -79,24 +79,23 @@ export const isSignedIn = ({ session }: SessionContext) => {
   return session;
 };
 
-//!! and ?. everywhere to protect from undefined. ts picks this up unless any is used.
 //They can't easy be expressed in terms of the more elementary functions either. undefined issues.
 export const permissions = {
   canUseAdminUI: ({ session }: SessionContext): boolean =>
-    Boolean(session?.data?.role),
+    Boolean(session!.data!.role),
   canManageContent: (frame: SessionFrame): boolean =>
-    Boolean(frame?.context?.session?.data?.role?.canManageContent),
+    Boolean(frame!.context!.session!.data!.role!.canManageContent),
   canManageUsers: (frame: SessionFrame): boolean =>
-    Boolean(frame?.context?.session?.data?.role?.canManageUsers),
+    Boolean(frame!.context!.session!.data!.role!.canManageUsers),
 
   canManageContentSession: ({ session }: SessionContext): boolean => {
-    return Boolean(session?.data?.role?.canManageContent);
+    return Boolean(session!.data!.role!.canManageContent);
   },
   canManageContentItem: (item: ItemContext): boolean =>
-    Boolean(item?.session?.data?.role?.canManageContent),
+    Boolean(item!.session!.data!.role!.canManageContent),
 
   canManageUsersSession: ({ session }: SessionContext): boolean => {
-    return Boolean(session?.data?.role?.canManageUsers);
+    return Boolean(session!.data!.role!.canManageUsers);
   },
   canManageContentList: (frame: SessionFrame) =>
     permissions.canManageContent(frame),
@@ -117,7 +116,7 @@ export const permissions = {
     }
     //The perms check is only running client side. Review: check the authorization props are checked
     //server side to.
-    if (!!frame.context.session?.data?.role?.canManageContent) {
+    if (frame.context.session!.data!.role!.canManageContent ?? false) {
       log()
         .success('Blessed super user access to the known content manager:')
         .success(frame?.context?.session?.data?.name);
@@ -146,7 +145,7 @@ export const permissions = {
     }
     //The perms check is only running client side. Review: check the authorization props are checked
     //server side to.
-    if (!!frame.context.session?.data?.role?.canManageUsers) {
+    if (frame.context.session!.data!.role!.canManageUsers ?? false) {
       log()
         .success('Blessed super user access to the known user manager:')
         .success(frame?.context?.session?.data?.name);
@@ -157,7 +156,7 @@ export const permissions = {
       .success('Client receives only their own user data:')
       .success(frame?.context?.session?.data?.name);
     //success(frame.context.session?.data?.role?.canManageContent);
-    return { id: { equals: frame.context.session?.itemId } };
+    return { id: { equals: frame.context.session!.itemId ?? '' } };
   },
 };
 
@@ -178,7 +177,7 @@ export const permissions = {
 // A mitigating factor here is the use of isFilterable on individual fields. When first porting Jeds app, it seemed like an inconvenience,
 // but now, it is seen as providing critical security, restricting queries to a vulnerable apollo.
 
-// !!! This is so important for a production server than does use gql only, that it might be worth
+// This is so important for a production server than does use gql only, that it might be worth
 // issuing a warning when a list is defaulted to isFilterable on all fields. Warnings like this can
 // be so useful to the correct setup of a dev kit. Also a warning if a field is in a where clause, but not filterable ... can same poor front end developers hours.
 // The more info an error can do to help a dev chase its location, the better. When logs get multiplexed by multiple threads, knowing what corresponds to what can waste time.
@@ -209,6 +208,6 @@ export const permissions = {
 //In testing, bad username password combinations were reporting auth failure
 //immediately. A delay of a few seconds has an improved security model.
 
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!       Core Issues located:      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//       Core Issues located:
 // auth/src/index.ts and related files in keystone core are triggering some "any" issues. Strong typing is (strongly) recommended.
 // e.g.    const pageMiddleware: AdminUIConfig['pageMiddleware'] = async ({ context, isValidSession })
