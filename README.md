@@ -236,16 +236,9 @@ The Promise monad is a bit of a mess. The more general, recursive approach, with
 
 https://www.youtube.com/watch?v=vkcxgagQ4bM
 
-and almost works out the box in `ts`. Currently investigating complications caused by interactions with `async`, `Promise<T>` etc. Getting a version of Bartosz's elegant code working under `ts` looks doable, but its also likely to run into subtle type issues. The lack of Haskell type matching makes providing a coroutine/Haskell sytle do notation to `ts` very fiddly. This is Bartosz's main point, imho. If you can't interpret recursively typed monadic code in terms of mutually recursive coroutines, your functional language will be limited (like the `C++` std library is). However, it is sufficient for non-recursive chains, and many use cases are.
+and almost works out the box in `ts`. Currently investigating complications caused by interactions with `async`, `Promise<T>` etc. A version of Bartosz's elegant code working under `ts` is complete. The lack of Haskell type matching makes providing a coroutine/Haskell sytle do notation to `ts` very fiddly. This is Bartosz's main point, imho. If you can't interpret recursively typed monadic code in terms of mutually recursive coroutines, your functional language will be limited (like the `C++` std library is). However, it is sufficient for non-recursive chains, and many use cases are.
 
-
-How to code where: `true/false` in `gql` without touching keystone core code. 
-
-Extend type `WhereInput` to be `WhereInput` | `true` | `false` ... is yet to be tested as a patch to core. Can this work as a local patch? To be investigated ...
-
-
-
-
+Only trampolines left to implement in the MaybeIOPromise family of monads, which will be deployed for error checking, because they do this very well, even without a tramoline.
 
 
 ## Additional functionality from upstream main
