@@ -3,7 +3,11 @@
 
 import { graphql } from '@keystone-next/keystone';
 import fetch from 'node-fetch';
-
+import {
+  StargazersAny,
+  GithubRepoAny,
+  GithubResolverItemAny,
+} from '../../../wrap_any';
 type GitubRepoData = {
   id: number;
   name: string;
@@ -65,7 +69,7 @@ export const GitHubRepo = graphql.object<GitubRepoData>()({
   },
 });
 
-export async function githubReposResolver(item: any) {
+export async function githubReposResolver(item: GithubResolverItemAny) {
   if (!item.githubUsername) return [];
   try {
     const token = process.env.GITHUB_AUTH_TOKEN;
@@ -79,10 +83,13 @@ export async function githubReposResolver(item: any) {
     const allRepos = await result.json();
     return allRepos
       .filter(
-        (repo: any) =>
+        (repo: GithubRepoAny) =>
           !(repo.fork || repo.private || repo.disabled || repo.private)
       )
-      .sort((a: any, b: any) => b.stargazers_count - a.stargazers_count);
+      .sort(
+        (a: StargazersAny, b: StargazersAny) =>
+          b.stargazers_count - a.stargazers_count
+      );
   } catch (err) {
     console.error(err);
     return [];

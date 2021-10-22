@@ -64,6 +64,10 @@ utils.js
 
 ## About the latest branch: ![workflow](https://github.com/qfunq/prisma-day-2021-workshop/actions/workflows/latest.yml/badge.svg)
 
+<a href="https://frontend.code-inspector.com/public/user/github/qfunq">
+   <img src="https://code-inspector.com/public/badge/user/github/qfunq?style=light" alt="code inspector badge" />
+</a>
+
 This branch is dedicated to creating a solid foundation for a production build to extend Keystone 6 CMS from.
 
 `yarn commit "message"` fires off the CI pipeline and only commits if unit tests are passed locally. No longer requires yarn dev running without the main next front end, since yarn site:build is the primary unit test. "fastcommit" is considered dangerous, and needs some additional logic to be CI safe. Its been the cause of a few red crosses. For that reason, it is being prefixed by an `x`, so commands in the history buffer do not trigger it. 
