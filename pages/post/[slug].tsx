@@ -42,7 +42,7 @@ const fetchStaticPaths =  makeIO (() => fetchGraphQL_inject_api_key(
 ))
   .then( data => data!.posts)
   .then(posts => {
-    return { paths: posts!.map((post: HardenedAny) => ({ params: { slug: post?.slug } })),
+    return { paths: posts!.map((post: HardenedAny) => ({ params: { slug: post!.slug } })),
     fallback: 'blocking',
   }}
 )
@@ -54,25 +54,25 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
 }
 
 const fetchStaticProps = ({ params }: GetStaticPropsContext) => makeIO (() => 
-fetchGraphQL_inject_api_key(
-  gql`
-    query ($slug: String!) {
-      post(where: { slug: $slug }) {
-        title
-        content {
-          document(hydrateRelationships: true)
-        }
-        publishedDate
-        author {
-          id
-          name
+  fetchGraphQL_inject_api_key(
+    gql`
+      query ($slug: String!) {
+        post(where: { slug: $slug }) {
+          title
+          content {
+            document(hydrateRelationships: true)
+          }
+          publishedDate
+          author {
+            id
+            name
+          }
         }
       }
-    }
-  `,
-  { slug: params!.slug }
-))
-.then (data => data!.post);
+    `,
+    { slug: params!.slug }
+  ))
+  .then (data => data!.post);
 
 
 export async function getStaticProps({ params }: GetStaticPropsContext) {
