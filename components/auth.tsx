@@ -8,7 +8,7 @@ import {
 } from 'react';
 
 import { gql, useQuery, useMutation, OperationResult} from 'urql';
-
+import { Tfun } from '../utils/func'
 //Security audit:
 //Pushed an `any` one depth lower into urql.
 export type AuthenticationResponse = OperationResult<any,object>
@@ -25,8 +25,8 @@ type AuthContextType =
   | {
       ready: true;
       sessionData?: { id: string; name: string };
-      // eslint-disable-next-line no-alert
-      signIn: (maps: SignInArgs) => Promise<SignInResult>;
+
+      signIn: Tfun<SignInArgs,Promise<SignInResult>>;
  
 
 
