@@ -46,7 +46,7 @@ export const fileLineRenderer = (e: CleanError) => {
   const stackFrames = ErrorStackParser.parse(e);
   const elem = stackFrames[0];
 
-  var scope =
+  const scope =
     elem.functionName === undefined ? 'file scope' : elem.functionName;
   return dateRenderer(
     elem.fileName +
@@ -64,10 +64,10 @@ export const abbreviatedRenderer = (e: CleanError): string => {
 };
 
 export const stackRenderer = (e: CleanError): string => {
-  var str: string = '';
+  let str: string = '';
 
   ErrorStackParser.parse(e)?.map((elem: ErrorStackParser.StackFrame) => {
-    var scope =
+    const scope =
       elem.functionName === undefined ? 'file scope' : elem.functionName;
 
     str =
@@ -112,7 +112,7 @@ export const logContextInfoGen =
       return logContextInfoGen(retObj)(logger)(warningCol)(stackRenderer)(
         nullVariableMsg
       );
-    var cleanMessage: string;
+    let cleanMessage: string;
 
     if (typeof toBeLogged === 'string') {
       cleanMessage = col(toBeLogged);
