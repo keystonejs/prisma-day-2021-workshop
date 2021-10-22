@@ -141,7 +141,7 @@ const logContextInfo =
     logContextInfoGen(retObj)(simpleLogger)(col)(msgRenderer)(a);
 
 export class logclos {
-  depth: number = -1;
+  depth = -1;
 
   renderer() {
     this.depth = this.depth + 1;
@@ -167,7 +167,7 @@ export class logclos {
     return logContextInfo(this)(errorCol)(this.renderer())(a);
   }
 }
-
+/* eslint no-unused-vars: "off" */
 export class xlogclos {
   warning(a: HardenedAny): this {
     return this;
@@ -188,6 +188,7 @@ export class xlogclos {
     return this;
   }
 }
+/* eslint no-unused-vars: "error" */
 
 export const log = () => new logclos();
 export const xlog = () => new xlogclos();
