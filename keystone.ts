@@ -4,7 +4,7 @@ import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 import { lists, extendGraphqlSchema } from './schema';
 import { permissions } from './schema/access';
-var cuid = require('cuid');
+import cuid from 'cuid';
 
 const dbUrl =
   `${process.env.DATABASE_URL}` ||

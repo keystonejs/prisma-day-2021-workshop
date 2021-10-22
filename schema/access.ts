@@ -52,8 +52,8 @@ export const isBuildEnvir = (frame: SessionFrame): boolean => {
     // The top level query prefers SessionFrame, and does not build against KeystoneFrame (same, bar KeystoneContext for context)
     // This does appear to be the right way to access the context, but why do we need to
     // cast something as important as this?
-    let kontext = frame?.context as KeystoneContext;
-    let recvApiKey = kontext?.req?.headers['x-api-key'];
+    const kontext = frame?.context as KeystoneContext;
+    const recvApiKey = kontext?.req?.headers['x-api-key'];
 
     if (recvApiKey === keystoneNextjsBuildApiKey) {
       if (recvApiKey.includes('keystone')) {
@@ -76,27 +76,27 @@ export const isBuildEnvir = (frame: SessionFrame): boolean => {
 };
 
 export const isSignedIn = ({ session }: SessionContext) => {
-  return !!session;
+  return session;
 };
 
 //!! and ?. everywhere to protect from undefined. ts picks this up unless any is used.
 //They can't easy be expressed in terms of the more elementary functions either. undefined issues.
 export const permissions = {
   canUseAdminUI: ({ session }: SessionContext): boolean =>
-    !!session?.data?.role,
+    Boolean(session?.data?.role),
   canManageContent: (frame: SessionFrame): boolean =>
-    !!frame?.context?.session?.data?.role?.canManageContent,
+    Boolean(frame?.context?.session?.data?.role?.canManageContent),
   canManageUsers: (frame: SessionFrame): boolean =>
-    !!frame?.context?.session?.data?.role?.canManageUsers,
+    Boolean(frame?.context?.session?.data?.role?.canManageUsers),
 
   canManageContentSession: ({ session }: SessionContext): boolean => {
-    return !!session?.data?.role?.canManageContent;
+    return Boolean(session?.data?.role?.canManageContent);
   },
   canManageContentItem: (item: ItemContext): boolean =>
-    !!item?.session?.data?.role?.canManageContent,
+    Boolean(item?.session?.data?.role?.canManageContent),
 
   canManageUsersSession: ({ session }: SessionContext): boolean => {
-    return !!session?.data?.role?.canManageUsers;
+    return Boolean(session?.data?.role?.canManageUsers);
   },
   canManageContentList: (frame: SessionFrame) =>
     permissions.canManageContent(frame),
