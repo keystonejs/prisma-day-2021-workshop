@@ -305,13 +305,6 @@ Production build:
 
 The definitive install instructions, assuming fedora, bar seeding, are in the workflow file:
 
-<a href="https://frontend.code-inspector.com/public/user/github/qfunq">
-   <img src="https://code-inspector.com/public/badge/user/github/qfunq?style=light" alt="code inspector badge" />
-</a>
-
-
- 
-
 
 
 
