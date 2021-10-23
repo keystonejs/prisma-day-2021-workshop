@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 import { ChevronLeft } from './icons';
 import { Link } from './link';

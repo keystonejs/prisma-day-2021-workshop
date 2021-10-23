@@ -69,15 +69,15 @@ export type QueryPost = {
   };
 };
 
-export type QueryPosts = {
+export type TQueryPostsForIndex = {
   posts: QueryPost[]
 }
 
 
 
 //We can save a little time by compiling the functional code to a runtime constant
-const fetchScript = makeIO (() => 
-  fetchGraphQL_inject_api_key<QueryPosts>(
+const fetchAllPostsForIndex = makeIO (() => 
+  fetchGraphQL_inject_api_key<TQueryPostsForIndex>(
     gql`
       query {
         posts(
@@ -102,7 +102,7 @@ const fetchScript = makeIO (() =>
   .then (data => data.posts);
 
 export async function getStaticProps() {
-  return fetchScript
+  return fetchAllPostsForIndex
     .exec ([])
     .then (postsRx => { return { props: { posts: postsRx }, revalidate: 60 } })
 }

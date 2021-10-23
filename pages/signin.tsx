@@ -7,6 +7,7 @@ import { FieldContainer, FieldLabel, TextInput } from '../components/ui/forms';
 import { Link } from '../components/ui/link';
 //import { useRouter } from 'next/router';
 import { useAuth } from '../components/auth';
+import { gotoPage } from '../utils/gotoPage'
 
 export default function SigninPage() {
   const auth = useAuth();
@@ -28,11 +29,11 @@ export default function SigninPage() {
     setError('');
     const result = await auth.signIn({ email, password });
     if (result.success) {
-      // FIXME: there's a cache issue with Urql where it's not reloading the
-      // current user properly if we do a client-side redirect here.
-      // router.push('/');
-      top!.location!.href = '/';
-    } else {
+
+
+      gotoPage('/');
+    } 
+    else {
       setEmail('');
       setPassword('');
       setError(result.message);

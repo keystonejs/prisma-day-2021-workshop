@@ -20,7 +20,7 @@ import {
 } from './access';
 import { componentBlocks } from '../schema/fields/content/components';
 
-import { ItemSession, GraphQLOutput } from '../wrap_any';
+import { ItemSession, GraphQLClause } from '../wrap_any';
 
 //FIXME:
 // These anys are causing issues. What is the strong type?
@@ -62,7 +62,7 @@ export const Label = list({
   },
 });
 
-function defaultSlug(inputData: GraphQLOutput) {
+function defaultSlug(inputData: GraphQLClause) {
   const date = new Date();
   return `${
     inputData?.title

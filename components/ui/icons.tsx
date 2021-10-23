@@ -1,4 +1,4 @@
-import { SVGAttributes } from 'react';
+import React, { SVGAttributes } from 'react';
 import cx from 'classnames';
 
 export function ChevronLeft({

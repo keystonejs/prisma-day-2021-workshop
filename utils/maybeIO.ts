@@ -21,7 +21,7 @@ export class IO<T> {
   static root = <T>(val: T) => makeIO<T>(() => val);
   static rootfun = <T>(thunk: () => T) => makeIO<T>(thunk);
 
-  private readonly run = (): T => this.act();
+  readonly run = (): T => this.act();
 
   readonly fbind = <M>(io: (maps: T) => IO<M>) =>
     makeIO(() => io(mapBad(this.act())).run());

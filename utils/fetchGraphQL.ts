@@ -1,13 +1,13 @@
 import { keystoneNextjsBuildApiKey, keyStoneHost } from '../keystone';
 import { log, xlog } from '../utils/logging';
-import { GraphQLOutput } from '../wrap_any';
+import { GraphQLClause } from '../wrap_any';
 import { bad } from './badValues';
 
 export const gql = ([content]: TemplateStringsArray) => content;
 
 export const fetchGraphQL_inject_api_key = async <T>(
   query: string,
-  variables?: GraphQLOutput
+  variables?: GraphQLClause
 ) => {
   //Intentionally create an undefined to test HardenedAny
   //var x;

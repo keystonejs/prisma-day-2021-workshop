@@ -35,7 +35,7 @@ export type ItemType = WrappedRampantlyPolymorphic;
 export type ItemSession = WrappedRampantlyPolymorphic;
 
 //From deep down in the keystone types ...
-export type GraphQLOutput = Record<string, WrappedRampantlyPolymorphic>;
+export type GraphQLClause = Record<string, WrappedRampantlyPolymorphic>;
 
 export type PostAny = WrappedRampantlyPolymorphic;
 
@@ -47,3 +47,4 @@ export type GithubResolverItemAny = WrappedRampantlyPolymorphic;
 
 export type SessionAny = WrappedRampantlyPolymorphic;
 export type LoggingAny = WrappedRampantlyPolymorphic;
+export type AuthenticationResponseAny = WrappedRampantlyPolymorphic;

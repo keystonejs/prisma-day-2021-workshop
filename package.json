@@ -47,6 +47,7 @@
     "autoprefixer": "^10.3.7",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.2",
+    "eslint-plugin-react": "^7.26.1",
     "postcss": "^8.3.9",
     "prettier": "^2.4.1",
     "tailwindcss": "^2.2.4",

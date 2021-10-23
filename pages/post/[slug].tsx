@@ -9,8 +9,7 @@ import { Container, HomeLink } from '../../components/ui/layout';
 import { H1 } from '../../components/ui/typography';
 
 //import { PostAny } from '../../wrap_any'
-import { log } from '../../utils/logging'
-import { makeIO, IO, embed } from '../../utils/maybeIOPromise'
+import { makeIO, IO} from '../../utils/maybeIOPromise'
 import { DocumentAny } from '../../wrap_any'
 
 
@@ -87,7 +86,7 @@ const fetchStaticProps = (staticProps: GetStaticPropsContext) =>
   IO.root(staticProps) 
   .then (props => props.params)
   .then (params => params.slug )
-  .promise(pslug => 
+  .promise(slug => 
     fetchGraphQL_inject_api_key<QueryPostStaticProps>(
     gql`
       query ($slug: String!) {
@@ -104,8 +103,7 @@ const fetchStaticProps = (staticProps: GetStaticPropsContext) =>
         }
       }
     `,
-    { slug: pslug }))
-    //.info()
+    { slug: slug }))
     .then (data => data.post)
     ;
 

@@ -1,4 +1,4 @@
-import {
+import React, {
   createContext,
   useRef,
   useMemo,
@@ -9,9 +9,11 @@ import {
 
 import { gql, useQuery, useMutation, OperationResult} from 'urql';
 import { Tfun } from '../utils/func'
+
+import { AuthenticationResponseAny } from '../wrap_any';
 //Security audit:
 //Pushed an `any` one depth lower into urql.
-export type AuthenticationResponse = OperationResult<any,object>
+export type AuthenticationResponse = OperationResult<AuthenticationResponseAny,object>
 
 export type SignInArgs = { email: string; password: string };
 export type SignInResult =

@@ -55,13 +55,16 @@ export class IO<T> {
     );
   //.catch(this.warn("fbind error")(x => bad<R>()));
 
+  //.then for promise returning functions.
   readonly promise = <R>(f: (maps: NonNullable<T>) => Promise<R>) =>
     makeIO(() =>
       this.run().then(x =>
         isBad(x) ? bad<Promise<R>>() : mapBad(f(x as NonNullable<T>))
       )
     );
-  readonly info = () =>
+
+  //Monitor the current state of the environment
+  readonly env = () =>
     this.then(x => {
       log().info(x);
       return x;
@@ -74,7 +77,7 @@ export class IO<T> {
     return this.run()
       .then(x => embed(with_default(def)(x)))
       .catch(x => {
-        console.warn(x);
+        log().warning(x);
         return prom;
       })
       .finally();

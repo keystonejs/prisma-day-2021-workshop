@@ -1,7 +1,7 @@
 import 'tailwindcss/tailwind.css';
 import type { AppProps } from 'next/app';
 import { createClient, Provider } from 'urql';
-
+import React from 'react'
 import { AuthProvider } from '../components/auth';
 
 export const client = createClient({
