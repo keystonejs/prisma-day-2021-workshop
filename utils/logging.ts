@@ -2,7 +2,7 @@ import { LoggingAny } from '../wrap_any';
 
 import colors from 'colors/safe';
 import ErrorStackParser from 'error-stack-parser';
-import { Maps } from './func';
+import { Maps, drop } from './func';
 
 // Logging is one place where LoggingAny is needed! The intent was object dumping code, down to
 // every leaf, in a hardened way. A testground for DRY logging in ts.
@@ -62,7 +62,7 @@ export const fileLineRenderer = (e: CleanError) => {
 
 // eslint-disable-line no-unused-vars
 export const abbreviatedRenderer = (e: CleanError): string => {
-  return '';
+  return drop(e)('');
 };
 
 export const stackRenderer = (e: CleanError): string => {
@@ -144,57 +144,30 @@ const logContextInfo =
 
 export class logclos {
   depth = -1;
-
-  renderer() {
+  renderer = () => {
     this.depth = this.depth + 1;
     return this.depth ? abbreviatedRenderer : fileLineRenderer;
-  }
-
-  warning(a: LoggingAny): this {
-    return logContextInfo(this)(warningCol)(this.renderer())(a);
-  }
-  error(a: LoggingAny): this {
-    return logContextInfo(this)(errorCol)(this.renderer())(a);
-  }
-  success(a: LoggingAny): this {
-    return logContextInfo(this)(successCol)(this.renderer())(a);
-  }
-  trace(a: LoggingAny): this {
-    return logContextInfoGen(this)(simpleLogger)(fix)(stackRenderer)(a);
-  }
-  info(a: LoggingAny): this {
-    return logContextInfoGen(this)(simpleLogger)(fix)(this.renderer())(a);
-  }
-  reportSecurityIncident(a: LoggingAny): this {
-    return logContextInfo(this)(errorCol)(this.renderer())(a);
-  }
+  };
+  warning = (a: LoggingAny) =>
+    logContextInfo(this)(warningCol)(this.renderer())(a);
+  error = (a: LoggingAny) => logContextInfo(this)(errorCol)(this.renderer())(a);
+  success = (a: LoggingAny) =>
+    logContextInfo(this)(successCol)(this.renderer())(a);
+  trace = (a: LoggingAny) =>
+    logContextInfoGen(this)(simpleLogger)(fix)(stackRenderer)(a);
+  info = (a: LoggingAny) =>
+    logContextInfoGen(this)(simpleLogger)(fix)(this.renderer())(a);
+  reportSecurityIncident = (a: LoggingAny) =>
+    logContextInfo(this)(errorCol)(this.renderer())(a);
 }
 
 export class xlogclos {
-  // eslint-disable-line no-unused-vars
-  warning(a: LoggingAny): this {
-    return this;
-  }
-  // eslint-disable-line no-unused-vars
-  error(a: LoggingAny): this {
-    return this;
-  }
-  // eslint-disable-line no-unused-vars
-  success(a: LoggingAny): this {
-    return this;
-  }
-  // eslint-disable-line no-unused-vars
-  trace(a: LoggingAny): this {
-    return this;
-  }
-  // eslint-disable-line no-unused-vars
-  info(a: LoggingAny): this {
-    return this;
-  }
-  // eslint-disable-line no-unused-vars
-  reportSecurityIncident(a: LoggingAny): this {
-    return this;
-  }
+  warning = (a: LoggingAny) => drop(a)(this);
+  error = (a: LoggingAny) => drop(a)(this);
+  success = (a: LoggingAny) => drop(a)(this);
+  trace = (a: LoggingAny) => drop(a)(this);
+  info = (a: LoggingAny) => drop(a)(this);
+  reportSecurityIncident = (a: LoggingAny) => drop(a)(this);
 }
 
 export const log = () => new logclos();

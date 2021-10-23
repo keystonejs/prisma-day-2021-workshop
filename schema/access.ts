@@ -1,6 +1,7 @@
 import { KeystoneContext } from '.keystone/types';
 import { keystoneNextjsBuildApiKey } from '../keystone';
 import { log } from '../utils/logging';
+import { drop } from '../utils/func';
 import { ItemType } from '../wrap_any';
 
 export const PUBLISHED = 'published';
@@ -88,7 +89,7 @@ export const permissions = {
   canManageUsers: (frame: SessionFrame): boolean =>
     Boolean(frame?.context?.session?.data?.role?.canManageUsers),
 
-  allow: <T>(frame: T) => true,
+  allow: <T>(frame: T) => drop(frame)(true),
   canManageContentSession: ({ session }: SessionContext): boolean => {
     return Boolean(session?.data?.role?.canManageContent);
   },

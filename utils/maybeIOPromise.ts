@@ -1,7 +1,7 @@
 import reader from 'readline-sync';
 import { u, U } from './unit';
 
-import { Maps } from './func';
+import { Maps, drop } from './func';
 
 import { log } from './logging';
 
@@ -89,12 +89,14 @@ export class IO<T> {
 export function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+const dropEnvir = drop;
+
 export const putStr =
   <T>(env: T) =>
   (s: string) =>
     new Promise<T>(resolved => {
       // eslint-disable-line no-unused-vars
-      process.stdout.write(s, z => resolved(env));
+      process.stdout.write(s, z => dropEnvir(z)(resolved(env)));
       return env;
     });
 
@@ -108,7 +110,7 @@ export const pure = <T>(x: T) => IO.root(x);
 // synchronous, because async keyboard IO is a pain.
 
 // eslint-disable-line no-unused-vars
-export const getStrM = (x: U) => pure(x).then(z => getLine());
+export const getStrM = (x: U) => pure(x).then(z => dropEnvir(z)(getLine()));
 
 export const prompt =
   <V>(str: string) =>

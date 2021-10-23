@@ -1,6 +1,7 @@
 import reader from 'readline-sync';
 
 import { u, U } from './unit';
+import { drop, Maps } from './func';
 
 import { bad, isBad, mapBad, with_default } from './badValues';
 
@@ -21,10 +22,10 @@ export class IO<T> {
 
   readonly run = (): T => this.act();
 
-  readonly fbind = <M>(io: (maps: T) => IO<M>) =>
+  readonly fbind = <M>(io: Maps<T, IO<M>>) =>
     makeIO(() => io(mapBad(this.act())).run());
 
-  readonly then = <R>(f: (maps: NonNullable<T>) => R) =>
+  readonly then = <R>(f: Maps<NonNullable<T>, R>) =>
     makeIO(() => {
       const x = this.act();
       return isBad(x) ? bad<R>() : mapBad(f(x as NonNullable<T>));
@@ -37,8 +38,7 @@ export class IO<T> {
   //give a then callback to implement the async api.
   readonly exec = (def: NonNullable<T>) => {
     return {
-      then: <R>(f: (maps: NonNullable<T>) => R) =>
-        f(with_default(def)(this.run())),
+      then: <R>(f: Maps<NonNullable<T>, R>) => f(with_default(def)(this.run())),
     } as const;
   };
 }
@@ -58,13 +58,17 @@ export const putStrM = (s: string) =>
 
 export const getLine = () => reader.question('');
 
-export const getStrM = (x: U) => IO.rootfun(getLine);
+const dropEnvir = drop;
+
+export const getStrM = (x: U) => dropEnvir(x)(IO.rootfun(getLine));
 
 export const pure = <T>(x: T) => IO.root(x);
 
+//Lint is right about these drops being dodgy. Theres
+//Still some envir coding to do
 export const prompt =
   <V>(str: string) =>
   (x: V) =>
-    putStrM(str);
+    dropEnvir(x)(putStrM(str));
 
 export const ioRoot = pure(u);

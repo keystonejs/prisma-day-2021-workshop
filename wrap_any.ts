@@ -6,6 +6,7 @@
 // and give any a descriptive type name
 // This is the local alias for the dreaded `type`
 
+// eslint-disable-line no-unused-vars
 type WrappedRampantlyPolymorphic = any;
 
 //Any any is immediately assigned the status RampantlyPolymorphic, which matches exactly what it means
