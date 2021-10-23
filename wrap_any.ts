@@ -28,7 +28,7 @@ export type HardenedAny = WrappedRampantlyPolymorphic;
 
 // A JSX type?
 
-export type DocumentType = WrappedRampantlyPolymorphic;
+export type DocumentAny = WrappedRampantlyPolymorphic;
 
 // These have taken hours of time to resolve, with no joy, and have found a temporary home here ...
 export type ItemType = WrappedRampantlyPolymorphic;

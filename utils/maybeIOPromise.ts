@@ -3,7 +3,7 @@ import { u, U, cr, sideEffect } from './unit';
 
 import { log, xlog, fix } from './logging';
 
-import { isBad, mapBad, with_default } from './badValues';
+import { bad, isBad, mapBad, with_default } from './badValues';
 
 export type IOthunk<T> = () => Promise<T>;
 
@@ -26,6 +26,8 @@ export type IOthunk<T> = () => Promise<T>;
 
 export const makeIO = <T>(f: IOthunk<T>): IO<T> => new IO<T>(f);
 
+export const embed = <T>(val: T) => Promise.resolve(val);
+
 export class IO<T> {
   private act: IOthunk<T>;
 
@@ -34,16 +36,10 @@ export class IO<T> {
   }
 
   //Embed values and functions
-  static root = <T>(val: T) => makeIO<T>(() => Promise.resolve(val));
-  static rootfun = <T>(thunk: () => T) =>
-    makeIO<T>(() => Promise.resolve(thunk()));
+  static root = <T>(val: T) => makeIO<T>(() => embed(val));
+  static rootfun = <T>(thunk: () => T) => makeIO<T>(() => embed(thunk()));
 
-  private readonly run = () => this.act();
-
-  readonly warn =
-    <R>(msg: string) =>
-    (f: (maps: T) => R) =>
-      sideEffect<T, void, R>(x => log().warning(msg))(f);
+  readonly run = () => this.act();
 
   readonly fbind = <M>(io: (maps: T) => IO<M>) =>
     makeIO(
@@ -51,18 +47,36 @@ export class IO<T> {
       //.catch(x => this.warn("fbind error")(err => io(bad<T>()).run()))
     );
 
-  readonly then = <R>(f: (maps: T) => R) =>
-    makeIO(() => {
-      return this.act().then(x => (isBad(x) ? mapBad(x) : mapBad(f(x))));
-      //.catch(this.warn("fbind error")(x => bad<R>()));
+  readonly then = <R>(f: (maps: NonNullable<T>) => R) =>
+    makeIO(() =>
+      this.act().then(x =>
+        isBad(x) ? embed(bad<R>()) : embed(mapBad(f(x as NonNullable<T>)))
+      )
+    );
+  //.catch(this.warn("fbind error")(x => bad<R>()));
+
+  readonly promise = <R>(f: (maps: NonNullable<T>) => Promise<R>) =>
+    makeIO(() =>
+      this.run().then(x =>
+        isBad(x) ? bad<Promise<R>>() : mapBad(f(x as NonNullable<T>))
+      )
+    );
+  readonly info = () =>
+    this.then(x => {
+      log().info(x);
+      return x;
     });
 
   readonly fmap = this.then;
 
-  readonly exec = (def: T) => {
+  readonly exec = (def: NonNullable<T>) => {
+    const prom = embed(def);
     return this.run()
-      .then(x => with_default(def)(x))
-      .catch(x => this.warn(x.toString())(z => def))
+      .then(x => embed(with_default(def)(x)))
+      .catch(x => {
+        console.warn(x);
+        return prom;
+      })
       .finally();
   };
 }

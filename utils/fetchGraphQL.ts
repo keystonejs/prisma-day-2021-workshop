@@ -1,13 +1,14 @@
 import { keystoneNextjsBuildApiKey, keyStoneHost } from '../keystone';
 import { log, xlog } from '../utils/logging';
 import { GraphQLOutput } from '../wrap_any';
+import { bad } from './badValues';
 
 export const gql = ([content]: TemplateStringsArray) => content;
 
-export async function fetchGraphQL_inject_api_key(
+export const fetchGraphQL_inject_api_key = async <T>(
   query: string,
   variables?: GraphQLOutput
-) {
+) => {
   //Intentionally create an undefined to test HardenedAny
   //var x;
   //log().success(x);
@@ -27,10 +28,10 @@ export async function fetchGraphQL_inject_api_key(
     .then(x => x.json())
     .then(({ data }) => {
       log().success('Next build: json: rx');
-      return data;
+      return data as T;
     })
     .catch(msg => {
       log().warning('Next build: did not recieve static site data: ' + msg);
-      return null;
+      return bad<T>();
     });
-}
+};

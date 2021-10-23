@@ -1,9 +1,9 @@
-import { HardenedAny } from '../wrap_any';
+import { LoggingAny } from '../wrap_any';
 
 import colors from 'colors/safe';
 import ErrorStackParser from 'error-stack-parser';
 
-// Logging is one place where HardenedAny is needed! The intent was object dumping code, down to
+// Logging is one place where LoggingAny is needed! The intent was object dumping code, down to
 // every leaf, in a hardened way. A testground for DRY logging in ts.
 // Closures are good for logging, localising to particular files/functions/lines, and returning a continuation.
 
@@ -102,7 +102,7 @@ export const logContextInfoGen =
   (logger: LoggerFun) =>
   (col: ColFun) =>
   (msgRenderer: LogEventRenderer) =>
-  (toBeLogged: HardenedAny): TretObj => {
+  (toBeLogged: LoggingAny): TretObj => {
     if (toBeLogged === undefined)
       return logContextInfoGen(retObj)(logger)(warningCol)(stackRenderer)(
         undefinedVariableMsg
@@ -137,7 +137,7 @@ const logContextInfo =
   <TretObj>(retObj: TretObj) =>
   (col: ColFun) =>
   (msgRenderer: LogEventRenderer) =>
-  (a: HardenedAny): TretObj =>
+  (a: LoggingAny): TretObj =>
     logContextInfoGen(retObj)(simpleLogger)(col)(msgRenderer)(a);
 
 export class logclos {
@@ -148,43 +148,43 @@ export class logclos {
     return this.depth ? abbreviatedRenderer : fileLineRenderer;
   }
 
-  warning(a: HardenedAny): this {
+  warning(a: LoggingAny): this {
     return logContextInfo(this)(warningCol)(this.renderer())(a);
   }
-  error(a: HardenedAny): this {
+  error(a: LoggingAny): this {
     return logContextInfo(this)(errorCol)(this.renderer())(a);
   }
-  success(a: HardenedAny): this {
+  success(a: LoggingAny): this {
     return logContextInfo(this)(successCol)(this.renderer())(a);
   }
-  trace(a: HardenedAny): this {
+  trace(a: LoggingAny): this {
     return logContextInfoGen(this)(simpleLogger)(fix)(stackRenderer)(a);
   }
-  info(a: HardenedAny): this {
+  info(a: LoggingAny): this {
     return logContextInfoGen(this)(simpleLogger)(fix)(this.renderer())(a);
   }
-  reportSecurityIncident(a: HardenedAny): this {
+  reportSecurityIncident(a: LoggingAny): this {
     return logContextInfo(this)(errorCol)(this.renderer())(a);
   }
 }
 /* eslint no-unused-vars: "off" */
 export class xlogclos {
-  warning(a: HardenedAny): this {
+  warning(a: LoggingAny): this {
     return this;
   }
-  error(a: HardenedAny): this {
+  error(a: LoggingAny): this {
     return this;
   }
-  success(a: HardenedAny): this {
+  success(a: LoggingAny): this {
     return this;
   }
-  trace(a: HardenedAny): this {
+  trace(a: LoggingAny): this {
     return this;
   }
-  info(a: HardenedAny): this {
+  info(a: LoggingAny): this {
     return this;
   }
-  reportSecurityIncident(a: HardenedAny): this {
+  reportSecurityIncident(a: LoggingAny): this {
     return this;
   }
 }

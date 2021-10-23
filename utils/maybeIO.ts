@@ -4,7 +4,7 @@ import { u, U, cr, sideEffect } from './unit';
 
 import { log, xlog, fix } from './logging';
 
-import { isBad, mapBad, with_default } from './badValues';
+import { bad, isBad, mapBad, with_default } from './badValues';
 
 export type IOthunk<T> = () => T;
 
@@ -21,28 +21,27 @@ export class IO<T> {
   static root = <T>(val: T) => makeIO<T>(() => val);
   static rootfun = <T>(thunk: () => T) => makeIO<T>(thunk);
 
-  private readonly run = () => this.act();
-
-  readonly warn =
-    <R>(msg: string) =>
-    (f: (maps: T) => R) =>
-      sideEffect<T, void, R>(x => log().warning(msg))(f);
+  private readonly run = (): T => this.act();
 
   readonly fbind = <M>(io: (maps: T) => IO<M>) =>
     makeIO(() => io(mapBad(this.act())).run());
 
-  readonly then = <R>(f: (maps: T) => R) =>
+  readonly then = <R>(f: (maps: NonNullable<T>) => R) =>
     makeIO(() => {
       const x = this.act();
-      return isBad(x) ? mapBad(x) : mapBad(f(x));
+      return isBad(x) ? bad<R>() : mapBad(f(x as NonNullable<T>));
       //.catch(this.warn("fbind error")(x => bad<R>()));
     });
 
   readonly fmap = this.then;
+  readonly promise = this.then;
 
   //give a then callback to implement the async api.
-  readonly exec = (def: T) => {
-    return { then: <R>(f: (maps: T) => R) => f(with_default(def)(this.run())) };
+  readonly exec = (def: NonNullable<T>) => {
+    return {
+      then: <R>(f: (maps: NonNullable<T>) => R) =>
+        f(with_default(def)(this.run())),
+    } as const;
   };
 }
 

@@ -82,20 +82,20 @@ export const isSignedIn = ({ session }: SessionContext) => {
 //They can't easy be expressed in terms of the more elementary functions either. undefined issues.
 export const permissions = {
   canUseAdminUI: ({ session }: SessionContext): boolean =>
-    Boolean(session!.data!.role),
+    Boolean(session?.data?.role),
   canManageContent: (frame: SessionFrame): boolean =>
-    Boolean(frame!.context!.session!.data!.role!.canManageContent),
+    Boolean(frame?.context?.session?.data?.role?.canManageContent),
   canManageUsers: (frame: SessionFrame): boolean =>
-    Boolean(frame!.context!.session!.data!.role!.canManageUsers),
+    Boolean(frame?.context?.session?.data?.role?.canManageUsers),
 
   canManageContentSession: ({ session }: SessionContext): boolean => {
-    return Boolean(session!.data!.role!.canManageContent);
+    return Boolean(session?.data?.role?.canManageContent);
   },
   canManageContentItem: (item: ItemContext): boolean =>
-    Boolean(item!.session!.data!.role!.canManageContent),
+    Boolean(item?.session?.data?.role?.canManageContent),
 
   canManageUsersSession: ({ session }: SessionContext): boolean => {
-    return Boolean(session!.data!.role!.canManageUsers);
+    return Boolean(session?.data?.role?.canManageUsers);
   },
   canManageContentList: (frame: SessionFrame) =>
     permissions.canManageContent(frame),
@@ -116,7 +116,7 @@ export const permissions = {
     }
     //The perms check is only running client side. Review: check the authorization props are checked
     //server side to.
-    if (frame.context.session!.data!.role!.canManageContent ?? false) {
+    if (frame.context.session?.data?.role?.canManageContent ?? false) {
       log()
         .success('Blessed super user access to the known content manager:')
         .success(frame?.context?.session?.data?.name);
@@ -145,7 +145,7 @@ export const permissions = {
     }
     //The perms check is only running client side. Review: check the authorization props are checked
     //server side to.
-    if (frame.context.session!.data!.role!.canManageUsers ?? false) {
+    if (frame.context.session?.data?.role?.canManageUsers ?? false) {
       log()
         .success('Blessed super user access to the known user manager:')
         .success(frame?.context?.session?.data?.name);
@@ -156,7 +156,7 @@ export const permissions = {
       .success('Client receives only their own user data:')
       .success(frame?.context?.session?.data?.name);
     //success(frame.context.session?.data?.role?.canManageContent);
-    return { id: { equals: frame.context.session!.itemId ?? '' } };
+    return { id: { equals: frame.context.session?.itemId ?? '' } };
   },
 };
 

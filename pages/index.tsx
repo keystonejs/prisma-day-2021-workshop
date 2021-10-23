@@ -10,26 +10,12 @@ import { H1 } from '../components/ui/typography';
 import { useAuth } from '../components/auth';
 
 import { makeIO } from '../utils/maybeIOPromise'
-import { DocumentType } from '../wrap_any'
+
+import { DocumentAny } from '../wrap_any'
 
 
 
-
-
-type Post = {
-  id: string;
-  slug: string;
-  title: string;
-  publishedDate: string;
-  intro: {
-    document: DocumentType;
-  };
-  author: {
-    name: string;
-  };
-};
-
-export default function Home({ posts }: { posts: Post[] }) {
+export default function Home({ posts }: { posts: QueryPost[] }) {
   const auth = useAuth();
   return (
     <Container>
@@ -70,9 +56,28 @@ export default function Home({ posts }: { posts: Post[] }) {
   );
 }
 
+export type QueryPost = {
+  id: string;  
+  title: string;
+  slug: string;
+  publishedDate: string;
+  intro: {
+    document: DocumentAny;
+  };
+  author: {
+    name: string;
+  };
+};
+
+export type QueryPosts = {
+  posts: QueryPost[]
+}
+
+
+
 //We can save a little time by compiling the functional code to a runtime constant
 const fetchScript = makeIO (() => 
-  fetchGraphQL_inject_api_key(
+  fetchGraphQL_inject_api_key<QueryPosts>(
     gql`
       query {
         posts(
@@ -94,10 +99,11 @@ const fetchScript = makeIO (() =>
       }
     `
   ))
-.then (data => data?.posts?? null);
+  .then (data => data.posts);
 
 export async function getStaticProps() {
   return fetchScript
+    .info ()
     .exec ([])
     .then (postsRx => { return { props: { posts: postsRx }, revalidate: 60 } })
 }
