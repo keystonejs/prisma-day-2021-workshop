@@ -85,7 +85,7 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
     );
   },
   poll: function Poll({ poll: relatedPoll }) {
-    if (!relatedPoll?.data) return null;
+    //if (!relatedPoll?.data) return null;
     const [{ data }] = useQuery({
       query: gql`
         query ($id: ID!) {
@@ -103,9 +103,9 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
           }
         }
       `,
-      variables: { id: relatedPoll.id },
+      variables: { id: relatedPoll?.id },
     });
-    const poll = (data?.poll || relatedPoll.data) as Poll;
+    const poll = (data?.poll || relatedPoll?.data) as Poll;
 
     const [{}, voteForPoll] = 
       useMutation(gql`
@@ -163,7 +163,7 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
           <Button
             onClick={() => {
               clearVoteForPoll(
-                { pollId: relatedPoll.id },
+                { pollId: relatedPoll?.id },
                 { additionalTypenames: ['Poll', 'PollAnswer'] }
               );
             }}
