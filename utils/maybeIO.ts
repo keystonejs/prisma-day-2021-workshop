@@ -69,4 +69,4 @@ export const prompt =
   (x: V) =>
     putStrM(str);
 
-export const ioRoot = IO.root(u);
+export const ioRoot = pure(u);

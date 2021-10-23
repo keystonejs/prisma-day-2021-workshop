@@ -106,7 +106,7 @@ export const pure = <T>(x: T) => IO.root(x);
 // synchronous, because async keyboard IO is a pain.
 
 // eslint-disable-line no-unused-vars
-export const getStrM = (x: U) => IO.root(x).then(z => getLine());
+export const getStrM = (x: U) => pure(x).then(z => getLine());
 
 export const prompt =
   <V>(str: string) =>
@@ -115,4 +115,4 @@ export const prompt =
     return x;
   };
 
-export const ioRoot = IO.root(u);
+export const ioRoot = pure(u);
