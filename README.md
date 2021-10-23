@@ -149,8 +149,32 @@ handling of `any`.
 
 ✅ CI: Lint extend set to ["next/core-web-vitals","eslint:recommended"]
 
+✅ Currently being rolled out to all gql queries, which become much tidier as a result.
+
+✅ The Promise monad has been battle hardened, and is seen as a critical tool
+   in the CI process, since the code it produces is even more modular than `ts` alone.
+
+https://www.youtube.com/watch?v=vkcxgagQ4bM
+
+✅ Works out the box in `ts`. 
+
+✅ Resolved complications caused by interactions with `async`, `Promise<T>` etc. 
+
+✅ `CCC` Implementation of MaybeIOPromise tested and working.
+
 ## Security audit
 Status: `Preliminary`.
+
+<a href="https://frontend.code-inspector.com/public/user/github/qfunq">
+   <img src="https://code-inspector.com/public/badge/user/github/qfunq?style=light" alt="code inspector badge" />
+</a>
+
+Weak links: code style. Many of the remaining errors are real, and have been in place for a long time, unnoticed because of the general noise. 
+
+wrap_any.ts: the place where dark hacks live to get the system building. Its grown
+rather than shrank, because `any` is often used to create objects without delegating
+a strong typed call to the top level application. DRY is harsh, and forces certain design contraints, which are not often followed. But when they are, everything clicks together perfectly.
+
 
 ## TL;DR
 `<T>(a: T)` is a type safe replacement for many cases of `(a: any)`, because we need to trap the awkward `undefined` cases at build time. 
@@ -173,53 +197,11 @@ This `dangerous construct` is used in upstream auth.
 Approximately 75% of these situations reveal an unhandled case, hidden from lint. 
 ```
 
-Currently developing a reader friendly notation for the rather awkward `ts functional notation`, to try to find ways to eliminte `any`, in all bar recursive types (which are labelled as such, by an `any` subtype). The most readable so far appears to be:
+## eslint is just as harsh. any is a virus that infects code.
 
-`export const fcompose = <A,B,C>(a: (maps: B) => A) => (b: (maps: C) => B) => (c: C) => 
-   a(b(c))`
+✅ Abstract away the dummy variable in `typescipt` type definitions.
+`f: Maps<Domain, Range>`, which is implemented in `func.ts`. It absracts away the old `maps:` notation using a lint violation in a single location, removing a blemish from the `ts` type system. Uniquely declared lint violations are handled using drop, i.e. Curried `false`. Because it's used so often, it's aliased to it's local usage, so as not the swamp the namespace with too many `drop`s.
 
-`export const fcompose = <A,B,C>(a: (maps: B) => A) => (b: (maps: C) => B) => (c: C) => 
-   a(b(c))`
-
-and in second place,
-
-`export const fcompose = <A,B,C>(a: (X: B) => A) => (b: (X: C) => B) => (c: C) => 
-   a(b(c))`
-
-For cartestian products:
-
-   `transferFun: (maps: T) => (cross: T) => T`
-
-we would rather write:
-
-   `transferFun: T => T => T,`
-
-but its a bit odd too, at least the ts reads a bit like the intended,
-
-   `transferFun: maps T cross T to T,` 
-
-just all the brackets are in the wrong place for the eye to flow smoothly over it, and the one place we want a new dummy variable, `to`, `ts` forces `=>`. I'd prefer the Haskell style notation to read
-
-   `transferFun: T => T to T,`
-
-since `=>` is somewhat overused. Also, the return type is special in comparisson to intermediary closure parameters.
-
-But when printed, the shorter 
-   `transferFun: (maps: T) => (X: T) => T,`
-
-doesn't seem to read as well as
-   `transferFun: (maps: T) => (cross: T) => T`
-
-The issue here is we have to name variables for types which are `not instantiated`, and `naming things is hard`. 
-
-
-
-Using this convention, a free grammar is pinned down, in which the two new constructs make sense, and the rather clunky type specifications almost become readable, a bit like what tailwind does to css. `cross:` is preferred for short defintions, opposed to `x:` or `X:`. At first these both looked excellent options, then they didn't. `x` is heavily overused. So of the two `X` looks better, but is in caps, so I vote it runner up, but perhaps optimal for long type definitions. `X` in maths means roughly the same thing, as does `cross`, but `cross` is far less likely to be mistaken for a real variable. This is subtle because we are talking about a morphism between the Cartesian product embedded in the closure algebra, and a perhaps a different model of the product i.e. `(a,b)`, or a purely functional list api.
-
-Also cross will match fewer searches when greping though code.
-
-
-When reviewing code, it can be hard to tell these dummy parameter names from important ones. That's the real point of this comment.
 
 `<T>(a: T)` is not the same as `(a: any)`. The templated class can't echo undefined types, but `any` can! This is seen as a `very good thing`.
 
@@ -264,23 +246,12 @@ With these caveats in mind, enjoy this latest release of @jeds prisma day worksh
 
 ## Known Issues
 
-Code can siliently fail in a `?.` chain. Status: WIP.
-The `?.` construction is convenient, but not suitable for production logging, error trapping.
-To be replaced with a maybe sytle monad. 
+A version of Bartosz's elegant code working under `ts` is complete. The lack of Haskell type matching makes providing a coroutine/Haskell sytle do notation to `ts` very fiddly. This is Bartosz's main point, imho. If you can't interpret recursively typed monadic code in terms of mutually recursive coroutines, your functional language will be limited (like the `C++` std library is). However, it is sufficient for non-recursive chains, and many use cases are. 
 
-✅ Currently being rolled out to all gql queries, which become much tidier as a result.
 
-The Promise monad is a bit of a mess. The more general, recursive approach, without an explicit array, is outlined in `C++`:
+So only trampolines left to implement in the MaybeIOPromise family of monads, which will be deployed for error checking, because they do this very well, even without a tramoline.
 
-https://www.youtube.com/watch?v=vkcxgagQ4bM
-
-and almost works out the box in `ts`. Currently investigating complications caused by interactions with `async`, `Promise<T>` etc. A version of Bartosz's elegant code working under `ts` is complete. The lack of Haskell type matching makes providing a coroutine/Haskell sytle do notation to `ts` very fiddly. This is Bartosz's main point, imho. If you can't interpret recursively typed monadic code in terms of mutually recursive coroutines, your functional language will be limited (like the `C++` std library is). However, it is sufficient for non-recursive chains, and many use cases are. 
-
-✅ `CCC` Implementation of MaybeIOPromise tested and working.
-
-Only trampolines left to implement in the MaybeIOPromise family of monads, which will be deployed for error checking, because they do this very well, even without a tramoline.
-
-✅ WIP: Rolling out MaybeIOPromise to all `gql` instances. Deploying this error trapping monad has already resolved unnoticed bugs, and further separates `gql` code from the core functional environment.
+WIP: Rolling out MaybeIOPromise to all `gql` instances. Deploying this error trapping monad has already resolved unnoticed bugs, and further separates `gql` code from the core functional environment.
 
 Research has shown that the Keystone session data might have a recursive type, which prevents it being dumped as an object. In theory it can be represented as a dumpable tree, without looping back to itself. These loops make it hard to prove there is a well defined maximal subset of the context which is in the `CCC`. It's type is that exotic!
 
@@ -301,6 +272,7 @@ Production build:
       Prettier applied in gitadd.
    Utils folder for additional code, informative naming.
    MaybeIO/Promise for DRY declarative specification of graphql parsing/error handling.
+   yarn lint: additional, harsher lint checks
 
 
 ## How to install the latest branch
