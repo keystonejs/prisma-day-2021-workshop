@@ -60,7 +60,6 @@ export const fileLineRenderer = (e: CleanError) => {
   );
 };
 
-// eslint-disable-line no-unused-vars
 export const abbreviatedRenderer = (e: CleanError): string => {
   return drop(e)('');
 };
@@ -172,5 +171,4 @@ export class xlogclos {
 
 export const log = () => new logclos();
 
-// eslint-disable-line no-unused-vars
 export const xlog = () => new xlogclos();

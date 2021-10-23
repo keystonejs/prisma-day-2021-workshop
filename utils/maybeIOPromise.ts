@@ -95,7 +95,6 @@ export const putStr =
   <T>(env: T) =>
   (s: string) =>
     new Promise<T>(resolved => {
-      // eslint-disable-line no-unused-vars
       process.stdout.write(s, z => dropEnvir(z)(resolved(env)));
       return env;
     });
@@ -109,7 +108,6 @@ export const pure = <T>(x: T) => IO.root(x);
 // disable the error, but lint has a point, the environment is lost
 // synchronous, because async keyboard IO is a pain.
 
-// eslint-disable-line no-unused-vars
 export const getStrM = (x: U) => pure(x).then(z => dropEnvir(z)(getLine()));
 
 export const prompt =
