@@ -62,8 +62,10 @@ utils.js
 
 
 
-## About the latest branch: ![workflow](https://github.com/qfunq/prisma-day-2021-workshop/actions/workflows/latest.yml/badge.svg) <a href="https://frontend.code-inspector.com/public/user/github/qfunq"> <img src="https://www.code-inspector.com/project/29475/status/svg"
-alt="code inspector grade" /> </a> <a href="https://frontend.code-inspector.com/public/user/github/qfunq">
+## About the latest branch: ![workflow](https://github.com/qfunq/prisma-day-2021-workshop/actions/workflows/latest.yml/badge.svg) <a href="https://frontend.code-inspector.com/public/user/github/qfunq">
+   <img src="https://www.code-inspector.com/project/29475/status/svg"
+alt="code inspector grade" />
+</a> <a href="https://frontend.code-inspector.com/public/user/github/qfunq">
    <img src=https://www.code-inspector.com/project/29475/score/svg
 alt="code quality score" />
 </a>    
