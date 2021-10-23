@@ -3,7 +3,7 @@ import { u, U, cr, sideEffect } from './unit';
 
 import { log, xlog, fix } from './logging';
 
-import { bad, isBad, mapBad, with_default } from './badValues';
+import { bad, isBad, mapBad, with_default, WellTyped } from './badValues';
 
 export type IOthunk<T> = () => Promise<T>;
 

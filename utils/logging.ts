@@ -60,12 +60,13 @@ export const fileLineRenderer = (e: CleanError) => {
   );
 };
 
+// eslint-disable-line no-unused-vars
 export const abbreviatedRenderer = (e: CleanError): string => {
   return '';
 };
 
 export const stackRenderer = (e: CleanError): string => {
-  let str: string = '';
+  let str = '';
 
   ErrorStackParser.parse(e)?.map((elem: ErrorStackParser.StackFrame) => {
     const scope =
@@ -168,28 +169,35 @@ export class logclos {
     return logContextInfo(this)(errorCol)(this.renderer())(a);
   }
 }
-/* eslint no-unused-vars: "off" */
+
 export class xlogclos {
+  // eslint-disable-line no-unused-vars
   warning(a: LoggingAny): this {
     return this;
   }
+  // eslint-disable-line no-unused-vars
   error(a: LoggingAny): this {
     return this;
   }
+  // eslint-disable-line no-unused-vars
   success(a: LoggingAny): this {
     return this;
   }
+  // eslint-disable-line no-unused-vars
   trace(a: LoggingAny): this {
     return this;
   }
+  // eslint-disable-line no-unused-vars
   info(a: LoggingAny): this {
     return this;
   }
+  // eslint-disable-line no-unused-vars
   reportSecurityIncident(a: LoggingAny): this {
     return this;
   }
 }
 
 export const log = () => new logclos();
+
+// eslint-disable-line no-unused-vars
 export const xlog = () => new xlogclos();
-/* eslint no-unused-vars: "error" */
