@@ -70,7 +70,10 @@ This branch is dedicated to creating a solid foundation for a production build t
    <img src="https://code-inspector.com/public/badge/user/github/qfunq?style=light" alt="code inspector badge" />
 </a>
 
-https://www.code-inspector.com/project/29475/status/svg
+<a href="https://frontend.code-inspector.com/public/user/github/qfunq">
+   <img src="https://www.code-inspector.com/project/29475/status/svg"
+alt="code inspector grade" />
+</a>   
 
 Currently working on the low code style core, which hates `any` just as much as I do, and spots the tiniest of issues. Industry best practise is a useful side effect of harsh CI tooling.
 
@@ -300,9 +303,17 @@ The definitive install instructions, assuming fedora, bar seeding, are in the wo
 
 Install it like this and you know you will get the latest CI build. ![workflow](https://github.com/qfunq/prisma-day-2021-workshop/actions/workflows/latest.yml/badge.svg)
 
-https://www.code-inspector.com/project/29475/status/svg
+<a href="https://frontend.code-inspector.com/public/user/github/qfunq">
+   <img src="https://www.code-inspector.com/project/29475/status/svg"
+alt="code inspector grade" />
+</a>   
 
-https://www.code-inspector.com/project/29475/score/svg
+<a href="https://frontend.code-inspector.com/public/user/github/qfunq">
+   <img src=https://www.code-inspector.com/project/29475/score/svg
+alt="code inspector score" />
+</a>   
+
+
 
 If for some reason, the latest CI build is failing (it happens!), find the last good build. As it stands, the yml specifies a test, not a production framework.
 
