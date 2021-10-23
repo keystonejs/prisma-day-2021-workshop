@@ -64,7 +64,7 @@ utils.js
 
 ## About the latest branch: 
 
-CI status: ![workflow](https://github.com/qfunq/prisma-day-2021-workshop/actions/workflows/latest.yml/badge.svg) 
+![workflow](https://github.com/qfunq/prisma-day-2021-workshop/actions/workflows/latest.yml/badge.svg) 
 <a href="https://frontend.code-inspector.com/public/user/github/qfunq">
 <img src="https://www.code-inspector.com/project/29475/status/svg"
 alt="code inspector grade" /></a> 
@@ -155,7 +155,7 @@ Status: `Preliminary`.
 ## TL;DR
 `<T>(a: T)` is a type safe replacement for many cases of `(a: any)`, because we need to trap the awkward `undefined` cases at build time. 
 
-`Tfun<D,R>` eliminates the dummy variable in some functional type definitions, in a lint friendly way.
+`Maps<D,R>` eliminates the dummy variable in some functional type definitions, in a lint friendly way.
 This is both more succinct, and more appropriate for usage in point free type descriptions.
 
 

@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 
 import { gql, useQuery, useMutation, OperationResult} from 'urql';
-import { Tfun } from '../utils/func'
+import { Maps } from '../utils/func'
 
 import { AuthenticationResponseAny } from '../wrap_any';
 //Security audit:
@@ -28,7 +28,7 @@ type AuthContextType =
       ready: true;
       sessionData?: { id: string; name: string };
 
-      signIn: Tfun<SignInArgs,Promise<SignInResult>>;
+      signIn: Maps<SignInArgs,Promise<SignInResult>>;
  
 
 

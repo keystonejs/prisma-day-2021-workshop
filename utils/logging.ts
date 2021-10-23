@@ -2,6 +2,7 @@ import { LoggingAny } from '../wrap_any';
 
 import colors from 'colors/safe';
 import ErrorStackParser from 'error-stack-parser';
+import { Maps } from './func';
 
 // Logging is one place where LoggingAny is needed! The intent was object dumping code, down to
 // every leaf, in a hardened way. A testground for DRY logging in ts.
@@ -20,9 +21,9 @@ interface CleanError {
   stack: string;
 }
 
-export type LogEventRenderer = (maps: CleanError) => string;
+export type LogEventRenderer = Maps<CleanError, string>;
 
-export type ColFun = (maps: string) => string;
+export type ColFun = Maps<string, string>;
 
 export const sep = ': ';
 
@@ -36,7 +37,7 @@ export const unknownLineAndFileMsg =
 export const cantOpenErrorMsg =
   baseErrorMsg + 'Cant access stack info from Error()' + sep;
 
-export type LoggerFun = (maps: string) => void;
+export type LoggerFun = Maps<string, void>;
 export const simpleLogger = (msg: string) => console.log(msg);
 export const dateRenderer = (msg: string): string => {
   return Date() + sep + msg;
@@ -188,7 +189,7 @@ export class xlogclos {
     return this;
   }
 }
-/* eslint no-unused-vars: "error" */
 
 export const log = () => new logclos();
 export const xlog = () => new xlogclos();
+/* eslint no-unused-vars: "error" */

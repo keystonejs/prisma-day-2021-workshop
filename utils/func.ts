@@ -1,2 +1,2 @@
 // eslint-disable-line no-unused-vars
-export type Tfun<D, R> = (maps: D) => R;
+export type Maps<D, R> = (maps: D) => R;
