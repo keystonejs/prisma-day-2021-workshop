@@ -1,9 +1,9 @@
 import reader from 'readline-sync';
-import { u, U, cr, sideEffect } from './unit';
+import { u, U } from './unit';
 
-import { log, xlog, fix } from './logging';
+import { log } from './logging';
 
-import { bad, isBad, mapBad, with_default, WellTyped } from './badValues';
+import { bad, isBad, mapBad, with_default } from './badValues';
 
 export type IOthunk<T> = () => Promise<T>;
 
@@ -91,6 +91,7 @@ export const putStr =
   <T>(env: T) =>
   (s: string) =>
     new Promise<T>(resolved => {
+      // eslint-disable-line no-unused-vars
       process.stdout.write(s, z => resolved(env));
       return env;
     });
@@ -100,14 +101,18 @@ export const putStr =
 export const putStrM = (s: string) => makeIO(() => putStr(s)(s));
 
 export const getLine = () => reader.question('');
-
-export const getStrM = (x: U) => IO.rootfun(getLine);
-
 export const pure = <T>(x: T) => IO.root(x);
+// disable the error, but lint has a point, the environment is lost
+// synchronous, because async keyboard IO is a pain.
+
+// eslint-disable-line no-unused-vars
+export const getStrM = (x: U) => IO.root(x).then(z => getLine());
 
 export const prompt =
   <V>(str: string) =>
-  (x: V) =>
+  (x: V) => {
     putStrM(str);
+    return x;
+  };
 
 export const ioRoot = IO.root(u);
