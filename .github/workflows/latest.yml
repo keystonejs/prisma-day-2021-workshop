@@ -30,17 +30,14 @@ jobs:
           POSTGRES_PASSWORD: change_me_in_multiple_places
           POSTGRES_PORT: 5432
           POSTGRES_USER: postgres_user
-
     steps:
       - name: Dump github context
         run: echo "$GITHUB_CONTEXT"
         shell: bash
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
-
       - name: Checkout application
         uses: actions/checkout@v2
-
       - name: Run yarn
         run: |
           cd $GITHUB_WORKSPACE
@@ -48,14 +45,12 @@ jobs:
           yarn
         env:
           DATABASE_URL: "postgres://postgres_user:change_me_in_multiple_places@pg/prisma_day_2021_latest"
-
       - name: Start keystone/Next
         run: |
           yarn dev &
         env:
           KEYSTONE_NEXTJS_BUILD_API_KEY: keystone_change_me2
           DATABASE_URL: "postgres://postgres_user:change_me_in_multiple_places@pg/prisma_day_2021_latest"
-
       - name: Start next build
         run: |
           echo "Sleeping to give time for Keystone to kick in. WIP: full micro service yml"
