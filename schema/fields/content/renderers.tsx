@@ -107,7 +107,7 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
     });
     const poll = (data?.poll || relatedPoll?.data) as Poll;
 
-    const [{}, voteForPoll] = 
+    const [{}, voteForPoll] =
       useMutation(gql`
       mutation ($answerId: ID!) {
         voteForPoll(answerId: $answerId)
