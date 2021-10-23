@@ -105,7 +105,7 @@ const fetchStaticProps = (staticProps: GetStaticPropsContext) =>
       }
     `,
     { slug: pslug }))
-    .info()
+    //.info()
     .then (data => data.post)
     ;
 

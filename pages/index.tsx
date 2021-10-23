@@ -103,7 +103,6 @@ const fetchScript = makeIO (() =>
 
 export async function getStaticProps() {
   return fetchScript
-    .info ()
     .exec ([])
     .then (postsRx => { return { props: { posts: postsRx }, revalidate: 60 } })
 }
