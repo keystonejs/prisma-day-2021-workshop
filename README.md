@@ -73,18 +73,10 @@ alt="code inspector grade" /></a>
 alt="code quality score" /> </a>    
 
 
-
-
-
-
-
 This branch is dedicated to creating a solid foundation for a production build to extend Keystone 6 CMS from.
 
 
-
-
 Currently working on the low code style core, which hates `any` just as much as I do, and spots the tiniest of issues. Industry best practise is a useful side effect of harsh CI tooling.
-
 
 
 `yarn commit "message"` fires off the CI pipeline and only commits if unit tests are passed locally. No longer requires yarn dev running without the main next front end, since yarn site:build is the primary unit test. "fastcommit" is considered dangerous, and needs some additional logic to be CI safe. Its been the cause of a few red crosses. For that reason, it is being prefixed by an `x`, so commands in the history buffer do not trigger it. 
@@ -138,10 +130,9 @@ Tested and working. (WIP: Additional hardening, catch after await)
 
 ✅ Only throws were in polls and static data fetch. Both have been refactored.
 
-✅ Next builds even when there is no static data, i.e. an empty database. Requires precise
-handling of `any`.
+✅ Next builds even when there is no static data, i.e. an empty database. Requires precise handling to return the correct types.
 
-✅ Any issues tracked down using the empty database technique. It triggers every any bug, with a vengeance.
+✅ Many issues tracked down using the empty database technique. It triggers every any/null/undefined bug, with a vengeance.
    Strongly recommended as a unit testing technique.
 
 ✅ Polyfilled monadic logging parses variable Error() format. 
@@ -149,7 +140,6 @@ handling of `any`.
 
 ✅ CI: Lint extend set to ["next/core-web-vitals","eslint:recommended"]
 
-✅ Currently being rolled out to all gql queries, which become much tidier as a result.
 
 ✅ The Promise monad has been battle hardened, and is seen as a critical tool
    in the CI process, since the code it produces is even more modular than `ts` alone.
@@ -161,6 +151,8 @@ https://www.youtube.com/watch?v=vkcxgagQ4bM
 ✅ Resolved complications caused by interactions with `async`, `Promise<T>` etc. 
 
 ✅ `CCC` Implementation of MaybeIOPromise tested and working.
+
+✅ Currently being rolled out to all gql queries, which become much tidier as a result.
 
 ## Security audit
 Status: `Preliminary`.
@@ -207,25 +199,22 @@ Approximately 75% of these situations reveal an unhandled case, hidden from lint
 
 `<T>(a: T)` is a type safe replacement for any, because we need to trap the awkward `undefined` cases at build time. Then the type inferrence become far more similar to `C++`, which works well until it hits recursive types (with the unfortunate side effect of nerfing monads/coroutines). 
 
-
-Another point is that as soon as `any` is used, the code becomes ... `javascript`. No more needs to be said. My mission against `any` is more than fully justified, and I'm not alone:
+My mission against `any` is more than fully justified, and I'm not alone:
 
 https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html
 
-However, some functional code doesn't seem to work properly without the total polymorphism `any` allows.
 
 There is also a `dodgy C++ style cast`, right where it's not needed ... `TBC`.
 
-The reason this is important is that `ts` offers us the `CCC` to programme in, (eliminating `any` completely), if we so desire. Then a programme can be proved to do exactly what it says it does, and this painfully pedantic style is fully justified.
+The reason monads are important is that `ts` offers us the `CCC` to programme in, (eliminating `any` completely), if we so desire. Then a programme can be proved to do exactly what it says it does.
 
-Research has demonstrated `ts` has issues expressing the `CCC`, but has fewer issues expressing the `CMC`, i.e. quantum categories. This is a slight
-surprise, but now known, the `CMC` is used exculsively. This means all transformations of objects are monadic. This is because 
-`ts` is call by reference, and objects cant be cloned easily, instead they are `entangled` when referred to twice. So its best to
-accept this, and make new objects using a class factory, to be modified by a monad (that that the object is trapped inside of), which cannot be cloned either. This is an efficient way to code closures, because passing the object pointer ensures only a minimum of copying environment is performed, at creation time.
+`ts` appears equally capable of expressing algorithms in the `CMC` or the `CCC`.
 
-There are also positive benefits resulting from entanglement in the `CMC`, it can be used to model subscriptions.
+There are positive benefits resulting from entanglement in the `CMC`, it can be used to model subscriptions.
 
+## DRY = sole source of truth
 
+... and it sets deep theoretical/practical puzzles, part addressed in this code base. However `typescript` is not ideal for `DRY`, but it suffices. When enhanced with `abstract syntax trees` it bites back that bit more, a critical technique in Keystone core.
 
 ## On naming
 The Native American naming/language model is used. Functions are verbs, and are named by what they do. 
@@ -240,16 +229,13 @@ I'm fairly new to `ts`, and like it a lot, but without a formal style, it can be
 
 With these caveats in mind, enjoy this latest release of @jeds prisma day workshop app, ported to Keystone 26, with useful contrib from @Guatam Singh, and polished endlessly by qfunq (it deserves it, Keystone 6 is the best CMS out there, Next, best in class, the same for prisma, and jeds code pulls it all together in a very useful way), and be fully aware, however solid it seems, this application is still in a `testing` phase.
 
-## DRY = sole source of truth
 
-... and it sets deep theoretical/practical puzzles, part addressed in this code base. `typescript` is not ideal for `DRY`, but it suffices.
 
 ## Known Issues
 
 A version of Bartosz's elegant code working under `ts` is complete. The lack of Haskell type matching makes providing a coroutine/Haskell sytle do notation to `ts` very fiddly. This is Bartosz's main point, imho. If you can't interpret recursively typed monadic code in terms of mutually recursive coroutines, your functional language will be limited (like the `C++` std library is). However, it is sufficient for non-recursive chains, and many use cases are. 
 
-
-So only trampolines left to implement in the MaybeIOPromise family of monads, which will be deployed for error checking, because they do this very well, even without a tramoline.
+So only trampolines left to implement in the MaybeIOPromise family of monads, which will be deployed for error checking, because they do this very well, even without a tramoline. But trampolines open a can of worms, requiring an intricate `ast` to target this subtle setup properly. 
 
 WIP: Rolling out MaybeIOPromise to all `gql` instances. Deploying this error trapping monad has already resolved unnoticed bugs, and further separates `gql` code from the core functional environment.
 
