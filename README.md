@@ -155,7 +155,7 @@ Status: `Preliminary`.
 ## TL;DR
 `<T>(a: T)` is a type safe replacement for many cases of `(a: any)`, because we need to trap the awkward `undefined` cases at build time. 
 
-`Maps<D,R>` eliminates the dummy variable in some functional type definitions, in a lint friendly way.
+`Maps<D,R>` (reads: `maps domain to range`) eliminates the dummy variable in some functional type definitions, in a lint friendly way.
 This is both more succinct, and more appropriate for usage in point free type descriptions.
 
 
