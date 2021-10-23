@@ -70,9 +70,7 @@ alt="code inspector grade" /></a>
    <img src=https://www.code-inspector.com/project/29475/score/svg
 alt="code quality score" /> </a>    
 
-<a href="https://frontend.code-inspector.com/public/user/github/qfunq">
-   <img src="https://code-inspector.com/public/badge/user/github/qfunq?style=light" alt="code inspector badge" />
-</a>
+
 
 
 
@@ -325,7 +323,9 @@ alt="code inspector grade" />
 alt="code quality score" />
 </a>    
 
-
+<a href="https://frontend.code-inspector.com/public/user/github/qfunq">
+   <img src="https://code-inspector.com/public/badge/user/github/qfunq?style=light" alt="code inspector badge" />
+</a>
 
 
 
