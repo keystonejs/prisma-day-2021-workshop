@@ -300,9 +300,6 @@ Production build:
 The definitive install instructions, assuming fedora, bar seeding, are in the workflow file:
 
    https://github.com/qfunq/prisma-day-2021-workshop/blob/latest/.github/workflows/latest.yml
-
-Install it like this and you know you will get the latest CI build. ![workflow](https://github.com/qfunq/prisma-day-2021-workshop/actions/workflows/latest.yml/badge.svg)
-
 <a href="https://frontend.code-inspector.com/public/user/github/qfunq">
    <img src="https://www.code-inspector.com/project/29475/status/svg"
 alt="code inspector grade" />
@@ -312,6 +309,9 @@ alt="code inspector grade" />
    <img src=https://www.code-inspector.com/project/29475/score/svg
 alt="code inspector score" />
 </a>   
+Install it like this and you know you will get the latest CI build. ![workflow](https://github.com/qfunq/prisma-day-2021-workshop/actions/workflows/latest.yml/badge.svg)
+
+
 
 
 
