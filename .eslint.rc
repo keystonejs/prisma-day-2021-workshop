@@ -16,7 +16,9 @@ module.exports = {
   extends: [
     "airbnb",
     "airbnb/hooks",
-    "plugin:@typescript-eslint/recommended",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
     "plugin:react/recommended",
     "plugin:import/errors",
     "plugin:import/warnings",
@@ -41,8 +43,8 @@ module.exports = {
       "error",
       { functions: false, classes: false, variables: true },
 
-    "no-unused-vars": ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false, "varsIgnorePattern": "[iI]gnored" }]
-    
+    "no-unused-vars": ["error", { "argsIgnorePattern": "[iI]gnored" }]
+
     ],
   },
   settings: {

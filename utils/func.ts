@@ -1,3 +1,5 @@
+/* eslint-disable  @typescript-eslint/no-unused-vars */
+/* eslint no-unused-vars: [ "error", { "argsIgnorePattern": "Ignored" } ] */
 // eslint-disable-line no-unused-vars
 export type Maps<D, R> = (mapsIgnored: D) => R;
 
