@@ -1,8 +1,6 @@
 import reader from 'readline-sync';
 
-import { u, U, cr, sideEffect } from './unit';
-
-import { log, xlog, fix } from './logging';
+import { u, U } from './unit';
 
 import { bad, isBad, mapBad, with_default } from './badValues';
 

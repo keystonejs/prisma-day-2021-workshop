@@ -1,11 +1,11 @@
 import { keystoneNextjsBuildApiKey, keyStoneHost } from '../keystone';
-import { log, xlog } from '../utils/logging';
+import { log } from '../utils/logging';
 import { GraphQLClause } from '../wrap_any';
 import { bad } from './badValues';
 
 export const gql = ([content]: TemplateStringsArray) => content;
 
-export const fetchGraphQL_inject_api_key = async <T>(
+export const fetchGraphQLInjectApiKey = async <T>(
   query: string,
   variables?: GraphQLClause
 ) => {

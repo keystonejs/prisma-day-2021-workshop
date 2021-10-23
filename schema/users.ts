@@ -20,9 +20,6 @@ import {
 } from './access';
 import { GitHubRepo, githubReposResolver } from './fields/githubRepos/field';
 
-import { KeystoneContext } from '.keystone/types';
-import { SessionAny } from '../wrap_any';
-
 //import { log } from '../utils/logging';
 
 const fieldModes = {
@@ -36,25 +33,13 @@ const fieldModes = {
     session?.itemId === item.id
       ? EDIT
       : HIDDEN,
-};
-
-declare type BaseAccessArgs = {
-  session: SessionAny;
-  listKey: string;
-  context: KeystoneContext;
-};
-
-declare type LocalAccessArgs = {
-  session: SessionContext;
-  listKey: string;
-  context: KeystoneContext;
-};
+} as const;
 
 export const User = list({
   access: {
     operation: {
-      create: (frame: SessionFrame) => true,
-      query: (frame: SessionFrame) => true,
+      create: (frame: SessionFrame) => permissions.allow(frame),
+      query: (frame: SessionFrame) => permissions.allow(frame),
       update: (frame: SessionFrame) => permissions.canManageUsers(frame),
       delete: (frame: SessionFrame) => permissions.canManageUsers(frame),
     },
@@ -146,7 +131,7 @@ export const User = list({
       },
     }),
   },
-});
+} as const);
 
 export const Role = list({
   fields: {
@@ -165,6 +150,6 @@ export const Role = list({
   },
   //permissions.canManageUsers,
   ui: {
-    isHidden: session => !permissions.canManageUsersSession(session),
+    isHidden: <T>(session: T) => !permissions.canManageUsersSession(session),
   },
-});
+} as const);

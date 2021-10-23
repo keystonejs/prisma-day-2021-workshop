@@ -1,10 +1,6 @@
-import { U } from './unit';
-
 export type BadData = undefined | null;
 
 export type RemoveType<Dest, Base, ToGo> = Dest extends Base ? never : ToGo;
-
-export type WellTyped<T> = RemoveType<NonNullable<T>, null, any>;
 
 export const isBad = <T>(value: T) => value === null || value === undefined;
 

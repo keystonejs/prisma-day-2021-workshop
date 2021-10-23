@@ -1,19 +1,11 @@
-import React from 'react';
-
-
-import { fetchGraphQL_inject_api_key, gql } from '../utils/fetchGraphQL';
+import { fetchGraphQLInjectApiKey, gql } from '../utils/fetchGraphQL';
 import { DocumentRenderer } from '../schema/fields/content/renderers';
-
 import { Container } from '../components/ui/layout';
 import { Link } from '../components/ui/link';
 import { H1 } from '../components/ui/typography';
 import { useAuth } from '../components/auth';
-
 import { makeIO } from '../utils/maybeIOPromise'
-
 import { DocumentAny } from '../wrap_any'
-
-
 
 export default function Home({ posts }: { posts: QueryPost[] }) {
   const auth = useAuth();
@@ -77,7 +69,7 @@ export type TQueryPostsForIndex = {
 
 //We can save a little time by compiling the functional code to a runtime constant
 const fetchAllPostsForIndex = makeIO (() => 
-  fetchGraphQL_inject_api_key<TQueryPostsForIndex>(
+  fetchGraphQLInjectApiKey<TQueryPostsForIndex>(
     gql`
       query {
         posts(

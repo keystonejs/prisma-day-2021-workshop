@@ -1,10 +1,10 @@
 // eslint-disable-line no-unused-vars
-export type Maps<D, R> = (maps: D) => R;
+export type Maps<D, R> = (mapsIgnored: D) => R;
 
 // typescript is better at deducing the types of curried types than uncurried,
 // thus this style of definition is necessary to eliminate the need for the dreaded polymorphic types.
 
 export const addPropValue =
   <O>(oldData: O) =>
-  <N>(newDataFun: (old: O) => N): O & N =>
+  <N>(newDataFun: Maps<O, N>): O & N =>
     Object.assign({}, oldData, newDataFun(oldData));

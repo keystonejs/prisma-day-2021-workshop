@@ -73,7 +73,7 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
         <div className="text-xl font-serif text-gray-600">{content}</div>
         <div className="mt-4 font-semibold text-gray-800">
           {href ? (
-            <a href={href} target="_blank">
+            <a href={href} target="_blank" rel="noreferrer">
               {name}
             </a>
           ) : (

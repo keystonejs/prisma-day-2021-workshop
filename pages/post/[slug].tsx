@@ -1,7 +1,7 @@
 import { GetStaticPropsContext } from 'next';
 import React from 'react';
 
-import { fetchGraphQL_inject_api_key, gql } from '../../utils/fetchGraphQL';
+import { fetchGraphQLInjectApiKey, gql } from '../../utils/fetchGraphQL';
 import { DocumentRenderer } from '../../schema/fields/content/renderers';
 
 import { Container, HomeLink } from '../../components/ui/layout';
@@ -9,7 +9,7 @@ import { Container, HomeLink } from '../../components/ui/layout';
 import { H1 } from '../../components/ui/typography';
 
 //import { PostAny } from '../../wrap_any'
-import { makeIO, IO} from '../../utils/maybeIOPromise'
+import { makeIO, pure} from '../../utils/maybeIOPromise'
 import { DocumentAny } from '../../wrap_any'
 
 
@@ -41,7 +41,7 @@ type TstaticPaths = {
   }[];
 };
 
-const fetchStaticPaths =  makeIO (() => fetchGraphQL_inject_api_key<TstaticPaths>(
+const fetchStaticPaths =  makeIO (() => fetchGraphQLInjectApiKey<TstaticPaths>(
   gql`
     query {
         posts {
@@ -51,7 +51,6 @@ const fetchStaticPaths =  makeIO (() => fetchGraphQL_inject_api_key<TstaticPaths
     `
   ))
   .then (data => data.posts)
-
   .then( posts => {
     return { paths: posts.map(post => ({ params: { slug: post.slug } })),
     fallback: 'blocking',
@@ -83,11 +82,11 @@ export type QueryPostStaticProps = {post: PostStaticProps};
 
 const fetchStaticProps = (staticProps: GetStaticPropsContext) => 
 
-  IO.root(staticProps) 
+  pure(staticProps) 
   .then (props => props.params)
   .then (params => params.slug )
   .promise(slug => 
-    fetchGraphQL_inject_api_key<QueryPostStaticProps>(
+    fetchGraphQLInjectApiKey<QueryPostStaticProps>(
     gql`
       query ($slug: String!) {
         post(where: { slug: $slug }) {

@@ -16,7 +16,8 @@
     "start": "keystone-next start",
     "build": "keystone-next build",
     "migrate": "keystone-next prisma migrate deploy",
-    "format": "prettier --write \"**/*.ts\""
+    "format": "prettier --write \"**/*.ts\"",
+    "lint": "eslint ./utils ./pages ./schema ./*.ts ./*.js"
   },
   "dependencies": {
     "@keystone-next/auth": "34.0.0",
@@ -39,15 +40,19 @@
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.3.3",
-    "@types/node": "^16.11.3",
-    "@types/react": "17.0.27",
+    "@types/node": "^16.11.4",
+    "@types/react": "^17.0.31",
     "@types/readline-sync": "^1.4.4",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
     "autoprefixer": "^10.3.7",
+    "babel-plugin-module-resolver": "^4.1.0",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.2",
+    "eslint-import-resolver-babel-module": "^5.3.1",
+    "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-react": "^7.26.1",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "postcss": "^8.3.9",
     "prettier": "^2.4.1",
     "tailwindcss": "^2.2.4",

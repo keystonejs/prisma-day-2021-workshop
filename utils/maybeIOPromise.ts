@@ -1,6 +1,8 @@
 import reader from 'readline-sync';
 import { u, U } from './unit';
 
+import { Maps } from './func';
+
 import { log } from './logging';
 
 import { bad, isBad, mapBad, with_default } from './badValues';
@@ -41,13 +43,13 @@ export class IO<T> {
 
   readonly run = () => this.act();
 
-  readonly fbind = <M>(io: (maps: T) => IO<M>) =>
+  readonly fbind = <M>(io: Maps<T, IO<M>>) =>
     makeIO(
       () => this.act().then(x => io(mapBad(x)).run())
       //.catch(x => this.warn("fbind error")(err => io(bad<T>()).run()))
     );
 
-  readonly then = <R>(f: (maps: NonNullable<T>) => R) =>
+  readonly then = <R>(f: Maps<NonNullable<T>, R>) =>
     makeIO(() =>
       this.act().then(x =>
         isBad(x) ? embed(bad<R>()) : embed(mapBad(f(x as NonNullable<T>)))
@@ -56,7 +58,7 @@ export class IO<T> {
   //.catch(this.warn("fbind error")(x => bad<R>()));
 
   //.then for promise returning functions.
-  readonly promise = <R>(f: (maps: NonNullable<T>) => Promise<R>) =>
+  readonly promise = <R>(f: Maps<NonNullable<T>, Promise<R>>) =>
     makeIO(() =>
       this.run().then(x =>
         isBad(x) ? bad<Promise<R>>() : mapBad(f(x as NonNullable<T>))
