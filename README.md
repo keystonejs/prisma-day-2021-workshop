@@ -62,7 +62,9 @@ utils.js
 
 
 
-## About the latest branch: <a href="https://frontend.code-inspector.com/public/user/github/qfunq">
+## About the latest branch: 
+
+<a href="https://frontend.code-inspector.com/public/user/github/qfunq">
    <img src="https://code-inspector.com/public/badge/user/github/qfunq?style=light" alt="code inspector badge" />
 </a>
 
@@ -77,6 +79,7 @@ alt="code inspector grade" />
    <img src=https://www.code-inspector.com/project/29475/score/svg
 alt="code quality score" />
 </a>   
+
 This branch is dedicated to creating a solid foundation for a production build to extend Keystone 6 CMS from.
 
 
@@ -306,7 +309,12 @@ Production build:
 
 The definitive install instructions, assuming fedora, bar seeding, are in the workflow file:
 
-   https://github.com/qfunq/prisma-day-2021-workshop/blob/latest/.github/workflows/latest.yml
+<a href="https://frontend.code-inspector.com/public/user/github/qfunq">
+   <img src="https://code-inspector.com/public/badge/user/github/qfunq?style=light" alt="code inspector badge" />
+</a>
+
+![workflow](https://github.com/qfunq/prisma-day-2021-workshop/actions/workflows/latest.yml/badge.svg)
+
 <a href="https://frontend.code-inspector.com/public/user/github/qfunq">
    <img src="https://www.code-inspector.com/project/29475/status/svg"
 alt="code inspector grade" />
@@ -316,6 +324,8 @@ alt="code inspector grade" />
    <img src=https://www.code-inspector.com/project/29475/score/svg
 alt="code quality score" />
 </a>   
+
+
 Install it like this and you know you will get the latest CI build. ![workflow](https://github.com/qfunq/prisma-day-2021-workshop/actions/workflows/latest.yml/badge.svg)
 
 
