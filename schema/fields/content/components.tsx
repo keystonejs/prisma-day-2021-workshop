@@ -183,8 +183,8 @@ export const componentBlocks = {
           <ul>
             {poll.value.data.answers.map((answer: PollAnswerAny) => {
               return (
-                <li>
-                  {answer.label} ({answer.voteCount} answers)
+                <li key={answer.label}>
+                   {answer.label} ({answer.voteCount} answers)
                 </li>
               );
             })}

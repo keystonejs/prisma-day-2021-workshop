@@ -119,6 +119,7 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
       variables: { id: relatedPoll?.id },
     });
     const poll = (data?.poll || relatedPoll?.data) as Poll;
+/*eslint-disable no-empty-pattern*/
 
     const [{}, voteForPoll] =
       useMutation(gql`
@@ -127,11 +128,12 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
       }
     `)
   ;
-    const [{}, clearVoteForPoll] = useMutation(gql`
+    const [{},clearVoteForPoll] = useMutation(gql`
       mutation ($pollId: ID!) {
         clearVoteForPoll(pollId: $pollId)
       }
     `);
+/*eslint-enable no-empty-pattern*/
     const auth = useAuth();
     return (
       <div className="my-4">

@@ -52,7 +52,7 @@ export const Field: FC<GitHubReposFieldProps> = ({ field, value }) => {
             const href = repo.homepage || repo.htmlUrl;
             const stars = repo.stargazersCount.toLocaleString();
             return (
-              <li>
+              <li key= {repo.name}>
                 <div css={{ display: 'flex', alignItems: 'center' }}>
                   <a target="_blank" rel="noreferrer" href={href}>
                     {repo.name}
