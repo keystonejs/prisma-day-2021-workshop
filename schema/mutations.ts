@@ -1,17 +1,10 @@
 import { graphQLSchemaExtension } from '@keystone-next/keystone';
-import {
-  KeystoneContext,
-  PollWhereInput,
-  PollWhereUniqueInput,
-} from '.keystone/types';
+import { KeystoneContext, PollWhereUniqueInput } from '.keystone/types';
 import { log } from '../utils/logging';
 
 const gql = ([content]: TemplateStringsArray) => content;
 
-async function clearVote(
-  _context: KeystoneContext,
-  pollFilter: PollWhereInput
-) {
+async function clearVote(_context: KeystoneContext) {
   const context = _context.sudo();
   if (!context.session) {
     //Removed throw, which was crashing keystone
@@ -46,12 +39,12 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
   `,
   resolvers: {
     Mutation: {
-      async clearVoteForPoll(rootVal, { pollId }, context) {
-        await clearVote(context as KeystoneContext, { id: pollId });
+      async clearVoteForPoll(context) {
+        await clearVote(context as KeystoneContext);
       },
-      async voteForPoll(rootVal, { answerId }, _context) {
+      async voteForPoll({ answerId }, _context) {
         const context = _context.sudo() as KeystoneContext;
-        clearVote(context, { answers: { some: { id: { equals: answerId } } } });
+        clearVote(context);
         await context.db.PollAnswer.updateOne({
           where: { id: answerId },
           data: {

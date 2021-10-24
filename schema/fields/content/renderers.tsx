@@ -85,8 +85,8 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
           < Image
           src={image}
           alt = "Avatar"
-          width = "80"
-          height = "80"
+          width = "50"
+          height = "50"
           />
           )
           : ""
