@@ -120,19 +120,19 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
     });
     const poll = (data?.poll || relatedPoll?.data) as Poll;
 /*eslint-disable no-empty-pattern*/
+const [{}, voteForPoll] =
+useMutation(gql`
+mutation ($answerId: ID!) {
+  voteForPoll(answerId: $answerId)
+}
+`)
+;
 
-    const [{}, voteForPoll] =
-      useMutation(gql`
-      mutation ($answerId: ID!) {
-        voteForPoll(answerId: $answerId)
-      }
-    `)
-  ;
-    const [{},clearVoteForPoll] = useMutation(gql`
-      mutation ($pollId: ID!) {
-        clearVoteForPoll(pollId: $pollId)
-      }
-    `);
+const [{},clearVoteForPoll] = useMutation(gql`
+mutation ($pollId: ID!) {
+  clearVoteForPoll(pollId: $pollId)
+}
+`);
 /*eslint-enable no-empty-pattern*/
     const auth = useAuth();
     return (
@@ -154,6 +154,7 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
                   checked={poll.userAnswer?.id === answer.id}
                   disabled={!auth.ready || !auth.sessionData}
                   onChange={() => {
+
                     voteForPoll(
                       { answerId: answer.id },
                       { additionalTypenames: ['Poll', 'PollAnswer'] }
@@ -177,6 +178,8 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
         {poll.userAnswer?.id && (
           <Button
             onClick={() => {
+
+
               clearVoteForPoll(
                 { pollId: relatedPoll?.id },
                 { additionalTypenames: ['Poll', 'PollAnswer'] }
