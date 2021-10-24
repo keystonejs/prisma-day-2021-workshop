@@ -103,8 +103,7 @@ Full k8s spec: WIP. Deferred because its an endless task.
 
 ✅ Next build super user authorization to keystone, allowing SSR/SSG/ISR tunneling.
 
-✅ MaybeIOPromise rolled out for SSG/ISR.
-    Returns expected values on failed query.
+✅ MaybeIOPromise replaces all awaits.
 
 ✅ Catches any exceptions transparently and uniquely, at point of execution.
     Runs deferred using a compiled monadic script that can never return a null or undefined value.
@@ -126,7 +125,9 @@ Code fixed by a log.warning and return.
     and enforced return to Admin UI login page when KS server restarted.
 
 ✅ Rejigged fetch command because some failure continuations were never been called.
-Tested and working. (WIP: Additional hardening, catch after await)
+Tested and working.
+
+✅ Await eliminated using monads of promises.
 
 ✅ Only throws were in polls and static data fetch. Both have been refactored.
 
@@ -138,7 +139,7 @@ Tested and working. (WIP: Additional hardening, catch after await)
 ✅ Polyfilled monadic logging parses variable Error() format.
    Localised abbreviated logging grammar for more readable logs.
 
-✅ CI: Lint extend set to ["next/core-web-vitals","eslint:recommended"]
+✅ CI: Lint extend set to ["next/core-web-vitals","eslint:recommended"] ++
 
 
 ✅ The Promise monad has been battle hardened, and is seen as a critical tool
@@ -148,11 +149,11 @@ https://www.youtube.com/watch?v=vkcxgagQ4bM
 
 ✅ Works out the box in `ts`.
 
-✅ Resolved complications caused by interactions with `async`, `Promise<T>` etc.
+✅ Resolves complications caused by interactions with `async`, `Promise<T>` etc.
 
 ✅ `CCC` Implementation of MaybeIOPromise tested and working.
 
-✅ Currently being rolled out to all gql queries, which become much tidier as a result.
+✅ Rolled out to all gql queries, which become much tidier as a result.
 
 ## Security audit
 Status: `Preliminary`.
@@ -190,7 +191,18 @@ This `dangerous construct` is used in upstream auth.
 Approximately 75% of these situations reveal an unhandled case, hidden from lint.
 ```
 
-## eslint is just as harsh. any is a virus that infects code.
+## await is almost as bad as any.
+
+Every `await` needs to be wrapped in a `try` `catch` block, or better still, wrapped in a `promise`, which either is already, or extends to a `monad` (since the original implementors of `js Promises` just implemented `fmap/then`, without `bind`, probably because its action is immediate. Oooops.). Fortunately, `await` is less abused than `any`. Once monadic IO replaces it, it's hard to contemplate using anything else, and `await` code is easily lifted to `fmap` or `fbind`. There will still always be some ugly IO bindings, such as with `fetch`, but they can be localized.
+
+The conversion to monadic io is almost complete. No awaits remain. Just some ugly `fetch` code to fully abstract.
+
+This is possibly one of the most important details for stability, because Keystone throws exceptions,
+possibly originally thrown by apollo, and if those exceptions are not caught, the server goes down.
+
+I used to think google were wrong in not allowing exceptions in their house style, but now it makes complete sense. Exceptions try their best to destroy monadic structure, but fortunately, they can be tamed using the techniques applied in this code.
+
+## eslint is just as harsh. any is a virus that infects code. easy to train it about await too ...
 
 ✅ Abstract away the dummy variable in `typescipt` type definitions.
 `f: Maps<Domain, Range>`, which is implemented in `func.ts`. It absracts away the old `maps:` notation using a lint violation in a single location, removing a blemish from the `ts` type system. Uniquely declared lint violations are handled using drop, i.e. Curried `false`. Because it's used so often, it's aliased to it's local usage, so as not the swamp the namespace with too many `drop`s.
@@ -234,16 +246,12 @@ With these caveats in mind, enjoy this latest release of @jeds prisma day worksh
 
 ## Known Issues
 
+Anyone can clear any Poll. Only content managers can do that.
+
 A version of Bartosz's elegant code working under `ts` is complete. The lack of Haskell type matching makes providing a coroutine/Haskell sytle do notation to `ts` very fiddly. This is Bartosz's main point, imho. If you can't interpret recursively typed monadic code in terms of mutually recursive coroutines, your functional language will be limited (like the `C++` std library is). However, it is sufficient for non-recursive chains, and many use cases are.
 
 So only trampolines left to implement in the MaybeIOPromise family of monads, which will be deployed for error checking, because they do this very well, even without a tramoline. But trampolines open a can of worms, requiring an intricate `ast` to target this subtle setup properly.
 
-WIP: Rolling out MaybeIOPromise to all `gql` instances. Deploying this error trapping monad has already resolved unnoticed bugs, and further separates `gql` code from the core functional environment.
-
-Research has shown that the Keystone session data might have a recursive type, which prevents it being dumped as an object. In theory it can be represented as a dumpable tree, without looping back to itself. These loops make it hard to prove there is a well defined maximal subset of the context which is in the `CCC`. It's type is that exotic!
-
-Known to be unstable everywhere monadic io is not used, i.e. all non-monadic gql, where a
-malformed query can take down the Admin UI.
 
 wrap_any.ts: the place where dark hacks live to get the system building. Its grown
 rather than shrank, because `any` is often used to create objects without delegating
