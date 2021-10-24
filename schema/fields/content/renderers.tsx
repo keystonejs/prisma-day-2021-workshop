@@ -11,6 +11,7 @@ import { useAuth } from '../../../components/auth';
 import { Button } from '../../../components/ui/controls';
 import { Link } from '../../../components/ui/link';
 import { gql, useMutation, useQuery } from 'urql';
+import Image  from 'next/image'
 
 // by default the DocumentRenderer will render unstyled html elements
 // we're customising how headings are rendered here but you can customise any of the renderers that the DocumentRenderer uses
@@ -68,6 +69,7 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
     return <div className={classes}>{content}</div>;
   },
   quote: function Quote({ content, name, position, image, href }) {
+
     return (
       <div className="my-4 border-l-4 border-gray-300 px-4 py-2">
         <div className="text-xl font-serif text-gray-600">{content}</div>
@@ -75,11 +77,22 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
           {href ? (
             <a href={href} target="_blank" rel="noreferrer">
               {name}
-            </a>
-          ) : (
-            name
-          )}
+            </a> )
+           : (name)
+          }
+          {image !== ''?
+          (
+          < Image
+          src={image}
+          alt = "Avatar"
+          width = "80"
+          height = "80"
+          />
+          )
+          : ""
+          }
         </div>
+
         <div className="text-sm text-gray-500 uppercase">{position}</div>
       </div>
     );
