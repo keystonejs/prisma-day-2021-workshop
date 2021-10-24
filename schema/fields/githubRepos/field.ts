@@ -3,11 +3,7 @@
 
 import { graphql } from '@keystone-next/keystone';
 import fetch from 'node-fetch';
-import {
-  StargazersAny,
-  GithubRepoAny,
-  GithubResolverItemAny,
-} from '../../../wrap_any';
+import { GithubResolverItemAny } from '../../../wrap_any';
 type GitubRepoData = {
   id: number;
   name: string;
@@ -23,7 +19,12 @@ type GitubRepoData = {
   watchers_count: number;
   language: string;
   forks_count: number;
+  fork: boolean;
+  private: boolean;
+  disabled: boolean;
 };
+import { ioRoot } from '../../../utils/maybeIOPromise';
+import { drop } from '../../../utils/func';
 
 export const GitHubRepo = graphql.object<GitubRepoData>()({
   name: 'GitHubRepo',
@@ -69,29 +70,35 @@ export const GitHubRepo = graphql.object<GitubRepoData>()({
   },
 });
 
+type Tjson = { json: () => { data: GitubRepoData[] } };
+
 export async function githubReposResolver(item: GithubResolverItemAny) {
   if (!item.githubUsername) return [];
-  try {
-    const token = process.env.GITHUB_AUTH_TOKEN;
-    const options = token
-      ? { headers: { Authorization: `token ${token}` } }
-      : undefined;
-    const result = await fetch(
-      `https://api.github.com/users/${item.githubUsername}/repos?type=public&per_page=100`,
-      options
-    );
-    const allRepos = await result.json();
-    return allRepos
-      .filter(
-        (repo: GithubRepoAny) =>
-          !(repo.fork || repo.private || repo.disabled || repo.private)
+
+  const token = process.env.GITHUB_AUTH_TOKEN;
+  const options = token
+    ? { headers: { Authorization: `token ${token}` } }
+    : undefined;
+
+  return ioRoot
+    .promise(u =>
+      drop(u)(
+        fetch(
+          `https://api.github.com/users/${item.githubUsername}/repos?type=public&per_page=100`,
+          options
+        ) as unknown as Promise<Tjson>
       )
-      .sort(
-        (a: StargazersAny, b: StargazersAny) =>
-          b.stargazers_count - a.stargazers_count
-      );
-  } catch (err) {
-    console.error(err);
-    return [];
-  }
+    )
+    .then(result => result.json().data)
+    .then(allRepos =>
+      allRepos
+        .filter(
+          (repo: GitubRepoData) => !(repo.fork || repo.private || repo.disabled)
+        )
+        .sort(
+          (a: GitubRepoData, b: GitubRepoData) =>
+            b.stargazers_count - a.stargazers_count
+        )
+    )
+    .exec([]);
 }

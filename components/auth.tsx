@@ -9,7 +9,7 @@ import React, {
 
 import { gql, useQuery, useMutation, OperationResult} from 'urql';
 import { Maps } from '../utils/func'
-
+import { makeIO } from '../utils/maybeIOPromise'
 import { AuthenticationResponseAny } from '../wrap_any';
 //Security audit:
 //Pushed an `any` one depth lower into urql.
@@ -21,6 +21,7 @@ export type SignInResult =
   | { success: false; message: string };
 
 
+
 /* eslint-enable */
 
 type AuthContextType =
@@ -29,7 +30,7 @@ type AuthContextType =
       sessionData?: { id: string; name: string };
 
       signIn: Maps<SignInArgs,Promise<SignInResult>>;
- 
+
 
 
       signOut: () => void;
@@ -83,36 +84,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   `);
 
+  type AuthResponse = {data?: {authenticateUserWithPassword?: {__typename: string, message: string}}, error?: Object};
 
+  const typedAuthenticate = (details: SignInArgs, mutContext: any) : Promise<AuthResponse> => authenticate(
+    details,
+    mutContext
+  )
 
-  const signIn = async ({
-    email,
-    password,
-  }: SignInArgs): Promise<SignInResult> => {
-    const result: AuthenticationResponse = await authenticate(
-      { email, password },
+  const signIn = async (details: SignInArgs): Promise<SignInResult> => {
+    return makeIO(()=>typedAuthenticate(
+      details,
       mutationContext
-    );
-    const { data, error } = result;
-    if (
-      data?.authenticateUserWithPassword?.__typename ===
-      'UserAuthenticationWithPasswordSuccess'
-    ) {
-      return { success: true };
-    } else if (
-      data?.authenticateUserWithPassword?.__typename ===
-      'UserAuthenticationWithPasswordFailure'
-    ) {
-      return {
-        success: false,
-        message: data.authenticateUserWithPassword?.message,
-      };
+    ))
+    .then (result =>
+    {
+      const { data, error } = result;
+      if (
+        data?.authenticateUserWithPassword?.__typename ===
+        'UserAuthenticationWithPasswordSuccess'
+      ) {
+        return { success: true } as SignInResult;
+      } else if (
+        data?.authenticateUserWithPassword?.__typename ===
+        'UserAuthenticationWithPasswordFailure'
+      ) {
+        return {
+          success: false,
+          message: data.authenticateUserWithPassword?.message,
+        } ;
+      }
+      if (error) {
+        return { success: false, message: error.toString() };
+      } else {
+        return { success: false, message: 'An unknown error occurred' };
+      }
     }
-    if (error) {
-      return { success: false, message: error.toString() };
-    } else {
-      return { success: false, message: 'An unknown error occurred' };
-    }
+      )
+    .exec({ success: false, message: 'An unknown error occurred' });
   };
 
   const [u, signOutMutation] = useMutation(gql`

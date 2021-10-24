@@ -1,6 +1,6 @@
-import reader from 'readline-sync';
+//import reader from 'readline-sync';
 
-import { u, U } from './unit';
+import { u } from './unit';
 import { drop, Maps } from './func';
 
 import { bad, isBad, mapBad, with_default } from './badValues';
@@ -41,6 +41,8 @@ export class IO<T> {
       then: <R>(f: Maps<NonNullable<T>, R>) => f(with_default(def)(this.run())),
     } as const;
   };
+
+  readonly catch = this.exec;
 }
 
 export function delay(ms: number) {
@@ -56,11 +58,11 @@ export const putStrM = (s: string) =>
     return s;
   });
 
-export const getLine = () => reader.question('');
+//export const getLine = () => reader.question('');
 
 const dropEnvir = drop;
 
-export const getStrM = (x: U) => dropEnvir(x)(IO.rootfun(getLine));
+//export const getStrM = (x: U) => dropEnvir(x)(IO.rootfun(getLine));
 
 export const pure = <T>(x: T) => IO.root(x);
 
