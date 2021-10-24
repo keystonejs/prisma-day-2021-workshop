@@ -55,6 +55,12 @@ const auth = createAuth({
 
 export default auth.withAuth(
   config({
+    server: {
+      cors: { origin: ['*'], credentials: true },
+      port: 3000,
+      maxFileSize: 200 * 1024 * 1024,
+      healthCheck: true,
+    },
     db: {
       url: dbUrl,
       provider: 'postgresql',

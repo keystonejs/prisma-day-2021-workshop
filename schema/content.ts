@@ -60,9 +60,9 @@ export const Label = list({
       },
     }),
   },
-});
+} as const);
 
-function defaultSlug(inputData: GraphQLClause) {
+const defaultSlug = (inputData: GraphQLClause) => {
   const date = new Date();
   return `${
     inputData?.title
@@ -73,7 +73,7 @@ function defaultSlug(inputData: GraphQLClause) {
   }-${date?.getFullYear() ?? ''}${date?.getMonth() + 1 ?? ''}${
     date?.getDate() ?? ''
   }`;
-}
+};
 
 function defaultTimestamp() {
   return new Date().toISOString();
@@ -161,4 +161,4 @@ export const Post = list({
       ui: { views: require.resolve('./fields/content/components') },
     }),
   },
-});
+} as const);

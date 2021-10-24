@@ -79,7 +79,7 @@ export const isBuildEnvir = (frame: SessionFrame): boolean => {
 export const isSignedIn = (context: KeystoneContext) => {
   if (!context) return false;
   if (!context?.session) return false;
-  if (!context.sudo()) return false;
+  if (!context.sudo()?.session) return false;
   return true;
 };
 

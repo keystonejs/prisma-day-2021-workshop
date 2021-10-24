@@ -2,7 +2,7 @@
 // https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 
 import { graphql } from '@keystone-next/keystone';
-import fetch from 'node-fetch';
+//import fetch from 'node-fetch';
 import { GithubResolverItemAny } from '../../../wrap_any';
 type GitubRepoData = {
   id: number;
@@ -23,8 +23,8 @@ type GitubRepoData = {
   private: boolean;
   disabled: boolean;
 };
-import { ioRoot } from '../../../utils/maybeIOPromise';
-import { drop } from '../../../utils/func';
+//import {ioRoot, makeIO} from '../../../utils/maybeIOPromise'
+//import {drop} from '../../../utils/func'
 
 export const GitHubRepo = graphql.object<GitubRepoData>()({
   name: 'GitHubRepo',
@@ -70,35 +70,44 @@ export const GitHubRepo = graphql.object<GitubRepoData>()({
   },
 });
 
-type Tjson = { json: () => { data: GitubRepoData[] } };
+//type Tjson = { json: () => {data: GitubRepoData[] } }
 
 export async function githubReposResolver(item: GithubResolverItemAny) {
+  //return []
+
   if (!item.githubUsername) return [];
+  return [];
 
-  const token = process.env.GITHUB_AUTH_TOKEN;
-  const options = token
+  /*
+    const token = process.env.GITHUB_AUTH_TOKEN;
+    const options = token
     ? { headers: { Authorization: `token ${token}` } }
-    : undefined;
+    : {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }}
 
-  return ioRoot
-    .promise(u =>
-      drop(u)(
-        fetch(
-          `https://api.github.com/users/${item.githubUsername}/repos?type=public&per_page=100`,
-          options
-        ) as unknown as Promise<Tjson>
-      )
+    console.warn("Here!!!!!!!")
+
+   return makeIO(() =>
+    fetch(
+      `https://api.github.com/users/${item.githubUsername}/repos?type=public&per_page=100`,
+      options
+    ))
+
+
+    .then(result => result.json())
+    .env()
+    .then(allRepos => allRepos.filter(
+      (repo: GitubRepoData) =>
+        !(repo.fork || repo.private || repo.disabled)
     )
-    .then(result => result.json().data)
-    .then(allRepos =>
-      allRepos
-        .filter(
-          (repo: GitubRepoData) => !(repo.fork || repo.private || repo.disabled)
-        )
-        .sort(
-          (a: GitubRepoData, b: GitubRepoData) =>
-            b.stargazers_count - a.stargazers_count
-        )
-    )
+    .sort(
+      (a: GitubRepoData, b: GitubRepoData) =>
+        b.stargazers_count - a.stargazers_count
+    ) )
     .exec([]);
+
+*/
 }

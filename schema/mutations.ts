@@ -5,7 +5,7 @@ import {
   PollWhereUniqueInput,
 } from '.keystone/types';
 import { log } from '../utils/logging';
-
+import { isSignedIn } from './access';
 const gql = ([content]: TemplateStringsArray) => content;
 
 async function clearVote(
@@ -13,11 +13,6 @@ async function clearVote(
   pollFilter: PollWhereInput
 ) {
   const context = _context.sudo();
-  if (!context.session) {
-    //Removed throw, which was crashing keystone
-    log().warning('Stale context: you must be signed in to vote');
-    return;
-  }
 
   const answers = await context.db.PollAnswer.findMany({
     where: {
@@ -48,11 +43,14 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
   resolvers: {
     Mutation: {
       async clearVoteForPoll(rootVal, { pollId }, context) {
+        if (!isSignedIn(context as KeystoneContext)) return;
         log().info('pollId').info(pollId);
         await clearVote(context as KeystoneContext, { id: { equals: pollId } });
       },
       async voteForPoll(rootVal, { answerId }, _context) {
         const context = _context.sudo() as KeystoneContext;
+        if (!isSignedIn(context)) return;
+
         clearVote(context, { answers: { some: { id: { equals: answerId } } } });
         await context.db.PollAnswer.updateOne({
           where: { id: answerId },

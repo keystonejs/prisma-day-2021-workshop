@@ -8,7 +8,48 @@ import {
 
 import { isSignedIn, permissions, HIDDEN } from './access';
 import { contentListAccess, contentUIConfig } from './content';
-//import { log } from '../utils/logging'
+import { makeIO } from '../utils/maybeIOPromise';
+
+import { PollAnswerAny } from '../wrap_any';
+
+export const PollAnswer = list({
+  access: contentListAccess,
+  ui: contentUIConfig,
+  fields: {
+    label: text(),
+    poll: relationship({ isFilterable: true, ref: 'Poll.answers' }),
+    voteCount: virtual({
+      field: graphql.field({
+        type: graphql.Int,
+        resolve(pollAnswer, args, context) {
+          const lists = context.query as KeystoneListsAPI;
+
+          return lists.User.count({
+            where: {
+              pollAnswers: {
+                some: { id: { equals: pollAnswer.id.toString() } },
+              },
+            },
+          });
+        },
+      }),
+      ui: {
+        itemView: { fieldMode: HIDDEN },
+      },
+    }),
+    answeredByUsers: relationship({
+      ref: 'User.pollAnswers',
+      isFilterable: true,
+      many: true,
+      access: { read: permissions.canManageContent },
+      ui: {
+        displayMode: 'count',
+        createView: { fieldMode: HIDDEN },
+        listView: { fieldMode: HIDDEN },
+      },
+    }),
+  },
+} as const);
 
 export const Poll = list({
   access: contentListAccess,
@@ -56,57 +97,22 @@ export const Poll = list({
               return null;
             }
             const lists = context.db as KeystoneDbAPI;
-            const pollAnswers = await lists.PollAnswer.findMany({
-              where: {
-                poll: { id: { equals: poll.id.toString() } },
-                answeredByUsers: {
-                  some: { id: { equals: context.session.itemId } },
-                },
-              },
-            });
-            return pollAnswers[0];
+            return makeIO(
+              () =>
+                lists.PollAnswer.findMany({
+                  where: {
+                    poll: { id: { equals: poll.id.toString() } },
+                    answeredByUsers: {
+                      some: { id: { equals: context.session.itemId } },
+                    },
+                  },
+                }) as Promise<Array<PollAnswerAny>>
+            )
+              .then(x => x[0])
+              .run();
           },
         }),
       ui: { query: '{ id label }' },
     }),
   },
-});
-
-export const PollAnswer = list({
-  access: contentListAccess,
-  ui: contentUIConfig,
-  fields: {
-    label: text(),
-    poll: relationship({ isFilterable: true, ref: 'Poll.answers' }),
-    voteCount: virtual({
-      field: graphql.field({
-        type: graphql.Int,
-        resolve(pollAnswer, args, context) {
-          const lists = context.query as KeystoneListsAPI;
-
-          return lists.User.count({
-            where: {
-              pollAnswers: {
-                some: { id: { equals: pollAnswer.id.toString() } },
-              },
-            },
-          });
-        },
-      }),
-      ui: {
-        itemView: { fieldMode: HIDDEN },
-      },
-    }),
-    answeredByUsers: relationship({
-      ref: 'User.pollAnswers',
-      isFilterable: true,
-      many: true,
-      access: { read: permissions.canManageContent },
-      ui: {
-        displayMode: 'count',
-        createView: { fieldMode: HIDDEN },
-        listView: { fieldMode: HIDDEN },
-      },
-    }),
-  },
-});
+} as const);
