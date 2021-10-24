@@ -7,7 +7,8 @@ import { useAuth } from '../components/auth';
 import { makeIO } from '../utils/maybeIOPromise'
 import { DocumentAny } from '../wrap_any'
 
-export default function Home({ posts }: { posts: QueryPost[] }) {
+
+const  Home = ({ posts }: { posts: QueryPost[] }) => {
   const auth = useAuth();
   return (
     <Container>
@@ -47,9 +48,10 @@ export default function Home({ posts }: { posts: QueryPost[] }) {
     </Container>
   );
 }
+export default Home;
 
 export type QueryPost = {
-  id: string;  
+  id: string;
   title: string;
   slug: string;
   publishedDate: string;
@@ -68,7 +70,7 @@ export type TQueryPostsForIndex = {
 
 
 //We can save a little time by compiling the functional code to a runtime constant
-const fetchAllPostsForIndex = makeIO (() => 
+const fetchAllPostsForIndex = makeIO (() =>
   fetchGraphQLInjectApiKey<TQueryPostsForIndex>(
     gql`
       query {
@@ -93,7 +95,7 @@ const fetchAllPostsForIndex = makeIO (() =>
   ))
   .then (data => data.posts);
 
-export async function getStaticProps() {
+export const getStaticProps = () => {
   return fetchAllPostsForIndex
     .exec ([])
     .then (postsRx => { return { props: { posts: postsRx }, revalidate: 60 } })

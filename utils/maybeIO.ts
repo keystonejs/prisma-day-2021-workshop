@@ -45,9 +45,9 @@ export class IO<T> {
   readonly catch = this.exec;
 }
 
-export function delay(ms: number) {
+export const delay = (ms: number) => {
   return new Promise(resolve => setTimeout(resolve, ms));
-}
+};
 export const putStr = (s: string) => process.stdout.write(s);
 
 //This is a good model, its a raw socket write,

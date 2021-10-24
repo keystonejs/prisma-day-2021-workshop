@@ -75,9 +75,9 @@ const defaultSlug = (inputData: GraphQLClause) => {
   }`;
 };
 
-function defaultTimestamp() {
+export const defaultTimestamp = () => {
   return new Date().toISOString();
-}
+};
 
 export const Post = list({
   access: {

@@ -48,6 +48,9 @@ const appearances = {
   },
 } as const;
 
+
+
+
 export const componentBlocks = {
   callout: component({
     component: function Callout({ content, appearance }) {

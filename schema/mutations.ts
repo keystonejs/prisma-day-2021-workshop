@@ -4,7 +4,6 @@ import {
   PollWhereInput,
   PollWhereUniqueInput,
 } from '.keystone/types';
-import { log } from '../utils/logging';
 import { isSignedIn } from './access';
 import { makeIO } from '../utils/maybeIOPromise';
 import { drop } from '../utils/func';
@@ -41,15 +40,14 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
   `,
   resolvers: {
     Mutation: {
-      async clearVoteForPoll(rootVal, { pollId }, context) {
+      clearVoteForPoll(rootVal, { pollId }, context) {
         if (!isSignedIn(context as KeystoneContext)) return;
-        log().info('pollId').info(pollId);
 
         return clearVote(context as KeystoneContext, {
           id: { equals: pollId },
         }).run();
       },
-      async voteForPoll(rootVal, { answerId }, _context) {
+      voteForPoll(rootVal, { answerId }, _context) {
         const context = _context.sudo() as KeystoneContext;
         if (!isSignedIn(context)) return;
 

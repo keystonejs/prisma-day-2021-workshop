@@ -1,7 +1,7 @@
 import React, { ButtonHTMLAttributes } from 'react';
 import cx from 'classnames';
 
-export function Button({
+export const Button = ({
   appearance = 'default',
   size = 'default',
   children,
@@ -10,7 +10,7 @@ export function Button({
 }: ButtonHTMLAttributes<HTMLButtonElement> & {
   appearance?: 'default' | 'primary';
   size?: 'default' | 'large';
-}) {
+}) => {
   const appearanceClasses = {
     default: 'bg-gray-200 hover:bg-gray-300 focus:ring-blue-500 shadow-sm',
     primary:

@@ -17,7 +17,8 @@
     "build": "yarn lint && keystone-next build",
     "migrate": "keystone-next prisma migrate deploy",
     "format": "prettier --write \"**/*.ts\"",
-    "lint": "eslint ./utils ./pages ./schema ./*.ts ./*.js"
+    "lint": "eslint ./utils ./pages ./schema ./*.ts ./*.js",
+    "export": "cp -a ./utils/typescript-IO-Monad ../typescript-IO-Monad"
   },
   "dependencies": {
     "@keystone-next/auth": "34.0.0",

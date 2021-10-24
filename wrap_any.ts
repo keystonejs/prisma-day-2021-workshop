@@ -48,3 +48,4 @@ export type GithubResolverItemAny = WrappedRampantlyPolymorphic;
 export type SessionAny = WrappedRampantlyPolymorphic;
 export type LoggingAny = WrappedRampantlyPolymorphic;
 export type AuthenticationResponseAny = WrappedRampantlyPolymorphic;
+export type FetchJsonAny = WrappedRampantlyPolymorphic;

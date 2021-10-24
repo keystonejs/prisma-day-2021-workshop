@@ -12,7 +12,7 @@ import { gotoPage } from '../utils/gotoPage'
 
 
 
-export default function SignupPage() {
+const SignupPage = () => {
   const [{ error }, signup] = useMutation(gql`
     mutation ($name: String!, $email: String!, $password: String!) {
       createUser(data: { name: $name, email: $email, password: $password }) {
@@ -87,3 +87,4 @@ export default function SignupPage() {
     </Container>
   );
 }
+export default SignupPage;

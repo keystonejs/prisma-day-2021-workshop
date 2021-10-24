@@ -11,7 +11,7 @@ export const client = createClient({
       : '/api/graphql',
 });
 
-function MyApp({ Component, pageProps }: AppProps) {
+const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <Provider value={client}>
       <AuthProvider>

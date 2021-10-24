@@ -86,9 +86,9 @@ export class IO<T> {
   };
 }
 
-export function delay(ms: number) {
+export const delay = (ms: number) => {
   return new Promise(resolve => setTimeout(resolve, ms));
-}
+};
 const dropEnvir = drop;
 
 export const putStr =

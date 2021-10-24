@@ -64,11 +64,11 @@ const calloutStyles = {
 export const componentBlockRenderers: InferRenderersForComponentBlocks<
   typeof import('./components').componentBlocks
 > = {
-  callout: function Callout({ appearance, content }) {
+  callout: ({ appearance, content }) => {
     const classes = `my-4 py-2 px-4 rounded border-l-4 ${calloutStyles[appearance]}`;
     return <div className={classes}>{content}</div>;
   },
-  quote: function Quote({ content, name, position, image, href }) {
+  quote: ({ content, name, position, image, href }) => {
 
     return (
       <div className="my-4 border-l-4 border-gray-300 px-4 py-2">
@@ -178,8 +178,6 @@ mutation ($pollId: ID!) {
         {poll.userAnswer?.id && (
           <Button
             onClick={() => {
-
-
               clearVoteForPoll(
                 { pollId: relatedPoll?.id },
                 { additionalTypenames: ['Poll', 'PollAnswer'] }
@@ -194,9 +192,9 @@ mutation ($pollId: ID!) {
   },
 };
 
-export function DocumentRenderer({
+export const DocumentRenderer = ({
   document,
-}: Pick<ComponentProps<typeof KeystoneDocumentRenderer>, 'document'>) {
+}: Pick<ComponentProps<typeof KeystoneDocumentRenderer>, 'document'>) => {
   return (
     <KeystoneDocumentRenderer
       document={document}

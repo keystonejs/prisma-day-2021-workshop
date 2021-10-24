@@ -13,7 +13,6 @@ import {
   SessionContext,
   ItemContext,
   SessionFrame,
-  //FilterFrame,
   EDIT,
   READ,
   HIDDEN,

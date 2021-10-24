@@ -92,7 +92,7 @@ export const Poll = list({
       field: lists =>
         graphql.field({
           type: lists.PollAnswer.types.output,
-          async resolve(poll, args, context) {
+          resolve(poll, args, context) {
             if (!isSignedIn(context as KeystoneContext)) {
               return null;
             }

@@ -19,7 +19,7 @@ export default function SigninPage() {
 
   // const router = useRouter();
 
-  const signIn = async () => {
+  const signIn = () => {
     if (!auth.ready) {
       setError('Auth is not ready, try again in a moment.');
       return;

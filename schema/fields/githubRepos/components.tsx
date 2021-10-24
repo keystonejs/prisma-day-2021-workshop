@@ -7,7 +7,7 @@ import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { controller } from '@keystone-next/keystone/fields/types/json/views';
 
-type Repo = {
+export type Repo = {
   name: string;
   htmlUrl: string;
   description: string;
@@ -16,7 +16,7 @@ type Repo = {
   language: string;
 };
 
-function Star() {
+const Star = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -35,7 +35,7 @@ function Star() {
   );
 }
 
-type GitHubReposFieldProps = Omit<FieldProps<typeof controller>, 'value'> & {
+export type GitHubReposFieldProps = Omit<FieldProps<typeof controller>, 'value'> & {
   value?: Repo[];
 };
 

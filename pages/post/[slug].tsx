@@ -9,7 +9,7 @@ import { H1 } from '../../components/ui/typography';
 import { makeIO, pure} from '../../utils/maybeIOPromise'
 import { DocumentAny } from '../../wrap_any'
 
-export default function RenderPost({ post }: { post: PostStaticProps }) {
+const RenderPost = ({ post }: { post: PostStaticProps }) => {
   return (
     <Container>
       <HomeLink />
@@ -27,7 +27,7 @@ export default function RenderPost({ post }: { post: PostStaticProps }) {
     </Container>
   );
 }
-
+export default RenderPost;
 type TstaticPaths = {
   posts:
   {
@@ -51,7 +51,7 @@ const fetchStaticPaths =  makeIO (() => fetchGraphQLInjectApiKey<TstaticPaths>(
   } }
 )
 
-export async function getStaticPaths() {
+export const getStaticPaths = () => {
   return fetchStaticPaths
     .exec({ paths: [], fallback: 'blocking' });
 }
@@ -100,7 +100,7 @@ const fetchStaticProps = (staticProps: GetStaticPropsContext) =>
 
     //.then (postsRx => { return { props: { posts: postsRx }, revalidate: 60 } })
 
-export async function getStaticProps( params : GetStaticPropsContext) {
+export const getStaticProps = ( params : GetStaticPropsContext) => {
   return fetchStaticProps(params)
     .run ()
     .then(match_post => {

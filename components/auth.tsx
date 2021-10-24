@@ -43,7 +43,7 @@ const AuthContext = createContext<AuthContextType>({
   ready: false,
 });
 /* eslint-disable */
-export function useAuth() {
+export const useAuth = () => {
   return useContext(AuthContext);
 }
 
@@ -91,7 +91,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     mutContext
   )
 
-  const signIn = async (details: SignInArgs): Promise<SignInResult> => {
+  const signIn = (details: SignInArgs): Promise<SignInResult> => {
     return makeIO(()=>typedAuthenticate(
       details,
       mutationContext
