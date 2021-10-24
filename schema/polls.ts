@@ -1,9 +1,14 @@
 import { relationship, text, virtual } from '@keystone-next/keystone/fields';
 import { graphql, list } from '@keystone-next/keystone';
-import { KeystoneListsAPI, KeystoneDbAPI } from '.keystone/types';
+import {
+  KeystoneContext,
+  KeystoneListsAPI,
+  KeystoneDbAPI,
+} from '.keystone/types';
 
 import { isSignedIn, permissions, HIDDEN } from './access';
 import { contentListAccess, contentUIConfig } from './content';
+//import { log } from '../utils/logging'
 
 export const Poll = list({
   access: contentListAccess,
@@ -47,7 +52,9 @@ export const Poll = list({
         graphql.field({
           type: lists.PollAnswer.types.output,
           async resolve(poll, args, context) {
-            if (!isSignedIn(context)) return null;
+            if (!isSignedIn(context as KeystoneContext)) {
+              return null;
+            }
             const lists = context.db as KeystoneDbAPI;
             const pollAnswers = await lists.PollAnswer.findMany({
               where: {

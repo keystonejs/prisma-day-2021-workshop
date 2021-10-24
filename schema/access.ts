@@ -76,8 +76,11 @@ export const isBuildEnvir = (frame: SessionFrame): boolean => {
   return false;
 };
 
-export const isSignedIn = ({ session }: SessionContext) => {
-  return session;
+export const isSignedIn = (context: KeystoneContext) => {
+  if (!context) return false;
+  if (!context?.session) return false;
+  if (!context.sudo()) return false;
+  return true;
 };
 
 //They can't easy be expressed in terms of the more elementary functions either. undefined issues.
