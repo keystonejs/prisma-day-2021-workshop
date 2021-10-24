@@ -1,18 +1,13 @@
 import { GetStaticPropsContext } from 'next';
 import React from 'react';
-
 import { fetchGraphQLInjectApiKey, gql } from '../../utils/fetchGraphQL';
 import { DocumentRenderer } from '../../schema/fields/content/renderers';
-
 import { Container, HomeLink } from '../../components/ui/layout';
 //import { Link } from '../../components/ui/link';
 import { H1 } from '../../components/ui/typography';
-
 //import { PostAny } from '../../wrap_any'
 import { makeIO, pure} from '../../utils/maybeIOPromise'
 import { DocumentAny } from '../../wrap_any'
-
-
 
 export default function RenderPost({ post }: { post: PostStaticProps }) {
   return (
@@ -32,7 +27,6 @@ export default function RenderPost({ post }: { post: PostStaticProps }) {
     </Container>
   );
 }
-
 
 type TstaticPaths = {
   posts:
@@ -54,9 +48,8 @@ const fetchStaticPaths =  makeIO (() => fetchGraphQLInjectApiKey<TstaticPaths>(
   .then( posts => {
     return { paths: posts.map(post => ({ params: { slug: post.slug } })),
     fallback: 'blocking',
-  } } 
+  } }
 )
-
 
 export async function getStaticPaths() {
   return fetchStaticPaths
@@ -78,14 +71,12 @@ export type PostStaticProps = {
 
 export type QueryPostStaticProps = {post: PostStaticProps};
 
+const fetchStaticProps = (staticProps: GetStaticPropsContext) =>
 
-
-const fetchStaticProps = (staticProps: GetStaticPropsContext) => 
-
-  pure(staticProps) 
+  pure(staticProps)
   .then (props => props.params)
   .then (params => params.slug )
-  .promise(slug => 
+  .promise(slug =>
     fetchGraphQLInjectApiKey<QueryPostStaticProps>(
     gql`
       query ($slug: String!) {
@@ -115,5 +106,5 @@ export async function getStaticProps( params : GetStaticPropsContext) {
     .then(match_post => {
       return { props: { post: match_post }, revalidate: 60 }})
 
-    
+
 }
