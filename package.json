@@ -30,6 +30,7 @@
     "colors": "^1.4.0",
     "cuid": "^2.1.8",
     "error-stack-parser": "^2.0.6",
+    "fs": "^0.0.1-security",
     "graphql": "^15.6.1",
     "next": "^11.1.2",
     "node-fetch": "^2.6.1",

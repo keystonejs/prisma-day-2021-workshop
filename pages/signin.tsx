@@ -8,6 +8,8 @@ import { Link } from '../components/ui/link';
 //import { useRouter } from 'next/router';
 import { useAuth } from '../components/auth';
 import { gotoPage } from '../utils/gotoPage'
+import { ioRoot } from '../utils/maybeIOPromise'
+import { drop } from '../utils/func'
 
 export default function SigninPage() {
   const auth = useAuth();
@@ -27,17 +29,17 @@ export default function SigninPage() {
       return;
     }
     setError('');
-    const result = await auth.signIn({ email, password });
-    if (result.success) {
-
-
-      gotoPage('/');
-    } 
-    else {
-      setEmail('');
-      setPassword('');
-      setError(result.message);
-    }
+    ioRoot
+    .promise(u => drop(u)(auth.signIn({ email, password })))
+    .then(result => result.success?
+        () => gotoPage('/')
+        : () => {
+          setEmail('');
+          setPassword('');
+          setError(result.message);
+        })
+    .then(f => f())
+    .run();
   };
 
   return (

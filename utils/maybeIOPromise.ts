@@ -1,5 +1,5 @@
-import reader from 'readline-sync';
-import { u, U } from './unit';
+//import reader from 'readline-sync';
+import { u } from './unit';
 
 import { Maps, drop } from './func';
 
@@ -103,12 +103,12 @@ export const putStr =
 //So we need to attach a callback to it
 export const putStrM = (s: string) => makeIO(() => putStr(s)(s));
 
-export const getLine = () => reader.question('');
+//export const getLine = () => reader.question('');
 export const pure = <T>(x: T) => IO.root(x);
 // disable the error, but lint has a point, the environment is lost
 // synchronous, because async keyboard IO is a pain.
 
-export const getStrM = (x: U) => pure(x).then(z => dropEnvir(z)(getLine()));
+//export const getStrM = (x: U) => pure(x).then(z => dropEnvir(z)(getLine()));
 
 export const prompt =
   <V>(str: string) =>
