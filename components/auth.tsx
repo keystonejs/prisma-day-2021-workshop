@@ -120,7 +120,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     }
       )
-    .exec({ success: false, message: 'An unknown error occurred' });
+    .exec({ success: false, message: 'An unknown runtime error occurred' });
   };
 
   const [u, signOutMutation] = useMutation(gql`

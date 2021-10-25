@@ -8,7 +8,7 @@ import { makeIO } from '../utils/maybeIOPromise'
 import { DocumentAny } from '../wrap_any'
 
 
-const  Home = ({ posts }: { posts: QueryPost[] }) => {
+export default function Home({ posts }: { posts: QueryPost[] }) {
   const auth = useAuth();
   return (
     <Container>
@@ -48,7 +48,7 @@ const  Home = ({ posts }: { posts: QueryPost[] }) => {
     </Container>
   );
 }
-export default Home;
+
 
 export type QueryPost = {
   id: string;
