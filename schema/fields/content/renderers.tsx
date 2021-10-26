@@ -12,7 +12,7 @@ import { Button } from '../../../components/ui/controls';
 import { Link } from '../../../components/ui/link';
 import { gql, useMutation, useQuery } from 'urql';
 import Image  from 'next/image'
-
+import { log } from '../../../utils/logging'
 // by default the DocumentRenderer will render unstyled html elements
 // we're customising how headings are rendered here but you can customise any of the renderers that the DocumentRenderer uses
 export const renderers: DocumentRendererProps['renderers'] = {
@@ -119,6 +119,8 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
       variables: { id: relatedPoll?.id },
     });
     const poll = (data?.poll || relatedPoll?.data) as Poll;
+
+    log().info(poll)
 /*eslint-disable no-empty-pattern*/
 const [{}, voteForPoll] =
 useMutation(gql`
@@ -135,6 +137,7 @@ mutation ($pollId: ID!) {
 `);
 /*eslint-enable no-empty-pattern*/
     const auth = useAuth();
+
     return (
       <div className="my-4">
         <div className="text-grey-800 uppercase text-lg font-semibold">

@@ -85,7 +85,7 @@ export const stackRenderer = (e: CleanError): string => {
   return dateRenderer(str);
 };
 
-export const cleanStackRenderer = (cleanMessage: string) => (e: Error) => {
+export const safeStackRenderer = (cleanMessage: string) => (e: Error) => {
   if (!e.stack) {
     dateRenderer(errorCol(cantOpenErrorMsg) + cleanMessage);
   } else {
@@ -94,6 +94,7 @@ export const cleanStackRenderer = (cleanMessage: string) => (e: Error) => {
     dateRenderer(info + sep + cleanMessage);
   }
 };
+
 
 //export type MonadicType<T> = (maps: T) => MonadicType<T>
 // This apparently simple operation, logging, has a fairly rich monadic structure.
@@ -134,7 +135,8 @@ export const logContextInfoGen =
     return retObj;
   };
 
-const logContextInfo =
+
+export const logContextInfo =
   <TretObj>(retObj: TretObj) =>
   (col: ColFun) =>
   (msgRenderer: LogEventRenderer) =>

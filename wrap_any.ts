@@ -49,3 +49,4 @@ export type SessionAny = WrappedRampantlyPolymorphic;
 export type LoggingAny = WrappedRampantlyPolymorphic;
 export type AuthenticationResponseAny = WrappedRampantlyPolymorphic;
 export type FetchJsonAny = WrappedRampantlyPolymorphic;
+export type TypeInferrenceAny = WrappedRampantlyPolymorphic;

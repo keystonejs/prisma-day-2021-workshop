@@ -1,26 +1,56 @@
+import {u} from './unit'
+
 /* eslint-disable  @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
+
+import { TypeInferrenceAny } from '../wrap_any'
+
 export type Maps<D, R> = (mapsIgnored: D) => R;
+export type Maps2<D1, D2, R> = (maps1Ignored: D1, maps2Ignored: D2) => R;
+export type Clos2<D1, D2, R> = (maps1Ignored: D1) => (maps2Ignored: D2) => R;
+
+
+
+export type InferArg1<T extends null> =
+    T extends (...args: TypeInferrenceAny[]) => TypeInferrenceAny ? T : (
+        T extends (a: infer A, b: infer B) => infer R ? (
+            B extends true ? (a: A, b: B) => A :
+            A extends true ? (a: A) => A :
+            () => R
+        ) : never
+    );
+
+export type InferArg2<T extends null> =
+    T extends (...args: TypeInferrenceAny[]) => TypeInferrenceAny ? T : (
+        T extends (a: infer AIgnored, b: infer B) => infer Rignored ? B : never
+    );
+
+export const k0 = <T>(fIgnored: T) => u
+export const k1 = <T>(f: T) => f
 
 export const drop =
   <T>(valIgnored: T) =>
   <F>(f: F) =>
     f;
 
-export const fFalse = drop;
+export const ffalse = drop;
 
-export const fTrue =
+export const ffrue =
   <F>(f: F) =>
   <T>(valIgnored: T) =>
     f;
 
-export const fBool = (x: boolean) => (x ? fTrue : fFalse);
+export const nop = () => { return }
+export const hardCast = <A>(f: A) => <T>() => f as unknown as T
 
-export type Tfbool = typeof fTrue | typeof fFalse;
+export const boolf = <T>(x: T) => (hardCast(x)<boolean>()? ffrue : ffalse);
+export const boolk = <T>(x: T) => (hardCast(x)<boolean>()? k1 : k0);
 
-export const fNot = (g: Tfbool) => g(fFalse)(fTrue);
-export const fOr = (g: Tfbool) => (f: Tfbool) => g(g)(f(f)(fFalse));
-export const fAnd = (g: Tfbool) => (f: Tfbool) => g(f(f)(fFalse))(fFalse);
+export type Tfbool = typeof ffrue | typeof ffalse;
+
+export const not = (g: Tfbool) => g(ffalse)(ffrue);
+export const or = (g: Tfbool) => (f: Tfbool) => g(g)(f(f)(ffalse));
+export const and = (g: Tfbool) => (f: Tfbool) => g(f(f)(ffalse))(ffalse);
 
 /* eslint-enable  @typescript-eslint/no-unused-vars */
 /* eslint-enable no-unused-vars */
@@ -44,3 +74,5 @@ export const fpipe =
   <Rf>(f: Maps<D, Rf>) =>
   <Rg>(g: Maps<Rf, Rg>) =>
     fcompose(g)(f)(env);
+
+

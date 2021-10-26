@@ -2,8 +2,9 @@
 // https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 
 import { graphql } from '@keystone-next/keystone';
-import fetch from 'node-fetch';
-import { bad } from '../../../utils/badValues';
+import {fetchIO} from '../../../utils/fetchGraphQL';
+//import { bad } from '../../../utils/badValues';
+//import { hardCast } from '../../../utils/func';
 import { GithubResolverItemAny } from '../../../wrap_any';
 
 type GithubRepoData = {
@@ -26,7 +27,7 @@ type GithubRepoData = {
   disabled: boolean;
 };
 
-import { makeIO } from '../../../utils/maybeIOPromise';
+
 export const GitHubRepo = graphql.object<GithubRepoData>()({
   name: 'GitHubRepo',
   fields: {
@@ -81,23 +82,18 @@ type UserTableColumns = {
 };
 
 export const githubReposResolver = (item: GithubResolverItemAny) => {
-  const utc = item as UserTableColumns;
+  const utc = <UserTableColumns>(item);
 
   if (!utc.githubUsername) return [];
 
-  return makeIO(() =>
-    fetch(
+  return fetchIO(
       `https://api.github.com/users/${item.githubUsername}/repos?type=public&per_page=100`,
       {
         method: 'GET',
         headers: { Accept: 'application/vnd.github.v3+json' },
       }
     )
-      .then(res => Promise.all([res.status, res.json()]))
-      .then(([status, jsonData]) =>
-        status ? (jsonData as GithubRepoData[]) : bad<GithubRepoData[]>()
-      )
-  )
+    .cast<GithubRepoData[]>()
     .then(allRepos =>
       allRepos
         .filter(

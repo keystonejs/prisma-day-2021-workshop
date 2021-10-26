@@ -43,8 +43,6 @@ module.exports = {
       "error",
       { functions: false, classes: false, variables: true },
 
-    "no-unused-vars": ["error", { "argsIgnorePattern": "[iI]gnored" }]
-
     ],
   },
   settings: {

@@ -3,9 +3,25 @@ import { log } from '../utils/logging';
 import { makeIO } from '../utils/maybeIOPromise';
 import { GraphQLClause } from '../wrap_any';
 import { bad } from './badValues';
-//import { drop } from './func';
+//import { Maps, InferArg1 } from './func';
 
 export const gql = ([content]: TemplateStringsArray) => content;
+
+
+type TfetchArgs = Parameters<typeof fetch>
+
+export const fetchIO = (...args: TfetchArgs) =>
+{
+  return makeIO(() => fetch(...args)
+    .then(res => {
+      return Promise.all([res.status, res.json()]);
+    })
+    .then(([status, jsonData]) => (status ? jsonData : null))
+  )
+
+}
+
+
 
 //Towards a scriptable version
 export const fetchGraphQLInjectApiKey = async <T>(
@@ -16,8 +32,7 @@ export const fetchGraphQLInjectApiKey = async <T>(
     ? log().warning('Prototype api key: ' + keystoneNextjsBuildApiKey)
     : log().success('Next build: x-api-key: tx');
 
-  return makeIO(() =>
-    fetch(`http://${keyStoneHost}:3000/api/graphql`, {
+  return fetchIO(`http://${keyStoneHost}:3000/api/graphql`, {
       method: 'POST',
       body: JSON.stringify({ query, variables }),
       headers: {
@@ -25,12 +40,8 @@ export const fetchGraphQLInjectApiKey = async <T>(
         'x-api-key': keystoneNextjsBuildApiKey,
       },
     })
-      .then(res => {
-        return Promise.all([res.status, res.json()]);
-      })
-      .then(([status, jsonData]) => (status ? jsonData : null))
-  )
-    .then(dat => dat.data as T)
+    .then(dat => dat.data)
+    .cast<T>()
     .successMsg('Next build: recieved static site data.')
     .run()
     .then(res => res)

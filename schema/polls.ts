@@ -17,7 +17,7 @@ export const PollAnswer = list({
   ui: contentUIConfig,
   fields: {
     label: text(),
-    poll: relationship({ isFilterable: true, ref: 'Poll.answers' }),
+    poll: relationship({ isFilterable: true, ref: 'Poll.answers'}),
     voteCount: virtual({
       field: graphql.field({
         type: graphql.Int,
@@ -81,12 +81,13 @@ export const Poll = list({
           return lists.User.count({
             where: {
               pollAnswers: {
-                some: { poll: { id: { equals: poll.id.toString() } } },
-              },
-            },
-          });
-        },
-      }),
+                some: { poll: { id: {equals: poll.id.toString() } } }
+              }
+            }
+          }
+          )
+      }
+    }),
     }),
     userAnswer: virtual({
       field: lists =>

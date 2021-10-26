@@ -2,9 +2,9 @@
 import { u } from './unit';
 //import { sideEffect } from './unit';
 
-import { Maps, drop, addPropValue } from './func';
+import { Maps, drop, addPropValue, hardCast } from './func';
 
-import { log } from './logging';
+import { log, safeStackRenderer } from './logging';
 
 import { bad, isBad, mapBad, with_default } from './badValues';
 
@@ -60,24 +60,26 @@ export class IO<T> {
   readonly then = <R>(f: Maps<NonNullable<T>, R>) =>
     makeIO(() =>
       this.run().then(x =>
-        isBad(x) ? embed(bad<R>()) : embed(mapBad(f(x as NonNullable<T>)))
+        isBad(x) ? embed(bad<R>()) : embed(mapBad(f(<NonNullable<T>> x)))
       )
     );
   //.catch(this.warn("fbind error")(x => bad<R>()));
 
   readonly filter = (f: Maps<NonNullable<T>, boolean>) =>
-    this.then((v: NonNullable<T>) => filterClos(f)(v) as T);
+    this.then((v: NonNullable<T>) => <T>filterClos(f)(v));
 
-  readonly cast = <W extends T>() => this.then(x => x as NonNullable<W>);
+  readonly cast = <W extends T>() => this.then(x => <W><T>x);
 
-  //WIP
+  readonly hardCast = <W>() => this.then(x => hardCast(x)<W>());
+
+
   readonly flet = <NewType>(dataExtender: Maps<T, NewType>) =>
     this.then(old => addPropValue(old)(dataExtender));
 
   readonly side = <A>(f: Maps<NonNullable<T>, A>) =>
     this.then(x => {
       f(x);
-      return x as T;
+      return <T>x;
     });
 
   readonly successMsg = (msg: string) =>
@@ -87,7 +89,7 @@ export class IO<T> {
   readonly promise = <R>(f: Maps<NonNullable<T>, Promise<R>>) =>
     makeIO(() =>
       this.run().then(x =>
-        isBad(x) ? bad<Promise<R>>() : mapBad(f(x as NonNullable<T>))
+        isBad(x) ? bad<Promise<R>>() : mapBad(f(<NonNullable<T>> x))
       )
     );
 
@@ -95,7 +97,7 @@ export class IO<T> {
   readonly env = () =>
     this.then(x => {
       log().info(x);
-      return x as T;
+      return <T>x;
     });
 
   readonly fmap = this.then;
@@ -105,7 +107,7 @@ export class IO<T> {
     return this.run()
       .then(x => embed(with_default(def)(x)))
       .catch(x => {
-        log().warning(x);
+        safeStackRenderer(x);
         return prom;
       });
   };
