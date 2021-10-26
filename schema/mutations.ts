@@ -10,7 +10,7 @@ import { drop } from '../utils/func';
 import { log } from '../utils/logging';
 const gql = ([content]: TemplateStringsArray) => content;
 
-function clearVote(_context: KeystoneContext, pollFilter: PollWhereInput)  {
+const clearVote = (_context: KeystoneContext, pollFilter: PollWhereInput) => {
   return pure (_context)
 
     .then(c => c.sudo())
