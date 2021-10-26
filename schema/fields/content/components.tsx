@@ -184,7 +184,7 @@ export const componentBlocks = {
         <NotEditable>
           <h2>{poll.value.label}</h2>
           <ul>
-            {poll.value.data.answers.map((answer: PollAnswerAny) => {
+            {poll.value.data?.answers.map((answer: PollAnswerAny) => {
               return (
                 <li key={answer.label}>
                    {answer.label} ({answer.voteCount} answers)

@@ -76,7 +76,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
       async clearVoteForPoll(rootVal, { pollId }, context) {
         clearVote
           (<KeystoneContext>context)
-          ({id: pollId })
+          ({id: {equals: pollId }})
         .run().then( e => drop(e)(true))
           .catch(e => drop(log().error("Caught: ").error(e))(false))
       },
@@ -84,11 +84,11 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
         clearVote
           (<KeystoneContext>context)
           (
-            {id: answerId } ,
+            {id: {equals: answerId} } ,
           )
         .promise(e =>
               e.context.db.PollAnswer.updateOne({
-                where: { id: answerId },
+                where: {id: answerId },
                 data: {
                   answeredByUsers: { connect: { id: e.context.session.itemId } }
                 },

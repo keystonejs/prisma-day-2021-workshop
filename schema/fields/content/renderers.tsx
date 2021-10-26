@@ -99,6 +99,8 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
   },
   poll: function Poll({ poll: relatedPoll }) {
     //if (!relatedPoll?.data) return null;
+
+    log().info(relatedPoll)
     const [{ data }] = useQuery({
       query: gql`
         query ($id: ID!) {
@@ -118,9 +120,10 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
       `,
       variables: { id: relatedPoll?.id },
     });
+    log().info(data)
     const poll = (data?.poll || relatedPoll?.data) as Poll;
 
-    log().info(poll)
+
 /*eslint-disable no-empty-pattern*/
 const [{}, voteForPoll] =
 useMutation(gql`
@@ -145,6 +148,7 @@ mutation ($pollId: ID!) {
         </div>
         <form>
           {poll.answers.map(answer => {
+            log().info(answer)
             return (
               <label
                 key={answer.id}
