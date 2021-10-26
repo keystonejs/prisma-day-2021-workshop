@@ -44,6 +44,7 @@ export type FilterFrame = SessionFrame & {
 };
 
 export type ItemContext = { item: ItemType } & SessionContext;
+//import { useAuth } from '../components/auth';
 
 //FIXME: Needs API key.
 export const isBuildEnvir = (frame: SessionFrame): boolean => {
@@ -77,10 +78,18 @@ export const isBuildEnvir = (frame: SessionFrame): boolean => {
 };
 
 export const isSignedIn = (context: KeystoneContext) => {
+  /*
+  const auth = useAuth();
+  if (!auth.ready || !auth.sessionData)
+    return false;
+
+  return true;
+*/
   if (!context) return false;
   if (!context?.session) return false;
   if (!context.sudo()?.session) return false;
   return true;
+
 };
 
 //They can't easy be expressed in terms of the more elementary functions either. undefined issues.

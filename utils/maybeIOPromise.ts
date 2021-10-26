@@ -57,6 +57,7 @@ export class IO<T> {
       //.catch(x => this.warn("fbind error")(err => io(bad<T>()).run()))
     );
 
+
   readonly then = <R>(f: Maps<NonNullable<T>, R>) =>
     makeIO(() =>
       this.run().then(x =>
@@ -66,7 +67,7 @@ export class IO<T> {
   //.catch(this.warn("fbind error")(x => bad<R>()));
 
   readonly filter = (f: Maps<NonNullable<T>, boolean>) =>
-    this.then((v: NonNullable<T>) => filterClos(f)(v));
+    this.then((v: NonNullable<T>) => filterClos(f)(v) as T);
 
   readonly cast = <W extends T>() => this.then(x => x as NonNullable<W>);
 
@@ -77,8 +78,11 @@ export class IO<T> {
   readonly side = <A>(f: Maps<NonNullable<T>, A>) =>
     this.then(x => {
       f(x);
-      return x;
+      return x as T;
     });
+
+  readonly successMsg = (msg: string) => this
+    .side(e => drop(e)(log().success(msg)))
 
   //.then for promise returning functions.
   readonly promise = <R>(f: Maps<NonNullable<T>, Promise<R>>) =>
@@ -92,13 +96,13 @@ export class IO<T> {
   readonly env = () =>
     this.then(x => {
       log().info(x);
-      return x;
+      return x as T;
     });
 
   readonly fmap = this.then;
 
-  readonly exec = (def: NonNullable<T>) => {
-    const prom = embed(def);
+  readonly exec = async (def: NonNullable<T>) => {
+    const prom = embed(def as T);
     return this.run()
       .then(x => embed(with_default(def)(x)))
       .catch(x => {

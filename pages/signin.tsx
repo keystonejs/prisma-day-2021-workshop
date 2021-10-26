@@ -33,7 +33,8 @@ export default function SigninPage() {
     .promise(u => drop(u)(auth.signIn({ email, password })))
     .then(result => result.success?
         () => gotoPage('/')
-        : () => {
+        :
+        () => {
           setEmail('');
           setPassword('');
           setError(result.message);
