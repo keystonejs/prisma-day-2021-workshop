@@ -9,7 +9,7 @@ import { H1 } from '../../components/ui/typography';
 import { makeIO, pure} from '../../utils/maybeIOPromise'
 import { DocumentAny } from '../../wrap_any'
 
-export default function RenderPost ({ post }: { post: PostStaticProps })  {
+const RenderPost = ({ post }: { post: PostStaticProps }) =>  {
   return (
     <Container>
       <HomeLink />
@@ -27,6 +27,7 @@ export default function RenderPost ({ post }: { post: PostStaticProps })  {
     </Container>
   );
 }
+export default RenderPost;
 
 type TstaticPaths = {
   posts:

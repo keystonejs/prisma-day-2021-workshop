@@ -89,7 +89,6 @@ export const isSignedIn = (context: KeystoneContext) => {
   if (!context?.session) return false;
   if (!context.sudo()?.session) return false;
   return true;
-
 };
 
 //They can't easy be expressed in terms of the more elementary functions either. undefined issues.

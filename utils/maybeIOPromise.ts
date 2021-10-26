@@ -57,7 +57,6 @@ export class IO<T> {
       //.catch(x => this.warn("fbind error")(err => io(bad<T>()).run()))
     );
 
-
   readonly then = <R>(f: Maps<NonNullable<T>, R>) =>
     makeIO(() =>
       this.run().then(x =>
@@ -81,8 +80,8 @@ export class IO<T> {
       return x as T;
     });
 
-  readonly successMsg = (msg: string) => this
-    .side(e => drop(e)(log().success(msg)))
+  readonly successMsg = (msg: string) =>
+    this.side(e => drop(e)(log().success(msg)));
 
   //.then for promise returning functions.
   readonly promise = <R>(f: Maps<NonNullable<T>, Promise<R>>) =>
