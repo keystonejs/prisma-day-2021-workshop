@@ -11,9 +11,8 @@ export const cr = '\n';
 // on the constant environment, and call the continuation with the initial environment,
 // as though nothing happened.
 export const sideEffect =
-  <T, SR, R>(side: Maps<T, SR>) =>
-  (ctn: Maps<T, R>) =>
-  (env: T): R => {
+  <T, SR>(side: Maps<T, SR>) =>
+  (env: T) => {
     side(env);
-    return ctn(env);
+    return env;
   };

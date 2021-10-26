@@ -4,31 +4,38 @@ import {
   PollWhereInput,
   PollWhereUniqueInput,
 } from '.keystone/types';
-import { isSignedIn } from './access';
-import { makeIO } from '../utils/maybeIOPromise';
+//import { isSignedIn } from './access';
+import { pure } from '../utils/maybeIOPromise';
 import { drop } from '../utils/func';
+import { log } from '../utils/logging';
 const gql = ([content]: TemplateStringsArray) => content;
 
 const clearVote = (_context: KeystoneContext, pollFilter: PollWhereInput) => {
-  const context = _context.sudo();
+  return pure(_context)
+    .then(c => c.sudo())
 
-  return makeIO(() =>
-    context.db.PollAnswer.findMany({
-      where: {
-        poll: pollFilter,
-        answeredByUsers: { some: { id: { equals: context.session.itemId } } },
-      },
-    })
-  ).then(answers =>
-    context.db.PollAnswer.updateMany({
-      data: answers.map((answer: PollWhereUniqueInput) => ({
-        where: { id: answer.id },
-        data: {
-          answeredByUsers: { set: [] },
+    .promise(async context => {
+      return context.db.PollAnswer.findMany({
+        where: {
+          poll: pollFilter,
+          answeredByUsers: { some: { id: { equals: context.session.itemId } } },
         },
-      })),
+      }).then(ans => ({
+        context: context,
+        answers: ans as PollWhereUniqueInput[],
+      }));
     })
-  );
+
+    .promise(async env => {
+      return env.context.db.PollAnswer.updateMany({
+        data: env.answers.map(answer => ({
+          where: { id: answer.id },
+          data: {
+            answeredByUsers: { set: [] },
+          },
+        })),
+      }).then(n => drop(n)(env));
+    });
 };
 
 export const extendGraphqlSchema = graphQLSchemaExtension({
@@ -40,31 +47,29 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
   `,
   resolvers: {
     Mutation: {
-      clearVoteForPoll(rootVal, { pollId }, context) {
-        if (!isSignedIn(context as KeystoneContext)) return;
-
-        return clearVote(context as KeystoneContext, {
+      async clearVoteForPoll(rootVal, { pollId }, context) {
+        clearVote(context as KeystoneContext, {
           id: { equals: pollId },
-        }).run();
+        })
+          .run()
+          .then(e => drop(e)(true))
+          .catch(e => drop(log().error('Caught: ').error(e))(false));
       },
-      voteForPoll(rootVal, { answerId }, _context) {
-        const context = _context.sudo() as KeystoneContext;
-        if (!isSignedIn(context)) return;
-
-        return clearVote(context, {
+      async voteForPoll(rootVal, { answerId }, _context) {
+        clearVote(_context as KeystoneContext, {
           answers: { some: { id: { equals: answerId } } },
         })
-          .then(u =>
-            drop(u)(
-              context.db.PollAnswer.updateOne({
-                where: { id: answerId },
-                data: {
-                  answeredByUsers: { connect: { id: context.session.itemId } },
-                },
-              })
-            )
+          .promise(e =>
+            e.context.db.PollAnswer.updateOne({
+              where: { id: answerId },
+              data: {
+                answeredByUsers: { connect: { id: e.context.session.itemId } },
+              },
+            })
           )
-          .run();
+          .run()
+          .then(n => drop(n)(true))
+          .catch(e => drop(log().error('Caught: ').error(e))(false));
       },
     },
   },

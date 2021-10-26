@@ -1,7 +1,8 @@
 //import reader from 'readline-sync';
 import { u } from './unit';
+//import { sideEffect } from './unit';
 
-import { Maps, drop } from './func';
+import { Maps, drop, addPropValue } from './func';
 
 import { log } from './logging';
 
@@ -30,6 +31,13 @@ export const makeIO = <T>(f: IOthunk<T>): IO<T> => new IO<T>(f);
 
 export const embed = <T>(val: T) => Promise.resolve(val);
 
+export const filterClos =
+  <T>(f: Maps<NonNullable<T>, boolean>) =>
+  (val: NonNullable<T>) => {
+    const r = f(val);
+    return r ? val : bad<T>();
+  };
+
 export class IO<T> {
   private act: IOthunk<T>;
 
@@ -45,17 +53,32 @@ export class IO<T> {
 
   readonly fbind = <M>(io: Maps<T, IO<M>>) =>
     makeIO(
-      () => this.act().then(x => io(mapBad(x)).run())
+      () => this.run().then(x => io(mapBad(x)).run())
       //.catch(x => this.warn("fbind error")(err => io(bad<T>()).run()))
     );
 
   readonly then = <R>(f: Maps<NonNullable<T>, R>) =>
     makeIO(() =>
-      this.act().then(x =>
+      this.run().then(x =>
         isBad(x) ? embed(bad<R>()) : embed(mapBad(f(x as NonNullable<T>)))
       )
     );
   //.catch(this.warn("fbind error")(x => bad<R>()));
+
+  readonly filter = (f: Maps<NonNullable<T>, boolean>) =>
+    this.then((v: NonNullable<T>) => filterClos(f)(v));
+
+  readonly cast = <W extends T>() => this.then(x => x as NonNullable<W>);
+
+  //WIP
+  readonly flet = <NewType>(dataExtender: Maps<T, NewType>) =>
+    this.then(old => addPropValue(old)(dataExtender));
+
+  readonly side = <A>(f: Maps<NonNullable<T>, A>) =>
+    this.then(x => {
+      f(x);
+      return x;
+    });
 
   //.then for promise returning functions.
   readonly promise = <R>(f: Maps<NonNullable<T>, Promise<R>>) =>
@@ -81,8 +104,7 @@ export class IO<T> {
       .catch(x => {
         log().warning(x);
         return prom;
-      })
-      .finally();
+      });
   };
 }
 
