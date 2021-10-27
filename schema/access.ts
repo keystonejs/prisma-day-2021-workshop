@@ -183,21 +183,19 @@ export const permissions = {
 
     return false;
   },
-  filterCanManageUserListOrOnFrontEnd: (frame: SessionFrame) =>
-    drop(frame)(true),
+  filterCanManageUserListOrOnFrontEnd: (frame: SessionFrame) => {
+    // Fixme:: this is a hack to test if we are on the front end
+    // The conditions that require it are commented on in:
+    // https://app.slack.com/client/T02FLV1HN/C01STDMEW3S/thread/C01STDMEW3S-1635292440.186100
 
-  /* {
+    if (!frame?.session) return true;
 
-    if (permissions.filterCanManageUserList(frame))
-      return true;
+    if (permissions.filterCanManageUserList(frame)) return true;
 
-    if (permissions.isAuthenticatedFrontEndUser(frame))
-      return true;
+    if (permissions.isAuthenticatedFrontEndUser(frame)) return true;
 
-    return  true;
-    ;
-
-  }  */
+    return false;
+  },
   canVoteInPolls: (frame: SessionFrame) => drop(frame)(true),
 } as const;
 
