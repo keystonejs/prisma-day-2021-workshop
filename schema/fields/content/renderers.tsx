@@ -3,16 +3,18 @@ import {
   DocumentRenderer as KeystoneDocumentRenderer,
   DocumentRendererProps,
 } from '@keystone-next/document-renderer';
-import React, { ComponentProps, Fragment } from 'react';
+import React, { ComponentProps, Fragment } from 'react'
 
 import { H1, H2, H3, H4, H5, H6, P } from '../../../components/ui/typography';
-import { Divider } from '../../../components/ui/layout';
-import { useAuth } from '../../../components/auth';
-import { Button } from '../../../components/ui/controls';
-import { Link } from '../../../components/ui/link';
-import { gql, useMutation, useQuery } from 'urql';
+import { Divider } from '../../../components/ui/layout'
+import { useAuth } from '../../../components/auth'
+import { Button } from '../../../components/ui/controls'
+import { Link } from '../../../components/ui/link'
+import { gql, useMutation, useQuery } from 'urql'
 import Image  from 'next/image'
-import { log } from '../../../utils/logging'
+import {boolk} from '../../../utils/func'
+
+//import { log } from '../../../utils/logging'
 // by default the DocumentRenderer will render unstyled html elements
 // we're customising how headings are rendered here but you can customise any of the renderers that the DocumentRenderer uses
 export const renderers: DocumentRendererProps['renderers'] = {
@@ -20,24 +22,24 @@ export const renderers: DocumentRendererProps['renderers'] = {
     heading({ level, children, textAlign }) {
       switch (level) {
         case 1:
-          return <H1 textAlign={textAlign}>{children}</H1>;
+          return <H1 textAlign={textAlign}>{children}</H1>
         case 2:
-          return <H2 textAlign={textAlign}>{children}</H2>;
+          return <H2 textAlign={textAlign}>{children}</H2>
         case 3:
-          return <H3 textAlign={textAlign}>{children}</H3>;
+          return <H3 textAlign={textAlign}>{children}</H3>
         case 4:
-          return <H4 textAlign={textAlign}>{children}</H4>;
+          return <H4 textAlign={textAlign}>{children}</H4>
         case 5:
-          return <H5 textAlign={textAlign}>{children}</H5>;
+          return <H5 textAlign={textAlign}>{children}</H5>
         default:
-          return <H6 textAlign={textAlign}>{children}</H6>;
+          return <H6 textAlign={textAlign}>{children}</H6>
       }
     },
     paragraph({ children, textAlign }) {
-      return <P textAlign={textAlign}>{children}</P>;
+      return <P textAlign={textAlign}>{children}</P>
     },
     divider() {
-      return <Divider />;
+      return <Divider />
     },
   },
 };
@@ -139,7 +141,7 @@ mutation ($pollId: ID!) {
 `);
 /*eslint-enable no-empty-pattern*/
     const auth = useAuth();
-
+    const hasVoted = poll.userAnswer?.id? true:false;
     return (
       <div className="my-4">
         <div className="text-grey-800 uppercase text-lg font-semibold">
@@ -147,7 +149,8 @@ mutation ($pollId: ID!) {
         </div>
         <form>
           {poll.answers.map(answer => {
-            log().info(answer)
+
+
             return (
               <label
                 key={answer.id}
@@ -158,14 +161,14 @@ mutation ($pollId: ID!) {
                   name={poll.id}
                   value={answer.id}
                   checked={poll.userAnswer?.id === answer.id}
-                  disabled={!auth.ready || !auth.sessionData}
-                  onChange={() => {
+                  disabled={!auth.ready || !auth.sessionData || hasVoted}
 
-                    voteForPoll(
+                  onChange={() => {
+                    boolk(hasVoted)(voteForPoll(
                       { answerId: answer.id },
                       { additionalTypenames: ['Poll', 'PollAnswer'] }
-                    );
-                  }}
+                    )
+                    )}}
                   className="rounded-full bg-blue-200 border-2 border-blue-400 w-4 h-4 inline-block mr-4"
                 />
                 <span className="cursor-pointer">
@@ -181,7 +184,7 @@ mutation ($pollId: ID!) {
             <Link href="/signup">Join</Link> to vote
           </Fragment>
         )}
-        {poll.userAnswer?.id && (
+        {hasVoted && (
           <Button
             onClick={() => {
               clearVoteForPoll(

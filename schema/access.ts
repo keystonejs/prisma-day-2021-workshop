@@ -187,6 +187,7 @@ export const permissions = {
     // Fixme:: this is a hack to test if we are on the front end
     // The conditions that require it are commented on in:
     // https://app.slack.com/client/T02FLV1HN/C01STDMEW3S/thread/C01STDMEW3S-1635292440.186100
+    //log().info(frame.listKey).info(frame.session).info(frame.operation)
 
     if (!frame?.session) return true;
 
