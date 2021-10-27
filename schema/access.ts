@@ -171,7 +171,35 @@ export const permissions = {
     //success(frame.context.session?.data?.role?.canManageContent);
     return { id: { equals: frame.context.session?.itemId ?? '' } };
   },
-};
+  isAuthenticatedFrontEndUser: (frame: SessionFrame) => {
+    const context = frame.context as KeystoneContext;
+    log().info(context);
+    if (!isSignedIn(context)) return false;
+
+    //const headers = context.req?.headers;
+
+    //const host = headers ? headers['x-forwarded-host'] || headers['host'] : null;
+    //const url = headers?.referer ? new URL(headers.referer) : undefined;
+
+    return false;
+  },
+  filterCanManageUserListOrOnFrontEnd: (frame: SessionFrame) =>
+    drop(frame)(true),
+
+  /* {
+
+    if (permissions.filterCanManageUserList(frame))
+      return true;
+
+    if (permissions.isAuthenticatedFrontEndUser(frame))
+      return true;
+
+    return  true;
+    ;
+
+  }  */
+  canVoteInPolls: (frame: SessionFrame) => drop(frame)(true),
+} as const;
 
 //The front line security audit: Initial musings:
 

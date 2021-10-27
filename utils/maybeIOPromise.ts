@@ -60,7 +60,7 @@ export class IO<T> {
   readonly then = <R>(f: Maps<NonNullable<T>, R>) =>
     makeIO(() =>
       this.run().then(x =>
-        isBad(x) ? embed(bad<R>()) : embed(mapBad(f(<NonNullable<T>> x)))
+        isBad(x) ? embed(bad<R>()) : embed(mapBad(f(<NonNullable<T>>x)))
       )
     );
   //.catch(this.warn("fbind error")(x => bad<R>()));
@@ -68,10 +68,9 @@ export class IO<T> {
   readonly filter = (f: Maps<NonNullable<T>, boolean>) =>
     this.then((v: NonNullable<T>) => <T>filterClos(f)(v));
 
-  readonly cast = <W extends T>() => this.then(x => <W><T>x);
+  readonly cast = <W extends T>() => this.then(x => <W>(<T>x));
 
   readonly hardCast = <W>() => this.then(x => hardCast(x)<W>());
-
 
   readonly flet = <NewType>(dataExtender: Maps<T, NewType>) =>
     this.then(old => addPropValue(old)(dataExtender));
@@ -89,7 +88,7 @@ export class IO<T> {
   readonly promise = <R>(f: Maps<NonNullable<T>, Promise<R>>) =>
     makeIO(() =>
       this.run().then(x =>
-        isBad(x) ? bad<Promise<R>>() : mapBad(f(<NonNullable<T>> x))
+        isBad(x) ? bad<Promise<R>>() : mapBad(f(<NonNullable<T>>x))
       )
     );
 

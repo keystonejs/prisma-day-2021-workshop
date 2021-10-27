@@ -15,5 +15,4 @@ export const with_default =
   (val: T): NonNullable<T> =>
     isBad(val) ? def : (val as NonNullable<T>);
 
-
 //export const qswap = <D>(dat: D) => <R>(f: Maps<D,R>) => isBad(dat)? bad<R>() : isMappable(dat)? hardCast(dat)<object>().map(f) : f(dat);

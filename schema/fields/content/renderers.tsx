@@ -100,7 +100,6 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
   poll: function Poll({ poll: relatedPoll }) {
     //if (!relatedPoll?.data) return null;
 
-    log().info(relatedPoll)
     const [{ data }] = useQuery({
       query: gql`
         query ($id: ID!) {
@@ -120,7 +119,7 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
       `,
       variables: { id: relatedPoll?.id },
     });
-    log().info(data)
+
     const poll = (data?.poll || relatedPoll?.data) as Poll;
 
 

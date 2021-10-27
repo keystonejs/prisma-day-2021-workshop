@@ -2,7 +2,7 @@
 // https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 
 import { graphql } from '@keystone-next/keystone';
-import {fetchIO} from '../../../utils/fetchGraphQL';
+import { fetchIO } from '../../../utils/fetchGraphQL';
 //import { bad } from '../../../utils/badValues';
 //import { hardCast } from '../../../utils/func';
 import { GithubResolverItemAny } from '../../../wrap_any';
@@ -26,7 +26,6 @@ type GithubRepoData = {
   private: boolean;
   disabled: boolean;
 };
-
 
 export const GitHubRepo = graphql.object<GithubRepoData>()({
   name: 'GitHubRepo',
@@ -82,17 +81,17 @@ type UserTableColumns = {
 };
 
 export const githubReposResolver = (item: GithubResolverItemAny) => {
-  const utc = <UserTableColumns>(item);
+  const utc = <UserTableColumns>item;
 
   if (!utc.githubUsername) return [];
 
   return fetchIO(
-      `https://api.github.com/users/${item.githubUsername}/repos?type=public&per_page=100`,
-      {
-        method: 'GET',
-        headers: { Accept: 'application/vnd.github.v3+json' },
-      }
-    )
+    `https://api.github.com/users/${item.githubUsername}/repos?type=public&per_page=100`,
+    {
+      method: 'GET',
+      headers: { Accept: 'application/vnd.github.v3+json' },
+    }
+  )
     .cast<GithubRepoData[]>()
     .then(allRepos =>
       allRepos

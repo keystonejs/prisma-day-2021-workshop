@@ -12,7 +12,6 @@ import {
   permissions,
   SessionContext,
   ItemContext,
-  SessionFrame,
   EDIT,
   READ,
   HIDDEN,
@@ -32,37 +31,35 @@ const fieldModes = {
     session?.itemId === item.id
       ? EDIT
       : HIDDEN,
+  readIfCanManageUsersOrHidden: (context: SessionContext) =>
+    permissions.canManageUsersSession(context) ? READ : HIDDEN,
 } as const;
 
 export const User = list({
   access: {
     operation: {
-      create: (frame: SessionFrame) => permissions.allow(frame),
-      query: (frame: SessionFrame) => permissions.allow(frame),
-      update: (frame: SessionFrame) => permissions.canManageUsers(frame),
-      delete: (frame: SessionFrame) => permissions.canManageUsers(frame),
+      create: permissions.allow,
+      query: permissions.allow,
+      update: permissions.canManageUsers,
+      delete: permissions.canManageUsers,
     },
 
     filter: {
-      query: (frame: SessionFrame) =>
-        permissions.filterCanManageUserList(frame),
-      update: (frame: SessionFrame) =>
-        permissions.filterCanManageUserList(frame),
+      //If this line is not strict, CUIDs are exposed, If its not, then only userman can count polls.
+      query: permissions.filterCanManageUserListOrOnFrontEnd,
+      //update:
+      //  permissions.filterCanManageUserList,
     },
   },
 
   ui: {
-    hideCreate: (session: SessionContext) =>
-      !permissions.canManageUsersSession(session),
-    hideDelete: (session: SessionContext) =>
-      !permissions.canManageUsersSession(session),
+    hideCreate: !permissions.canManageUsersSession,
+    hideDelete: !permissions.canManageUsersSession,
     itemView: {
-      defaultFieldMode: (context: SessionContext) =>
-        permissions.canManageUsersSession(context) ? EDIT : HIDDEN,
+      defaultFieldMode: fieldModes.editSelfOrHidden,
     },
     listView: {
-      defaultFieldMode: (context: SessionContext) =>
-        permissions.canManageUsersSession(context) ? READ : HIDDEN,
+      defaultFieldMode: fieldModes.readIfCanManageUsersOrHidden,
     },
   },
   fields: {
@@ -75,7 +72,7 @@ export const User = list({
       isIndexed: 'unique',
       isFilterable: true,
       access: {
-        read: (frame: SessionFrame) => permissions.canManageUsers(frame),
+        read: permissions.canManageUsers,
       },
       ui: {
         itemView: { fieldMode: fieldModes.editSelfOrHidden },
@@ -142,9 +139,9 @@ export const Role = list({
 
   access: {
     operation: {
-      query: (frame: SessionFrame) => permissions.canManageUsers(frame),
-      update: (frame: SessionFrame) => permissions.canManageUsers(frame),
-      delete: (frame: SessionFrame) => permissions.canManageUsers(frame),
+      query: permissions.canManageUsers,
+      update: permissions.canManageUsers,
+      delete: permissions.canManageUsers,
     },
   },
   //permissions.canManageUsers,

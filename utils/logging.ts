@@ -95,7 +95,6 @@ export const safeStackRenderer = (cleanMessage: string) => (e: Error) => {
   }
 };
 
-
 //export type MonadicType<T> = (maps: T) => MonadicType<T>
 // This apparently simple operation, logging, has a fairly rich monadic structure.
 // FIXME: TYPEME: return type. It seems to be a recursive union.
@@ -134,7 +133,6 @@ export const logContextInfoGen =
 
     return retObj;
   };
-
 
 export const logContextInfo =
   <TretObj>(retObj: TretObj) =>

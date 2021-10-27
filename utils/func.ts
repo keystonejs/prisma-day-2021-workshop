@@ -1,32 +1,36 @@
-import {u} from './unit'
+import { u } from './unit';
 
 /* eslint-disable  @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 
-import { TypeInferrenceAny } from '../wrap_any'
+import { TypeInferrenceAny } from '../wrap_any';
 
 export type Maps<D, R> = (mapsIgnored: D) => R;
 export type Maps2<D1, D2, R> = (maps1Ignored: D1, maps2Ignored: D2) => R;
 export type Clos2<D1, D2, R> = (maps1Ignored: D1) => (maps2Ignored: D2) => R;
 
+export type InferArg1<T extends null> = T extends (
+  ...args: TypeInferrenceAny[]
+) => TypeInferrenceAny
+  ? T
+  : T extends (a: infer A, b: infer B) => infer R
+  ? B extends true
+    ? (a: A, b: B) => A
+    : A extends true
+    ? (a: A) => A
+    : () => R
+  : never;
 
+export type InferArg2<T extends null> = T extends (
+  ...args: TypeInferrenceAny[]
+) => TypeInferrenceAny
+  ? T
+  : T extends (a: infer AIgnored, b: infer B) => infer Rignored
+  ? B
+  : never;
 
-export type InferArg1<T extends null> =
-    T extends (...args: TypeInferrenceAny[]) => TypeInferrenceAny ? T : (
-        T extends (a: infer A, b: infer B) => infer R ? (
-            B extends true ? (a: A, b: B) => A :
-            A extends true ? (a: A) => A :
-            () => R
-        ) : never
-    );
-
-export type InferArg2<T extends null> =
-    T extends (...args: TypeInferrenceAny[]) => TypeInferrenceAny ? T : (
-        T extends (a: infer AIgnored, b: infer B) => infer Rignored ? B : never
-    );
-
-export const k0 = <T>(fIgnored: T) => u
-export const k1 = <T>(f: T) => f
+export const k0 = <T>(fIgnored: T) => u;
+export const k1 = <T>(f: T) => f;
 
 export const drop =
   <T>(valIgnored: T) =>
@@ -40,11 +44,16 @@ export const ffrue =
   <T>(valIgnored: T) =>
     f;
 
-export const nop = () => { return }
-export const hardCast = <A>(f: A) => <T>() => f as unknown as T
+export const nop = () => {
+  return;
+};
+export const hardCast =
+  <A>(f: A) =>
+  <T>() =>
+    f as unknown as T;
 
-export const boolf = <T>(x: T) => (hardCast(x)<boolean>()? ffrue : ffalse);
-export const boolk = <T>(x: T) => (hardCast(x)<boolean>()? k1 : k0);
+export const boolf = <T>(x: T) => (hardCast(x)<boolean>() ? ffrue : ffalse);
+export const boolk = <T>(x: T) => (hardCast(x)<boolean>() ? k1 : k0);
 
 export type Tfbool = typeof ffrue | typeof ffalse;
 
@@ -74,5 +83,3 @@ export const fpipe =
   <Rf>(f: Maps<D, Rf>) =>
   <Rg>(g: Maps<Rf, Rg>) =>
     fcompose(g)(f)(env);
-
-
