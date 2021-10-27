@@ -172,3 +172,10 @@ export class xlogclos {
 export const log = () => new logclos();
 
 export const xlog = () => new xlogclos();
+
+export const mapString = (str: string) => (f: Maps<string, void>) => {
+  for (let i = 0; i < str.length; i++) {
+    f(str.charAt(i));
+  }
+};
+export const asciiLogger = (str: string) => log().info(str[0]);

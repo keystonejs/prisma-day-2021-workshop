@@ -1,5 +1,5 @@
 import { KeystoneContext } from '.keystone/types';
-import { keystoneNextjsBuildApiKey } from '../keystone';
+import { frontEndPort, keystoneNextjsBuildApiKey } from '../keystone';
 import { log } from '../utils/logging';
 import { drop } from '../utils/func';
 import { ItemType } from '../wrap_any';
@@ -184,7 +184,7 @@ export const permissions = {
 
     const ks = frame.context as KeystoneContext;
 
-    return ks.req?.headers['x-forwarded-port'] === '8000';
+    return ks.req?.headers['x-forwarded-port'] === frontEndPort;
   },
 
   filterCanManageUserListOrOnFrontEnd: (frame: SessionFrame) => {

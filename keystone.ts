@@ -1,5 +1,5 @@
-import { log, xlog } from './utils/logging';
-import { Maps } from './utils/func';
+import { xlog } from './utils/logging';
+//import { Maps } from './utils/func';
 import { config } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
@@ -19,19 +19,10 @@ export const keystoneNextjsBuildApiKey =
   process.env.KEYSTONE_NEXTJS_BUILD_API_KEY ||
   'keystone.ts:_NextjsBuildApiKey_says_change_me__im_just_for_testing_purposes';
 
-export const mapString = (str: string) => (f: Maps<string, void>) => {
-  for (let i = 0; i < str.length; i++) {
-    f(str.charAt(i));
-  }
-};
-
-export const processIsFrontEnd = process?.env?.PLATFORM || '';
-
-export const isFrontEnd = () => processIsFrontEnd.includes('frontend') || false;
+export const frontEndPort = process.env?.FRONT_END_PORT || '8000';
 
 //log().info('isFront end: ').info(isFrontEnd()).info("Env: ").info(process.env.PLATFORM);
 
-export const asciiLogger = (str: string) => log().info(str[0]);
 //mapString(processIsFrontEnd)(c => asciiLogger(c))
 //mapString('frontend')(c => asciiLogger(c))
 

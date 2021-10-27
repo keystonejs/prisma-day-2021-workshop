@@ -78,14 +78,21 @@ export const Poll = list({
       },
     }),
     responsesCount: virtual({
+      access: permissions.canVoteInPolls,
       field: graphql.field({
         type: graphql.Int,
+
         resolve(poll, args, context) {
           const lists = context.query as KeystoneListsAPI;
-          return lists.User.count({
+          return lists.PollAnswer.count({
             where: {
-              pollAnswers: {
-                some: { poll: { id: { equals: poll.id.toString() } } },
+              poll: { id: { equals: poll.id.toString() } },
+              answeredByUsers: {
+                some: {
+                  pollAnswers: {
+                    some: { poll: { id: { equals: poll.id.toString() } } },
+                  },
+                },
               },
             },
           });
