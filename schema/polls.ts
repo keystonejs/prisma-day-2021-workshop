@@ -84,14 +84,10 @@ export const Poll = list({
 
         resolve(poll, args, context) {
           const lists = context.query as KeystoneListsAPI;
-          return lists.PollAnswer.count({
+          return lists.User.count({
             where: {
-              answeredByUsers: {
-                some: {
-                  pollAnswers: {
-                    some: { poll: { id: { equals: poll.id.toString() } } },
-                  },
-                },
+              pollAnswers: {
+                some: { poll: { id: { equals: poll.id.toString() } } },
               },
             },
           });
