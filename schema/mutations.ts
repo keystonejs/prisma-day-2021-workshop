@@ -24,7 +24,6 @@ const clearVote =
           answers: ans as PollWhereInput[],
         }));
       })
-      .env()
       .promise(async env => {
         return env.context.db.PollAnswer.updateMany({
           data: env.answers.map(answer => ({
@@ -80,7 +79,9 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
         clearVote(<KeystoneContext>context)({ id: { equals: pollId } })
           .run()
           .then(e => drop(e)(true))
-          .catch(e => drop(log().error('Caught: ').error(e))(false));
+          .catch(e =>
+            drop(log().error('Caught: clearVoteForPoll').error(e))(false)
+          );
       },
       async voteForPoll(rootVal, { answerId }, context) {
         clearVote(<KeystoneContext>context)({ id: { equals: answerId } })
@@ -94,7 +95,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
           )
           .run()
           .then(n => drop(n)(true))
-          .catch(e => drop(log().error('Caught: ').error(e))(false));
+          .catch(e => drop(log().error('Caught: voteForPoll').error(e))(false));
       },
     },
   },
