@@ -1,9 +1,8 @@
 import { KeystoneContext } from '.keystone/types';
-import { isFrontEnd, keystoneNextjsBuildApiKey } from '../keystone';
+import { keystoneNextjsBuildApiKey } from '../keystone';
 import { log } from '../utils/logging';
 import { drop } from '../utils/func';
 import { ItemType } from '../wrap_any';
-//import { useAuth } from '../components/auth';
 
 export const PUBLISHED = 'published';
 export const DRAFT = 'draft';
@@ -143,7 +142,7 @@ export const permissions = {
     //success(frame.context.session?.data?.role?.canManageContent);
     return PUBLISHED_POST_STATUS;
   },
-  filterCanManageUserList: (frame: SessionFrame) => {
+  filterCanManageUserListBool: (frame: SessionFrame) => {
     if (frame === undefined) {
       log().reportSecurityIncident(
         'Minor security breach: potential auth bug. undefined frame: query downgraded to public.'
@@ -166,36 +165,40 @@ export const permissions = {
       return true;
     }
 
+    return false;
+  },
+
+  filterCanManageUserList: (frame: SessionFrame) => {
+    if (permissions.filterCanManageUserListBool(frame)) return true;
     log()
       .success('Client receives only their own user data:')
       .success(frame?.context?.session?.data?.name);
     //success(frame.context.session?.data?.role?.canManageContent);
     return { id: { equals: frame.context.session?.itemId ?? '' } };
   },
-  isAuthenticatedFrontEndUser: (frame: SessionFrame) => {
-    //const auth = useAuth();
-    const context = frame.context as KeystoneContext;
-    log().info(context);
-    if (!isSignedIn(context)) return false;
 
-    //const headers = context.req?.headers;
+  isOnFrontEnd: (frame: SessionFrame) => {
+    if (!frame || !frame?.context) return true;
 
-    //const host = headers ? headers['x-forwarded-host'] || headers['host'] : null;
-    //const url = headers?.referer ? new URL(headers.referer) : undefined;
+    if (isBuildEnvir(frame)) return true;
 
-    return false;
+    const ks = frame.context as KeystoneContext;
+
+    return ks.req?.headers['x-forwarded-port'] === '8000';
   },
+
   filterCanManageUserListOrOnFrontEnd: (frame: SessionFrame) => {
     // Fixme:: this is a hack to test if we are on the front end
     // The conditions that require it are commented on in:
     // https://app.slack.com/client/T02FLV1HN/C01STDMEW3S/thread/C01STDMEW3S-1635292440.186100
     //log().info(frame.listKey).info(frame.session).info(frame.operation)
-    if (isFrontEnd()) return true;
+    if (permissions.isOnFrontEnd(frame)) return true;
 
-    if (permissions.filterCanManageUserList(frame)) return true;
+    //return drop(frame)(true);
 
+    //if (isFrontEnd()) return true;
 
-    return false;
+    return permissions.filterCanManageUserList(frame);
   },
   canVoteInPolls: (frame: SessionFrame) => drop(frame)(true),
 } as const;

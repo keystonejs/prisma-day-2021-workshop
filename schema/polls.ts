@@ -44,7 +44,7 @@ export const PollAnswer = list({
       isFilterable: true,
       many: true,
       access: {
-        read: permissions.canVoteInPolls,
+        read: permissions.canManageUsers,
       },
       ui: {
         displayMode: 'count',
