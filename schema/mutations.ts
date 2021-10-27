@@ -24,7 +24,7 @@ const clearVote =
           answers: ans as PollWhereInput[],
         }));
       })
-
+      .env()
       .promise(async env => {
         return env.context.db.PollAnswer.updateMany({
           data: env.answers.map(answer => ({

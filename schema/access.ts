@@ -1,5 +1,5 @@
 import { KeystoneContext } from '.keystone/types';
-import { keystoneNextjsBuildApiKey } from '../keystone';
+import { isFrontEnd, keystoneNextjsBuildApiKey } from '../keystone';
 import { log } from '../utils/logging';
 import { drop } from '../utils/func';
 import { ItemType } from '../wrap_any';
@@ -190,16 +190,10 @@ export const permissions = {
     // The conditions that require it are commented on in:
     // https://app.slack.com/client/T02FLV1HN/C01STDMEW3S/thread/C01STDMEW3S-1635292440.186100
     //log().info(frame.listKey).info(frame.session).info(frame.operation)
+    if (isFrontEnd()) return true;
+
     if (permissions.filterCanManageUserList(frame)) return true;
 
-    if (!frame?.session) {
-      log().warning(
-        'Undefined session, reluctantly granting query access to anyone.'
-      );
-      return true;
-    }
-
-    if (permissions.isAuthenticatedFrontEndUser(frame)) return true;
 
     return false;
   },

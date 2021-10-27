@@ -9,16 +9,16 @@
     "xfastcommit": "yarn gitadd && git commit -a -m ",
     "push": "git push origin latest",
     "postinstall": "keystone-next postinstall && yarn next telemetry disable && yarn next lint",
-    "site:dev": "next dev -p 8000",
+    "site:dev": "set PLATFORM=frontend && next dev -p 8000",
     "site:build": "yarn lint && next build",
-    "site:start": "next start -p 8000",
-    "dev": "keystone-next dev",
-    "start": "keystone-next start",
+    "site:start": "set PLATFORM=frontend && next start -p 8000",
+    "dev": "set PLATFORM=adminui && keystone-next dev",
+    "start": "set PLATFORM=adminui && keystone-next start",
     "build": "yarn lint && keystone-next build",
     "migrate": "keystone-next prisma migrate deploy",
     "format": "prettier --write \"**/*.ts\"",
     "lint": "eslint ./utils ./pages ./schema ./*.ts ./*.js",
-    "export": "cp -a ./utils/typescript-IO-Monad ../typescript-IO-Monad"
+    "set": "cp -a ./utils/typescript-IO-Monad ../typescript-IO-Monad"
   },
   "dependencies": {
     "@keystone-next/auth": "34.0.0",
