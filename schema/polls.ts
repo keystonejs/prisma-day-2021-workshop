@@ -9,7 +9,6 @@ import {
 import { isSignedIn, permissions, HIDDEN } from './access';
 import { contentListAccess, contentUIConfig } from './content';
 import { makeIO } from '../utils/maybeIOPromise';
-
 import { PollAnswerAny } from '../wrap_any';
 
 export const PollAnswer = list({
