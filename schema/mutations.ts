@@ -30,7 +30,9 @@ const clearVote =
           data: env.answers.map(answer => ({
             where: { id: answer.id?.toString() },
             data: {
-              answeredByUsers: { set: [] },
+              answeredByUsers: {
+                disconnect: { id: env.context.session.itemId },
+              },
             },
           })),
         }).then(n => drop(n)(env));
