@@ -23,7 +23,7 @@ export const fetchIO = (...args: TfetchArgs) => {
 export const fetchGraphQLInjectApiKey = async <T>(
   query: string,
   variables?: GraphQLClause
-) => {
+): Promise<T> => {
   keystoneNextjsBuildApiKey.includes('keystone')
     ? log().warning('Prototype api key: ' + keystoneNextjsBuildApiKey)
     : log().success('Next build: x-api-key: tx');
@@ -44,5 +44,6 @@ export const fetchGraphQLInjectApiKey = async <T>(
     .catch(msg => {
       log().warning('Next build: did not recieve static site data: ' + msg);
       return bad<T>();
+      //return fetchGraphQLInjectApiKey<T>(query,variables); //This line works, O(1) stack usage, recursive call if connection fails.
     });
 };

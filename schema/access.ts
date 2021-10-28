@@ -144,8 +144,8 @@ export const permissions = {
   },
   filterCanManageUserListBool: (frame: SessionFrame) => {
     if (frame === undefined) {
-      log().reportSecurityIncident(
-        'Minor security breach: potential auth bug. undefined frame: query downgraded to public.'
+      log().info(
+        'Undefined frame: assuming unauthenticated user: public user query rights granted.'
       );
       return false;
       //Give no information away that they have been noticed, but if there's no frame
