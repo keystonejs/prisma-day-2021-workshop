@@ -172,7 +172,7 @@ mutation ($pollId: ID!) {
                   className="rounded-full bg-blue-200 border-2 border-blue-400 w-4 h-4 inline-block mr-4"
                 />
                 <span className="cursor-pointer">
-                  {answer.label} {answer.voteCount} Votes
+                  {answer.label}{hasVoted?(': ' + answer.voteCount +' votes'): ''}
                 </span>
               </label>
             );
