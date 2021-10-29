@@ -115,8 +115,8 @@ WORKDIR /app
 
 ENV NODE_ENV production
 
-RUN addgroup --group 1001  nextjs
-RUN adduser --uid 1001 nextjs
+RUN groupadd --gid 1001 nextjs
+RUN useradd --uid 1001 --gid 1001 nextjs
 
 # You only need to copy next.config.js if you are NOT using the default configuration
 # COPY --from=builder /app/next.config.js ./
@@ -132,6 +132,6 @@ EXPOSE 8000
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry.
-# ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED 1
 
 CMD ["yarn", "site:start"]

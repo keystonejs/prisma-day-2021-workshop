@@ -114,8 +114,8 @@ WORKDIR /app
 
 ENV NODE_ENV production
 
-RUN addgroup --group 1001  keystonejs
-RUN adduser --uid 1001 keystonejs
+RUN groupadd --gid 1001 keystonejs
+RUN useradd --uid 1001 --gid 1001 keystonejs
 
 # You only need to copy next.config.js if you are NOT using the default configuration
 # COPY --from=builder /app/next.config.js ./
