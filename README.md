@@ -162,12 +162,7 @@ Status: `Preliminary`.
    <img src="https://code-inspector.com/public/badge/user/github/qfunq?style=light" alt="code inspector badge" />
 </a>
 
-✅ No Code Inspector linting errors, 100% score on all categories. Note the bug in their style %, which reports the
-percentage of style errors to all errors, not to good code, so it bears no relationship to real style quality. As
-the number of errors fell to 0, the style % became wildly variable. And its not smart enough to spot that any
-non-monadic IO is very fragile, and liable to take Keystone down on a bad query. Perhaps Keystone shouldn't be throwing, or it risks the exception not being caught?
-
-
+✅ No Code Inspector linting errors, 100% score on all categories. Code inspector has a divide by zero bug that reports N/A when it can find no errors.
 
 
 ## TL;DR
@@ -193,9 +188,9 @@ Approximately 75% of these situations reveal an unhandled case, hidden from lint
 
 ## await is almost as bad as any.
 
-Every `await` needs to be wrapped in a `try` `catch` block, or better still, wrapped in a `promise`, which either is already, or extends to a `monad` (since the original implementors of `js Promises` just implemented `fmap/then`, without `bind`, probably because its action is immediate. Oooops.). Fortunately, `await` is less abused than `any`. Once monadic IO replaces it, it's hard to contemplate using anything else, and `await` code is easily lifted to `fmap` or `fbind`. There will still always be some ugly IO bindings, such as with `fetch`, but they can be localized.
+Every `await` needs to be wrapped in a `try` `catch` block, or better still, wrapped in a `promise`, which either is already, or extends to a `monad` (since the original implementors of `js Promises` just implemented `fmap/then`, without `bind`, probably because its action is immediate. Oooops.). Fortunately, `await` is less abused than `any`. Once monadic IO replaces it, it's hard to contemplate using anything else, and `await` code is easily lifted to `fmap` or `fbind`. There will still always be some ugly IO bindings, such as with `fetch`, but they have been localized and abstracted.
 
-The conversion to monadic io is almost complete. No awaits remain. Just some ugly `fetch` code to fully abstract.
+The conversion to monadic io is complete. No awaits remain.
 
 This is possibly one of the most important details for stability, because Keystone throws exceptions,
 possibly originally thrown by apollo, and if those exceptions are not caught, the server goes down.
@@ -246,16 +241,20 @@ With these caveats in mind, enjoy this latest release of @jeds prisma day worksh
 
 ## Known Issues
 
-Anyone can clear any Poll. Only content managers can do that.
+UI inforces the 1->0:1 hidden relationship of an element of answeredByUser -> (poll,vote). This is less than perfect,
+since postgres contraints spill into the business logic, which shows up in the Admin UI,
+where a User can be assigned multiple votes in the same Poll. To fix this is quite complex, since adding views or constraints breaks auto migration. The migrations carry a history of experiments to try to understand this issue. If anyone has a fix for this, please do post it in the issues forum.
 
-A version of Bartosz's elegant code working under `ts` is complete. The lack of Haskell type matching makes providing a coroutine/Haskell sytle do notation to `ts` very fiddly. This is Bartosz's main point, imho. If you can't interpret recursively typed monadic code in terms of mutually recursive coroutines, your functional language will be limited (like the `C++` std library is). However, it is sufficient for non-recursive chains, and many use cases are.
+## Security Issues
 
-So only trampolines left to implement in the MaybeIOPromise family of monads, which will be deployed for error checking, because they do this very well, even without a tramoline. But trampolines open a can of worms, requiring an intricate `ast` to target this subtle setup properly.
+Polling shows up some issues in Keystone:
+   The lack of field access:filter severely restricts the ability to secure apis. In many cases
+   access:filter is reduced to a fairly trivial role, since fields cannot override it, but it is also the last line of defense for security, so the default should be reject. But this standard
+   firewall like state cannot be achieved with the current apis.
 
-
-wrap_any.ts: the place where dark hacks live to get the system building. Its grown
+`wrap_any.ts:` the place where dark hacks live to get the system building. Its grown
 rather than shrank, because `any` is often used to create objects without delegating
-a strong typed call to the top level application. DRY is harsh, and forces certain design contraints, which are not often followed. But when they are, everything clicks together perfectly.
+a strong typed call to the top level application. `DRY/CCC` is harsh, and forces certain design contraints, which are not often followed. But when they are, everything clicks together perfectly.
 
 
 ## Additional functionality from upstream main
@@ -272,16 +271,22 @@ Production build:
       Unseeded corner case working in a test k8s framework.
       Seeding: Agnostic: there are multiple routes.
       Prettier applied in gitadd.
+      yarn lint: additional, harsher lint checks
    Utils folder for additional code, informative naming.
-   MaybeIO/Promise for DRY declarative specification of graphql parsing/error handling.
-   yarn lint: additional, harsher lint checks
+   MaybeIO/Promise for DRY declarative specification of graphql parsing/error handling
+      Resolves many hidden bugs in the original imperative code.
+   Additional Poll functionality:
+      Users can clear their own votes only
+      Unvoted polls don't reveal their results
+      Voted poll disables UI for that poll (otherwise bounce can lead to race conditions).
+   Front end / Admin UI dectection for selective access:filter, preventing exposure of user names
+      and CUIDs to low auth users, and allowing vote counts to be accessed.
+   Github repos fully working.
 
 
 ## How to install the latest branch
 
 The definitive install instructions, assuming fedora, bar seeding, are in the workflow file:
-
-
 
 
 Install it like this and you know you will get the latest CI build. ![workflow](https://github.com/qfunq/prisma-day-2021-workshop/actions/workflows/latest.yml/badge.svg) <a href="https://frontend.code-inspector.com/public/user/github/qfunq">
