@@ -28,7 +28,7 @@ RUN useradd --uid 1001 --gid 1001 keystonejs
 # You only need to copy next.config.js if you are NOT using the default configuration
 # COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/ ./
-COPY --from=builder --chown=keystonejs:keystonejs /app/
+COPY --from=builder --chown=keystonejs:keystonejs /app/ ./
 #COPY --from=builder /app/node_modules ./node_modules
 #COPY --from=builder /app/package.json ./package.json
 
