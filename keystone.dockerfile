@@ -135,4 +135,4 @@ EXPOSE 3000
 # Uncomment the following line in case you want to disable telemetry.
 ENV NEXT_TELEMETRY_DISABLED 1
 
-CMD ["yarn", "start"]
+ENTRYPOINT ["/usr/bin/dumb-init", "--rewrite", "2:3", "--", "yarn", "launch"]
