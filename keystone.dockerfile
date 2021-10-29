@@ -32,7 +32,7 @@ COPY --from=builder --chown=keystonejs:keystonejs /app/
 #COPY --from=builder /app/node_modules ./node_modules
 #COPY --from=builder /app/package.json ./package.json
 
-#USER keystonejs
+USER keystonejs
 
 EXPOSE 3000
 
@@ -40,5 +40,7 @@ EXPOSE 3000
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry.
 ENV NEXT_TELEMETRY_DISABLED 1
+
+HEALTHCHECK CMD ls -alt
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--rewrite", "2:3", "--", "yarn", "launch"]
