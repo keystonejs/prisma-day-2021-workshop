@@ -114,6 +114,8 @@ WORKDIR /app
 
 ENV NODE_ENV production
 
+RUN apt-get install dumb-init
+
 RUN groupadd --gid 1001 keystonejs
 RUN useradd --uid 1001 --gid 1001 keystonejs
 
@@ -124,7 +126,7 @@ COPY --from=builder --chown=keystonejs:keystonejs /app/
 #COPY --from=builder /app/node_modules ./node_modules
 #COPY --from=builder /app/package.json ./package.json
 
-USER keystonejs
+#USER keystonejs
 
 EXPOSE 3000
 

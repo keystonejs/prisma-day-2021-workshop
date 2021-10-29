@@ -114,7 +114,7 @@ FROM docker.io/library/node:14.18.1-bullseye AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
-
+RUN apt-get install dumb-init
 RUN groupadd --gid 1001 nextjs
 RUN useradd --uid 1001 --gid 1001 nextjs
 
@@ -125,7 +125,7 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 
-USER nextjs
+#USER nextjs
 
 EXPOSE 8000
 
