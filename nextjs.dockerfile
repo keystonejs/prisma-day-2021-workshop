@@ -18,7 +18,8 @@ FROM docker.io/library/node:14.18.1-bullseye AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
-RUN apt-get install dumb-init
+RUN apt-get update -y
+RUN apt-get install dumb-init -y
 RUN groupadd --gid 1001 nextjs
 RUN useradd --uid 1001 --gid 1001 nextjs
 
