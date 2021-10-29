@@ -115,8 +115,8 @@ WORKDIR /app
 
 ENV NODE_ENV production
 
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
+RUN addgroup --group 1001  nextjs
+RUN adduser --uid 1001 nextjs
 
 # You only need to copy next.config.js if you are NOT using the default configuration
 # COPY --from=builder /app/next.config.js ./
