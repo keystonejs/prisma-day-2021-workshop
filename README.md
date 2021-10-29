@@ -186,7 +186,7 @@ This `dangerous construct` is used in upstream auth.
 Approximately 75% of these situations reveal an unhandled case, hidden from lint.
 ```
 
-## await is almost as bad as any.
+## await is almost as bad as any
 
 Every `await` needs to be wrapped in a `try` `catch` block, or better still, wrapped in a `promise`, which either is already, or extends to a `monad` (since the original implementors of `js Promises` just implemented `fmap/then`, without `bind`, probably because its action is immediate. Oooops.). Fortunately, `await` is less abused than `any`. Once monadic IO replaces it, it's hard to contemplate using anything else, and `await` code is easily lifted to `fmap` or `fbind`. There will still always be some ugly IO bindings, such as with `fetch`, but they have been localized and abstracted.
 
