@@ -11,11 +11,11 @@ FROM docker.io/library/node:14.18.1-bullseye AS builder
 WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
-RUN yarn build && yarn workspaces focus -A --production
+RUN yarn site:build && yarn workspaces focus -A --production
 
 # Production image, copy all the files and run next
 FROM docker.io/library/node:14.18.1-bullseye AS runner
-WORKDIR /app
+
 
 ENV NODE_ENV production
 RUN apt-get update -y
@@ -23,10 +23,11 @@ RUN apt-get install dumb-init -y
 RUN groupadd --gid 1001 nextjs
 RUN useradd --uid 1001 --gid 1001 nextjs
 
+WORKDIR /home/nextjs
 # You only need to copy next.config.js if you are NOT using the default configuration
 #COPY --from=builder /app/next.config.js ./
 #COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nextjs /app/ ./home/nextjs
+COPY --from=builder --chown=nextjs:nextjs /app/ ./
 #COPY --from=builder /app/node_modules ./node_modules
 #COPY --from=builder /app/package.json ./package.json
 
@@ -41,4 +42,4 @@ ENV NEXT_TELEMETRY_DISABLED 1
 
 HEALTHCHECK CMD ls -alt
 
-CMD ["/usr/bin/dumb-init", "--rewrite", "2:3", "--", "yarn", "site:launch"]
+CMD ["/usr/bin/dumb-init", "--rewrite", "2:3", "--", "yarn", "site:start"]
