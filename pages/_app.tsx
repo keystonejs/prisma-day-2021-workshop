@@ -3,12 +3,12 @@ import type { AppProps } from 'next/app';
 import { createClient, Provider } from 'urql';
 import React from 'react'
 import { AuthProvider } from '../components/auth';
-import { keyStoneHost } from '../keystone'
+import { keystoneHost } from '../keystone'
 
 export const client = createClient({
   url:
     typeof window === undefined
-      ? `http://${keyStoneHost}:3000/api/graphql`
+      ? `http://${keystoneHost}:3000/api/graphql`
       : '/api/graphql',
 });
 

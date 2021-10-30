@@ -1,4 +1,4 @@
-import { keystoneNextjsBuildApiKey, keyStoneHost } from '../keystone';
+import { keystoneNextjsBuildApiKey, keystoneHost } from '../keystone';
 import { log } from '../utils/logging';
 import { makeIO } from '../utils/maybeIOPromise';
 import { GraphQLClause } from '../wrap_any';
@@ -28,7 +28,7 @@ export const fetchGraphQLInjectApiKey = async <T>(
     ? log().warning('Prototype api key: ' + keystoneNextjsBuildApiKey)
     : log().success('Next build: x-api-key: tx');
 
-  return fetchIO(`http://${keyStoneHost}:3000/api/graphql`, {
+  return fetchIO(`http://${keystoneHost}:3000/api/graphql`, {
     method: 'POST',
     body: JSON.stringify({ query, variables }),
     headers: {

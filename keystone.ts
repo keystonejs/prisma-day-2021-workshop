@@ -11,7 +11,7 @@ const dbUrl =
   `${process.env.DATABASE_URL}` ||
   `postgres://${process.env?.POSTGRES_USER}:${process.env?.POSTGRES_PASSWORD}@${process.env?.POSTGRES_HOST}/${process.env?.POSTGRES_DB}`;
 
-export const keyStoneHost = process.env?.KEYSTONE_HOST || 'localhost';
+export const keystoneHost = process.env?.KEYSTONE_HOST || 'localhost';
 
 const sessionSecret = cuid() + cuid();
 
@@ -37,7 +37,7 @@ xlog()
   .info(`Database url: ${dbUrl}`)
   .success(dbUrl)
   .info(`Keystone host`)
-  .success(keyStoneHost);
+  .success(keystoneHost);
 
 const auth = createAuth({
   identityField: 'email',
@@ -63,12 +63,6 @@ const auth = createAuth({
 
 export default auth.withAuth(
   config({
-    server: {
-      cors: { origin: ['*'], credentials: true },
-      port: 3000,
-      maxFileSize: 200 * 1024 * 1024,
-      healthCheck: true,
-    },
     db: {
       url: dbUrl,
       provider: 'postgresql',
