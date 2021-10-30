@@ -184,7 +184,12 @@ export const permissions = {
 
     const ks = frame.context as KeystoneContext;
 
-    return ks.req?.headers['x-forwarded-port'] === frontEndPort;
+    const url = ks.req?.headers?.referer
+      ? new URL(ks.req.headers.referer)
+      : undefined;
+    const onInitPage = url?.pathname === '/init';
+
+    return onInitPage || ks.req?.headers['x-forwarded-port'] === frontEndPort;
   },
 
   filterCanManageUserListOrOnFrontEnd: (frame: SessionFrame) => {
