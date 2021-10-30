@@ -184,12 +184,25 @@ export const permissions = {
 
     const ks = frame.context as KeystoneContext;
 
+    return ks.req?.headers['x-forwarded-port'] === frontEndPort;
+  },
+
+  isOnInitPage: (frame: SessionFrame) => {
+    log().info('Testing if session is initial session');
+
+    if (!frame || !frame?.context) return true;
+
+    const ks = frame.context as KeystoneContext;
+
     const url = ks.req?.headers?.referer
       ? new URL(ks.req.headers.referer)
       : undefined;
-    const onInitPage = url?.pathname === '/init';
 
-    return onInitPage || ks.req?.headers['x-forwarded-port'] === frontEndPort;
+    log().info(url);
+
+    const onInitPage = url?.pathname === '/init';
+    log().info(onInitPage ? 'On initial page' : 'Not on initial page');
+    return onInitPage;
   },
 
   filterCanManageUserListOrOnFrontEnd: (frame: SessionFrame) => {
@@ -198,7 +211,7 @@ export const permissions = {
     // https://app.slack.com/client/T02FLV1HN/C01STDMEW3S/thread/C01STDMEW3S-1635292440.186100
     //log().info(frame.listKey).info(frame.session).info(frame.operation)
     if (permissions.isOnFrontEnd(frame)) return true;
-
+    if (permissions.isOnInitPage(frame)) return true;
     //return drop(frame)(true);
 
     //if (isFrontEnd()) return true;
