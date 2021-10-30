@@ -45,4 +45,4 @@ ENV NEXT_TELEMETRY_DISABLED 1
 
 HEALTHCHECK CMD ls -alt
 
-CMD ["/usr/bin/dumb-init", "--rewrite", "2:3", "--", "yarn", "start"]
+CMD ["/usr/bin/dumb-init", "--rewrite", "2:3", "--", "yarn", "launch"]
