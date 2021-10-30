@@ -190,7 +190,7 @@ export const permissions = {
   isOnInitPage: (frame: SessionFrame) => {
     log().info('Testing if session is initial session');
 
-    if (!frame || !frame?.context) return true;
+    if (!frame || !frame?.context) return false;
 
     const ks = frame.context as KeystoneContext;
 
@@ -198,10 +198,10 @@ export const permissions = {
       ? new URL(ks.req.headers.referer)
       : undefined;
 
-    log().info(url);
+    //log().info(url);
 
     const onInitPage = url?.pathname === '/init';
-    log().info(onInitPage ? 'On initial page' : 'Not on initial page');
+
     return onInitPage;
   },
 
@@ -211,7 +211,11 @@ export const permissions = {
     // https://app.slack.com/client/T02FLV1HN/C01STDMEW3S/thread/C01STDMEW3S-1635292440.186100
     //log().info(frame.listKey).info(frame.session).info(frame.operation)
     if (permissions.isOnFrontEnd(frame)) return true;
-    if (permissions.isOnInitPage(frame)) return true;
+
+    if (permissions.isOnInitPage(frame)) {
+      log().warning('Granting super user query rights to assumed first usage.');
+      return true;
+    }
     //return drop(frame)(true);
 
     //if (isFrontEnd()) return true;
