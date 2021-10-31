@@ -5,8 +5,11 @@ import { Container, HomeLink } from '../components/ui/layout';
 import { H1 } from '../components/ui/typography';
 import { FieldContainer, FieldLabel, TextInput } from '../components/ui/forms';
 import { Link } from '../components/ui/link';
-import { useRouter } from 'next/router';
+//import { useRouter } from 'next/router';
 import { useAuth } from '../components/auth';
+import { gotoPage } from '../utils/gotoPage'
+import { ioRoot } from '../utils/maybeIOPromise'
+import { drop } from '../utils/func'
 
 export default function SigninPage() {
   const auth = useAuth();
@@ -16,7 +19,7 @@ export default function SigninPage() {
 
   // const router = useRouter();
 
-  const signIn = async () => {
+  const signIn = () => {
     if (!auth.ready) {
       setError('Auth is not ready, try again in a moment.');
       return;
@@ -26,17 +29,18 @@ export default function SigninPage() {
       return;
     }
     setError('');
-    const result = await auth.signIn({ email, password });
-    if (result.success) {
-      // FIXME: there's a cache issue with Urql where it's not reloading the
-      // current user properly if we do a client-side redirect here.
-      // router.push('/');
-      top.location.href = '/';
-    } else {
-      setEmail('');
-      setPassword('');
-      setError(result.message);
-    }
+    ioRoot
+    .promise(u => drop(u)(auth.signIn({ email, password })))
+    .then(result => result.success?
+        () => gotoPage('/')
+        :
+        () => {
+          setEmail('');
+          setPassword('');
+          setError(result.message);
+        })
+    .then(f => f())
+    .run();
   };
 
   return (

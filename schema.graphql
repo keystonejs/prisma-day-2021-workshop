@@ -539,10 +539,15 @@ input UserWhereInput {
   id: IDFilter
   name: StringFilter
   email: StringFilter
+  password: PasswordFilter
   role: RoleWhereInput
   githubUsername: StringFilter
   authoredPosts: PostManyRelationFilter
   pollAnswers: PollAnswerManyRelationFilter
+}
+
+input PasswordFilter {
+  isSet: Boolean!
 }
 
 input UserOrderByInput {

@@ -2,9 +2,12 @@
 // https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 
 import { graphql } from '@keystone-next/keystone';
-import fetch from 'node-fetch';
+import { fetchWithTimeoutIO } from '../../../utils/fetchGraphQL';
+//import { bad } from '../../../utils/badValues';
+//import { hardCast } from '../../../utils/func';
+import { GithubResolverItemAny } from '../../../wrap_any';
 
-type GitubRepoData = {
+type GithubRepoData = {
   id: number;
   name: string;
   full_name: string;
@@ -19,9 +22,12 @@ type GitubRepoData = {
   watchers_count: number;
   language: string;
   forks_count: number;
+  fork: boolean;
+  private: boolean;
+  disabled: boolean;
 };
 
-export const GitHubRepo = graphql.object<GitubRepoData>()({
+export const GitHubRepo = graphql.object<GithubRepoData>()({
   name: 'GitHubRepo',
   fields: {
     id: graphql.field({ type: graphql.Int }),
@@ -65,26 +71,38 @@ export const GitHubRepo = graphql.object<GitubRepoData>()({
   },
 });
 
-export async function githubReposResolver(item: any) {
-  if (!item.githubUsername) return [];
-  try {
-    const token = process.env.GITHUB_AUTH_TOKEN;
-    const options = token
-      ? { headers: { Authorization: `token ${token}` } }
-      : undefined;
-    const result = await fetch(
-      `https://api.github.com/users/${item.githubUsername}/repos?type=public&per_page=100`,
-      options
-    );
-    const allRepos = await result.json();
-    return allRepos
-      .filter(
-        (repo: any) =>
-          !(repo.fork || repo.private || repo.disabled || repo.private)
-      )
-      .sort((a: any, b: any) => b.stargazers_count - a.stargazers_count);
-  } catch (err) {
-    console.error(err);
-    return [];
-  }
-}
+type UserTableColumns = {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  roleId: string;
+  githubUsername: string;
+};
+
+export const githubReposResolver = (item: GithubResolverItemAny) => {
+  const utc = <UserTableColumns>item;
+
+  if (!utc.githubUsername) return [];
+
+  return fetchWithTimeoutIO(5000)(
+    `https://api.github.com/users/${item.githubUsername}/repos?type=public&per_page=100`,
+    {
+      method: 'GET',
+      headers: { Accept: 'application/vnd.github.v3+json' },
+    }
+  )
+    .cast<GithubRepoData[]>()
+    .then(allRepos =>
+      allRepos
+        .filter(
+          (repo: GithubRepoData) =>
+            !(repo.fork || repo.private || repo.disabled)
+        )
+        .sort(
+          (a: GithubRepoData, b: GithubRepoData) =>
+            b.stargazers_count - a.stargazers_count
+        )
+    )
+    .exec([]);
+};

@@ -5,43 +5,61 @@ import {
   text,
   virtual,
 } from '@keystone-next/keystone/fields';
-import { list, graphql } from '@keystone-next/keystone';
 
-import { permissions, rules } from './access';
+import { graphql, list } from '@keystone-next/keystone';
+
+import {
+  permissions,
+  SessionContext,
+  ItemContext,
+  EDIT,
+  READ,
+  HIDDEN,
+} from './access';
 import { GitHubRepo, githubReposResolver } from './fields/githubRepos/field';
 
+//import { log } from '../utils/logging';
+
 const fieldModes = {
-  editSelfOrRead: ({ session, item }: any) =>
-    permissions.canManageUsers({ session }) || session.itemId === item.id
-      ? 'edit'
-      : 'read',
-  editSelfOrHidden: ({ session, item }: any) =>
-    permissions.canManageUsers({ session }) || session.itemId === item.id
-      ? 'edit'
-      : 'hidden',
-};
+  editSelfOrRead: ({ session, item }: ItemContext) =>
+    permissions.canManageUsersSession({ session }) ||
+    session?.itemId === item.id
+      ? EDIT
+      : READ,
+  editSelfOrHidden: ({ session, item }: ItemContext) =>
+    permissions.canManageUsersSession({ session }) ||
+    session?.itemId === item.id
+      ? EDIT
+      : HIDDEN,
+  readIfCanManageUsersOrHidden: (context: SessionContext) =>
+    permissions.canManageUsersSession(context) ? READ : HIDDEN,
+} as const;
 
 export const User = list({
   access: {
     operation: {
-      create: () => true,
+      create: permissions.allow,
+      query: permissions.allow,
+      update: permissions.canManageUsers,
+      delete: permissions.canManageUsers,
     },
+
     filter: {
-      query: () => true,
-      update: rules.canManageUserList,
-      delete: rules.canManageUserList,
-    }
+      //If this line is not strict, CUIDs are exposed, If its not, then only userman can count polls.
+      query: permissions.filterCanManageUserListOrOnFrontEnd,
+      //update:
+      //  permissions.filterCanManageUserList,
+    },
   },
+
   ui: {
-    hideCreate: context => !permissions.canManageUsers(context),
-    hideDelete: context => !permissions.canManageUsers(context),
+    hideCreate: !permissions.canManageUsersSession,
+    hideDelete: !permissions.canManageUsersSession,
     itemView: {
-      defaultFieldMode: context =>
-        permissions.canManageUsers(context) ? 'edit' : 'hidden',
+      defaultFieldMode: fieldModes.editSelfOrHidden,
     },
     listView: {
-      defaultFieldMode: context =>
-        permissions.canManageUsers(context) ? 'read' : 'hidden',
+      defaultFieldMode: fieldModes.readIfCanManageUsersOrHidden,
     },
   },
   fields: {
@@ -52,20 +70,15 @@ export const User = list({
     }),
     email: text({
       isIndexed: 'unique',
-      validation: {
-        isRequired: true,
-      },
+      isFilterable: true,
       access: {
-        read: rules.canManageUser,
+        read: permissions.canManageUsers,
       },
       ui: {
         itemView: { fieldMode: fieldModes.editSelfOrHidden },
       },
     }),
     password: password({
-      validation: {
-        isRequired: true,
-      },
       ui: {
         itemView: { fieldMode: fieldModes.editSelfOrHidden },
       },
@@ -73,8 +86,10 @@ export const User = list({
     role: relationship({
       ref: 'Role.users',
       access: permissions.canManageUsers,
+      isFilterable: true,
     }),
     githubUsername: text({
+      isFilterable: true,
       label: 'GitHub Username',
       ui: {
         itemView: { fieldMode: fieldModes.editSelfOrRead },
@@ -87,46 +102,50 @@ export const User = list({
       }),
       ui: {
         views: require.resolve('./fields/githubRepos/components'),
-        createView: { fieldMode: 'hidden' },
-        listView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
+        createView: { fieldMode: HIDDEN },
+        listView: { fieldMode: HIDDEN },
+        itemView: { fieldMode: READ },
         query: '{ name htmlUrl description homepage stargazersCount }',
       },
     }),
     authoredPosts: relationship({
       ref: 'Post.author',
+      isFilterable: true,
       many: true,
       ui: {
-        createView: { fieldMode: 'hidden' },
+        createView: { fieldMode: HIDDEN },
       },
     }),
     pollAnswers: relationship({
       ref: 'PollAnswer.answeredByUsers',
+      isFilterable: true,
       many: true,
       access: permissions.canManageUsers,
       ui: {
         hideCreate: true,
-        createView: { fieldMode: 'hidden' },
+        createView: { fieldMode: HIDDEN },
       },
     }),
   },
-});
+} as const);
 
 export const Role = list({
-  access: {
-    filter: {
-      delete: permissions.canManageUsers,
-      query: permissions.canManageUsers,
-      update: permissions.canManageUsers,
-    }
-  },
-  ui: {
-    isHidden: context => !permissions.canManageUsers(context),
-  },
   fields: {
     name: text(),
-    canManageContent: checkbox({ defaultValue: false }),
-    canManageUsers: checkbox({ defaultValue: false }),
-    users: relationship({ ref: 'User.role', many: true }),
+    canManageContent: checkbox({ defaultValue: false, isFilterable: true }),
+    canManageUsers: checkbox({ defaultValue: false, isFilterable: true }),
+    users: relationship({ ref: 'User.role', many: true, isFilterable: true }),
   },
-});
+
+  access: {
+    operation: {
+      query: permissions.canManageUsers,
+      update: permissions.canManageUsers,
+      delete: permissions.canManageUsers,
+    },
+  },
+  //permissions.canManageUsers,
+  ui: {
+    isHidden: <T>(session: T) => !permissions.canManageUsersSession(session),
+  },
+} as const);

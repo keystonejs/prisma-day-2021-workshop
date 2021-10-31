@@ -1,4 +1,4 @@
-import { HTMLAttributes } from 'react';
+import React, { HTMLAttributes } from 'react';
 import cx from 'classnames';
 
 type Alignable = {
@@ -15,12 +15,12 @@ const buildClasses = (
   });
 };
 
-export function H1({
+export const H1 = ({
   className,
   children,
   textAlign,
   ...props
-}: HTMLAttributes<HTMLElement> & Alignable) {
+}: HTMLAttributes<HTMLElement> & Alignable) => {
   const classes = buildClasses('text-3xl my-4 font-medium', {
     className,
     textAlign,
@@ -32,12 +32,12 @@ export function H1({
   );
 }
 
-export function H2({
+export const H2 = ({
   className,
   children,
   textAlign,
   ...props
-}: HTMLAttributes<HTMLElement> & Alignable) {
+}: HTMLAttributes<HTMLElement> & Alignable) => {
   const classes = buildClasses('text-2xl my-4 font-medium', {
     className,
     textAlign,
@@ -49,12 +49,12 @@ export function H2({
   );
 }
 
-export function H3({
+export const H3 = ({
   className,
   children,
   textAlign,
   ...props
-}: HTMLAttributes<HTMLElement> & Alignable) {
+}: HTMLAttributes<HTMLElement> & Alignable) => {
   const classes = buildClasses('text-2xl my-4 font-light text-gray-800', {
     className,
     textAlign,
@@ -66,12 +66,12 @@ export function H3({
   );
 }
 
-export function H4({
+export const H4 = ({
   className,
   children,
   textAlign,
   ...props
-}: HTMLAttributes<HTMLElement> & Alignable) {
+}: HTMLAttributes<HTMLElement> & Alignable) => {
   const classes = buildClasses('text-xl my-4 text-gray-700', {
     className,
     textAlign,
@@ -83,12 +83,12 @@ export function H4({
   );
 }
 
-export function H5({
+export const H5 = ({
   className,
   children,
   textAlign,
   ...props
-}: HTMLAttributes<HTMLElement> & Alignable) {
+}: HTMLAttributes<HTMLElement> & Alignable) => {
   const classes = buildClasses('text-l my-4 font-semibold text-gray-600', {
     className,
     textAlign,
@@ -100,12 +100,12 @@ export function H5({
   );
 }
 
-export function H6({
+export const H6 = ({
   className,
   children,
   textAlign,
   ...props
-}: HTMLAttributes<HTMLElement> & Alignable) {
+}: HTMLAttributes<HTMLElement> & Alignable) => {
   const classes = buildClasses(
     'my-4 uppercase text-sm text-gray-600 font-medium',
     { className, textAlign }
@@ -117,12 +117,12 @@ export function H6({
   );
 }
 
-export function P({
+export const P = ({
   className,
   children,
   textAlign,
   ...props
-}: HTMLAttributes<HTMLElement> & Alignable) {
+}: HTMLAttributes<HTMLElement> & Alignable) => {
   const classes = buildClasses('my-2', { className, textAlign });
   return (
     <p className={classes} {...props}>

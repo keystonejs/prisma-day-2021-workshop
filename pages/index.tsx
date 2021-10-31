@@ -1,35 +1,21 @@
-import React, { useState } from 'react';
-import { GetStaticPropsContext } from 'next';
-
-import { fetchGraphQL, gql } from '../utils';
+import { fetchGraphQLInjectApiKey, gql } from '../utils/fetchGraphQL';
 import { DocumentRenderer } from '../schema/fields/content/renderers';
-
 import { Container } from '../components/ui/layout';
 import { Link } from '../components/ui/link';
 import { H1 } from '../components/ui/typography';
 import { useAuth } from '../components/auth';
+import { makeIO } from '../utils/maybeIOPromise'
+import { DocumentAny } from '../wrap_any'
 
-type Post = {
-  id: string;
-  slug: string;
-  title: string;
-  publishedDate: string;
-  intro: {
-    document: any;
-  };
-  author: {
-    name: string;
-  };
-};
 
-export default function Home({ posts }: { posts: Post[] }) {
+export default function Home({ posts }: { posts: QueryPost[] }) {
   const auth = useAuth();
   return (
     <Container>
       <H1>My Blog</H1>
       {auth.ready && auth.sessionData ? (
         <p>
-          You're signed in as {auth.sessionData.name} |{' '}
+          You&apos;re signed in as {auth.sessionData.name} |{' '}
           <button onClick={() => auth.signOut()}>sign out</button>
         </p>
       ) : (
@@ -39,7 +25,7 @@ export default function Home({ posts }: { posts: Post[] }) {
       )}
 
       <div>
-        {posts.map(post => {
+        {posts?.map(post => {
           const date = post.publishedDate
             ? new Date(post.publishedDate).toLocaleDateString()
             : null;
@@ -63,8 +49,29 @@ export default function Home({ posts }: { posts: Post[] }) {
   );
 }
 
-export async function getStaticProps({ params }: GetStaticPropsContext) {
-  const data = await fetchGraphQL(
+
+export type QueryPost = {
+  id: string;
+  title: string;
+  slug: string;
+  publishedDate: string;
+  intro: {
+    document: DocumentAny;
+  };
+  author: {
+    name: string;
+  };
+};
+
+export type TQueryPostsForIndex = {
+  posts: QueryPost[]
+}
+
+
+
+//We can save a little time by compiling the functional code to a runtime constant
+const fetchAllPostsForIndex = makeIO (() =>
+  fetchGraphQLInjectApiKey<TQueryPostsForIndex>(
     gql`
       query {
         posts(
@@ -85,6 +92,11 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
         }
       }
     `
-  );
-  return { props: { posts: data.posts }, revalidate: 60 };
+  ))
+  .then (data => data.posts);
+
+export const getStaticProps = () => {
+  return fetchAllPostsForIndex
+    .exec ([])
+    .then (postsRx => { return { props: { posts: postsRx }, revalidate: 60 } })
 }

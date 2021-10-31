@@ -1,17 +1,43 @@
+import { xlog } from './utils/logging';
+//import { Maps } from './utils/func';
 import { config } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
-
 import { lists, extendGraphqlSchema } from './schema';
-import { rules } from './schema/access';
+import { permissions } from './schema/access';
+import cuid from 'cuid';
 
 const dbUrl =
-  process.env.DATABASE_URL ||
-  `postgres://${process.env.USER}@localhost/prisma-day-workshop`;
+  `${process.env.DATABASE_URL}` ||
+  `postgres://${process.env?.POSTGRES_USER}:${process.env?.POSTGRES_PASSWORD}@${process.env?.POSTGRES_HOST}/${process.env?.POSTGRES_DB}`;
 
-const sessionSecret =
-  process.env.SESSION_SECERT ||
-  'iLqbHhm7qwiBNc8KgL4NQ8tD8fFVhNhNqZ2nRdprgnKNjgJHgvitWx6DPoZJpYHa';
+export const keystoneHost = process.env?.KEYSTONE_HOST || 'localhost';
+
+const sessionSecret = cuid() + cuid();
+
+export const keystoneNextjsBuildApiKey =
+  process.env.KEYSTONE_NEXTJS_BUILD_API_KEY ||
+  'keystone.ts:_NextjsBuildApiKey_says_change_me__im_just_for_testing_purposes';
+
+export const frontEndPort = process.env?.FRONT_END_PORT || '8000';
+
+//log().info('isFront end: ').info(isFrontEnd()).info("Env: ").info(process.env.PLATFORM);
+
+//mapString(processIsFrontEnd)(c => asciiLogger(c))
+//mapString('frontend')(c => asciiLogger(c))
+
+// Unless I'm missing something, its tricky to clone typescript objects
+// Fortunately theres a workaround for monad like objects, create a new one
+// using a class factory, in this case, logclos.
+// The resulting object is non-clonable, without entanglement, so is in the CMC, and not the CCC.
+// Since objects are so hard to clone it ts, this is not a big issue, indeed, ts seems better suited to the CMC
+
+//xlog makes a log trivial: this one is to check the URL is being properly decoded.
+xlog()
+  .info(`Database url: ${dbUrl}`)
+  .success(dbUrl)
+  .info(`Keystone host`)
+  .success(keystoneHost);
 
 const auth = createAuth({
   identityField: 'email',
@@ -42,7 +68,7 @@ export default auth.withAuth(
       provider: 'postgresql',
       useMigrations: true,
     },
-    ui: { isAccessAllowed: rules.canUseAdminUI },
+    ui: { isAccessAllowed: permissions.canUseAdminUI },
     lists,
     session: statelessSessions({
       secret: sessionSecret,

@@ -1,10 +1,10 @@
-import { SVGAttributes } from 'react';
+import React, { SVGAttributes } from 'react';
 import cx from 'classnames';
 
-export function ChevronLeft({
+export const ChevronLeft = ({
   className,
-  ...props
-}: SVGAttributes<SVGElement>) {
+  //...props
+}: SVGAttributes<SVGElement>) => {
   const classes = cx('h-6 w-6', className);
   return (
     <svg

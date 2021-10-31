@@ -6,5 +6,5 @@ module.exports = {
         destination: 'http://localhost:3000/api/graphql',
       },
     ];
-  },
+  }
 };

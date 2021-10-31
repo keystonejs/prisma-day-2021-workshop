@@ -1,24 +1,48 @@
-import { relationship, select, text, timestamp } from '@keystone-next/keystone/fields';
+import {
+  relationship,
+  select,
+  text,
+  timestamp,
+} from '@keystone-next/keystone/fields';
 import { document } from '@keystone-next/fields-document';
 import { list } from '@keystone-next/keystone';
 
-import { permissions, rules } from './access';
+import {
+  permissions,
+  ItemContext,
+  SessionFrame,
+  PUBLISHED,
+  DRAFT,
+  ARCHIVED,
+  EDIT,
+  READ,
+  HIDDEN,
+} from './access';
 import { componentBlocks } from '../schema/fields/content/components';
 
-export const contentListAccess = {
-  filter: {
-    create: permissions.canManageContent,
-    update: permissions.canManageContent,
-    delete: permissions.canManageContent,
-  }
-};
+import { ItemSession, GraphQLClause } from '../wrap_any';
+
+//FIXME:
+// These anys are causing issues. What is the strong type?
+// The deduced type from permissions api is SessionFrame, but that doesn't work ...
+// MaybeSessionFunction has something to do with the ts error.
 
 export const contentUIConfig = {
-  hideCreate: (context: any) => !permissions.canManageContent(context),
-  hideDelete: (context: any) => !permissions.canManageContent(context),
+  hideCreate: (session: ItemSession) =>
+    !permissions.canManageContentItem(session),
+  hideDelete: (session: ItemSession) =>
+    !permissions.canManageContentItem(session),
   itemView: {
-    defaultFieldMode: (context: any) =>
-      permissions.canManageContent(context) ? 'edit' : 'read',
+    defaultFieldMode: (session: ItemContext) =>
+      permissions.canManageContentSession(session) ? EDIT : READ,
+  },
+};
+
+export const contentListAccess = {
+  operation: {
+    create: permissions.canManageContentList,
+    update: permissions.canManageContentList,
+    delete: permissions.canManageContentList,
   },
 };
 
@@ -28,6 +52,7 @@ export const Label = list({
   fields: {
     name: text(),
     posts: relationship({
+      isFilterable: true,
       ref: 'Post.labels',
       many: true,
       ui: {
@@ -35,35 +60,42 @@ export const Label = list({
       },
     }),
   },
-});
+} as const);
 
-function defaultSlug({ context, inputData }: any) {
+const defaultSlug = (inputData: GraphQLClause) => {
   const date = new Date();
-  return `${inputData?.title
-    ?.trim()
-    ?.toLowerCase()
-    ?.replace(/[^\w ]+/g, '')
-    ?.replace(/ +/g, '-') ?? ''
-    }-${date?.getFullYear() ?? ''}${date?.getMonth() + 1 ?? ''}${date?.getDate() ?? ''
-    }`;
-}
+  return `${
+    inputData?.title
+      ?.trim()
+      ?.toLowerCase()
+      ?.replace(/[^\w ]+/g, '')
+      ?.replace(/ +/g, '-') ?? ''
+  }-${date?.getFullYear() ?? ''}${date?.getMonth() + 1 ?? ''}${
+    date?.getDate() ?? ''
+  }`;
+};
 
-function defaultTimestamp() {
+export const defaultTimestamp = () => {
   return new Date().toISOString();
-}
+};
 
 export const Post = list({
   access: {
+    operation: {
+      create: permissions.canManageContentList,
+      update: permissions.canManageContentList,
+      delete: permissions.canManageContentList,
+    },
     filter: {
-      ...contentListAccess.filter,
-      query: rules.canReadContentList,
+      query: (frame: SessionFrame) =>
+        permissions.filterCanManageContentList(frame),
     },
   },
   ui: contentUIConfig,
   fields: {
     title: text(),
     slug: text({
-      ui: { createView: { fieldMode: 'hidden' } },
+      ui: { createView: { fieldMode: HIDDEN } },
       isIndexed: 'unique',
       hooks: {
         resolveInput: ({ operation, resolvedData, inputData, context }) => {
@@ -71,14 +103,14 @@ export const Post = list({
             return defaultSlug({ context, inputData });
           }
           return resolvedData.slug;
-        }
-      }
+        },
+      },
     }),
     status: select({
       options: [
-        { label: 'Draft', value: 'draft' },
-        { label: 'Published', value: 'published' },
-        { label: 'Archived', value: 'archived' },
+        { label: 'Draft', value: DRAFT },
+        { label: 'Published', value: PUBLISHED },
+        { label: 'Archived', value: ARCHIVED },
       ],
       defaultValue: 'draft',
       ui: { displayMode: 'segmented-control' },
@@ -90,8 +122,8 @@ export const Post = list({
             return defaultTimestamp();
           }
           return resolvedData.slug;
-        }
-      }
+        },
+      },
     }),
     author: relationship({ ref: 'User.authoredPosts' }),
     labels: relationship({ ref: 'Label.posts', many: true }),
@@ -129,4 +161,4 @@ export const Post = list({
       ui: { views: require.resolve('./fields/content/components') },
     }),
   },
-});
+} as const);

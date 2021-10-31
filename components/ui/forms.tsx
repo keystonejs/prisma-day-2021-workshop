@@ -1,15 +1,15 @@
-import {
+import React, {
   HTMLAttributes,
   InputHTMLAttributes,
   SelectHTMLAttributes,
 } from 'react';
 import classNames from 'classnames';
 
-export function FieldContainer({
+export const FieldContainer = ({
   children,
   className,
   ...props
-}: HTMLAttributes<HTMLElement>) {
+}: HTMLAttributes<HTMLElement>) => {
   const classes = classNames('my-4', className);
   return (
     <div className={classes}>
@@ -18,11 +18,11 @@ export function FieldContainer({
   );
 }
 
-export function FieldLabel({
+export const FieldLabel = ({
   children,
   className,
   ...props
-}: HTMLAttributes<HTMLElement>) {
+}: HTMLAttributes<HTMLElement>) => {
   const classes = classNames('inline-block w-36 ' + className);
   return (
     <span className={classes} {...props}>
@@ -31,13 +31,13 @@ export function FieldLabel({
   );
 }
 
-export function TextInput({
+export const TextInput = ({
   size = 'default',
   className,
   ...props
 }: Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> & {
   size?: 'default' | 'large';
-}) {
+}) => {
   const sizeClasses = {
     default: 'p-1',
     large: 'p-2',
@@ -50,10 +50,10 @@ export function TextInput({
   return <input type="text" className={classes} {...props} />;
 }
 
-export function Checkbox({
+export const Checkbox = ({
   className,
   ...props
-}: InputHTMLAttributes<HTMLInputElement>) {
+}: InputHTMLAttributes<HTMLInputElement>) => {
   const classes = classNames(
     'focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded',
     className
@@ -61,11 +61,11 @@ export function Checkbox({
   return <input type="checkbox" className={classes} {...props} />;
 }
 
-export function Select({
+export const Select = ({
   children,
   className,
   ...props
-}: SelectHTMLAttributes<HTMLSelectElement>) {
+}: SelectHTMLAttributes<HTMLSelectElement>) => {
   const classes = classNames(
     'mt-1 py-1 pl-2 pr-8 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm',
     className

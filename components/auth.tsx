@@ -1,4 +1,4 @@
-import {
+import React, {
   createContext,
   useRef,
   useMemo,
@@ -7,18 +7,32 @@ import {
   ReactNode,
 } from 'react';
 
-import { gql, useQuery, useMutation } from 'urql';
+import { gql, useQuery, useMutation, OperationResult} from 'urql';
+import { Maps } from '../utils/func'
+import { makeIO } from '../utils/maybeIOPromise'
+import { AuthenticationResponseAny } from '../wrap_any';
+//Security audit:
+//Pushed an `any` one depth lower into urql.
+export type AuthenticationResponse = OperationResult<AuthenticationResponseAny,object>
 
 export type SignInArgs = { email: string; password: string };
 export type SignInResult =
   | { success: true }
   | { success: false; message: string };
 
+
+
+/* eslint-enable */
+
 type AuthContextType =
   | {
       ready: true;
       sessionData?: { id: string; name: string };
-      signIn: ({ email, password }: SignInArgs) => Promise<SignInResult>;
+
+      signIn: Maps<SignInArgs,Promise<SignInResult>>;
+
+
+
       signOut: () => void;
     }
   | {
@@ -28,8 +42,8 @@ type AuthContextType =
 const AuthContext = createContext<AuthContextType>({
   ready: false,
 });
-
-export function useAuth() {
+/* eslint-disable */
+export const useAuth = () => {
   return useContext(AuthContext);
 }
 
@@ -40,7 +54,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     []
   );
 
-  const [{ fetching, data: sessionData, error: sessionError }, refetch] =
+  const [{ fetching, data: sessionData, error: sessionError }/*, refetch*/] =
     useQuery({
       query: gql`
         query {
@@ -70,44 +84,53 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   `);
 
-  const signIn = async ({
-    email,
-    password,
-  }: SignInArgs): Promise<SignInResult> => {
-    const result: any = await authenticate(
-      { email, password },
+  type AuthResponse = {data?: {authenticateUserWithPassword?: {__typename: string, message: string}}, error?: Object};
+
+  const typedAuthenticate = (details: SignInArgs, mutContext: any) : Promise<AuthResponse> => authenticate(
+    details,
+    mutContext
+  )
+
+  const signIn = (details: SignInArgs): Promise<SignInResult> => {
+    return makeIO(()=>typedAuthenticate(
+      details,
       mutationContext
-    );
-    const { data, error } = result;
-    if (
-      data?.authenticateUserWithPassword?.__typename ===
-      'UserAuthenticationWithPasswordSuccess'
-    ) {
-      return { success: true };
-    } else if (
-      data?.authenticateUserWithPassword?.__typename ===
-      'UserAuthenticationWithPasswordFailure'
-    ) {
-      return {
-        success: false,
-        message: data.authenticateUserWithPassword?.message,
-      };
+    ))
+    .then (result =>
+    {
+      const { data, error } = result;
+      if (
+        data?.authenticateUserWithPassword?.__typename ===
+        'UserAuthenticationWithPasswordSuccess'
+      ) {
+        return { success: true } as SignInResult;
+      } else if (
+        data?.authenticateUserWithPassword?.__typename ===
+        'UserAuthenticationWithPasswordFailure'
+      ) {
+        return {
+          success: false,
+          message: data.authenticateUserWithPassword?.message,
+        } ;
+      }
+      if (error) {
+        return { success: false, message: error.toString() };
+      } else {
+        return { success: false, message: 'An unknown error occurred' };
+      }
     }
-    if (error) {
-      return { success: false, message: error.toString() };
-    } else {
-      return { success: false, message: 'An unknown error occurred' };
-    }
+      )
+    .exec({ success: false, message: 'An unknown runtime error occurred' });
   };
 
-  const [{}, signOutMutation] = useMutation(gql`
+  const [u, signOutMutation] = useMutation(gql`
     mutation {
       endSession
     }
   `);
 
   const signOut = () => {
-    signOutMutation(undefined, mutationContext);
+    signOutMutation(u, mutationContext);
   };
 
   useEffect(() => {
