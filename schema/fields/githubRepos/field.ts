@@ -2,7 +2,7 @@
 // https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 
 import { graphql } from '@keystone-next/keystone';
-import { fetchIO } from '../../../utils/fetchGraphQL';
+import { fetchWithTimeoutIO } from '../../../utils/fetchGraphQL';
 //import { bad } from '../../../utils/badValues';
 //import { hardCast } from '../../../utils/func';
 import { GithubResolverItemAny } from '../../../wrap_any';
@@ -85,7 +85,7 @@ export const githubReposResolver = (item: GithubResolverItemAny) => {
 
   if (!utc.githubUsername) return [];
 
-  return fetchIO(
+  return fetchWithTimeoutIO(5000)(
     `https://api.github.com/users/${item.githubUsername}/repos?type=public&per_page=100`,
     {
       method: 'GET',

@@ -19,6 +19,26 @@ export const fetchIO = (...args: TfetchArgs) => {
   );
 };
 
+export const fetchWithTimeout =
+  (timeout: number) =>
+  (...args: TfetchArgs) =>
+    Promise.race([
+      fetch(...args)
+        .then(res => {
+          return Promise.all([res.status, res.json()]);
+        })
+        .then(([status, jsonData]) => (status ? jsonData : null)),
+
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('timeout')), timeout)
+      ),
+    ]);
+
+export const fetchWithTimeoutIO =
+  (timeout: number) =>
+  (...args: TfetchArgs) =>
+    makeIO(() => fetchWithTimeout(timeout)(...args));
+
 //Towards a scriptable version
 export const fetchGraphQLInjectApiKey = async <T>(
   query: string,
@@ -28,7 +48,7 @@ export const fetchGraphQLInjectApiKey = async <T>(
     ? log().warning('Prototype api key: ' + keystoneNextjsBuildApiKey)
     : log().success('Next build: x-api-key: tx');
 
-  return fetchIO(`http://${keystoneHost}:3000/api/graphql`, {
+  return fetchWithTimeoutIO(5000)(`http://${keystoneHost}:3000/api/graphql`, {
     method: 'POST',
     body: JSON.stringify({ query, variables }),
     headers: {
