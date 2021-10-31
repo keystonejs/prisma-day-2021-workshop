@@ -20,7 +20,7 @@ COPY  --chown=keystonejs:keystonejs ./ ./
 
 USER keystonejs
 
-RUN yarn
+RUN yarn install --frozen-lockfile
 
 EXPOSE 3000
 
