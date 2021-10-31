@@ -3,23 +3,23 @@
 FROM docker.io/library/node:14.18.1-bullseye AS runner
 
 
-ENV NODE_ENV production
+#ENV NODE_ENV production
 RUN apt-get update -y
 RUN apt-get install dumb-init -y
 
-RUN groupadd --gid 1001 keystonejs
-RUN useradd --uid 1001 --gid 1001 keystonejs
+RUN groupadd --gid 1001 keystonejs \
+&& useradd --uid 1001 --gid 1001 keystonejs
 
 WORKDIR /home/keystonejs
 
 # You only need to copy next.config.js if you are NOT using the default configuration
 # COPY --from=builder /app/next.config.js ./
 #COPY --from=builder /app/ ./
-COPY ./ --chown=keystonejs:keystonejs ./
+COPY  --chown=keystonejs:keystonejs ./ ./
 #COPY --from=builder /app/node_modules ./node_modules
 #COPY --from=builder /app/package.json ./package.json
 
-USER keystonejs
+#USER keystonejs
 
 EXPOSE 3000
 
