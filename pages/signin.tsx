@@ -31,7 +31,9 @@ export default function SigninPage() {
       // FIXME: there's a cache issue with Urql where it's not reloading the
       // current user properly if we do a client-side redirect here.
       // router.push('/');
-      top.location.href = '/';
+      if (top) {
+        top.location.href = '/';
+      }
     } else {
       setEmail('');
       setPassword('');
