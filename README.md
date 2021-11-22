@@ -18,7 +18,7 @@ Learn more at [keystonejs.com](https://keystonejs.com)
 
 Make sure you have:
 
-- Node v12 or v14
+- Node v16
 - Yarn
 - Postgres
 
