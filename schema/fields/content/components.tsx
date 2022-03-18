@@ -12,12 +12,12 @@ import {
   component,
   fields,
   NotEditable,
-} from '@keystone-next/fields-document/component-blocks';
+} from '@keystone-6/fields-document/component-blocks';
 import {
   ToolbarButton,
   ToolbarGroup,
   ToolbarSeparator,
-} from '@keystone-next/fields-document/primitives';
+} from '@keystone-6/fields-document/primitives';
 
 const appearances = {
   info: {

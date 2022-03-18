@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { GetStaticPropsContext } from 'next';
 
-import { fetchGraphQL, gql } from '../utils';
+import { gql } from '@ts-gql/tag/no-transform';
+import { fetchGraphQL } from '../utils';
 import { DocumentRenderer } from '../schema/fields/content/renderers';
 
 import { Container } from '../components/ui/layout';
@@ -64,9 +65,9 @@ export default function Home({ posts }: { posts: Post[] }) {
 }
 
 export async function getStaticProps({ params }: GetStaticPropsContext) {
-  const data = await fetchGraphQL(
-    gql`
-      query {
+  const data = await fetchGraphQL({
+    operation: gql`
+      query AllPosts {
         posts(
           where: { status: { equals: "published" } }
           orderBy: [{ publishedDate: desc }]
@@ -84,7 +85,7 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
           }
         }
       }
-    `
-  );
-  return { props: { posts: data.posts }, revalidate: 60 };
+    ` as import('../__generated__/ts-gql/AllPosts').type,
+  });
+  return { props: { posts: data.posts! }, revalidate: 60 };
 }

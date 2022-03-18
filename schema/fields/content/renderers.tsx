@@ -1,8 +1,8 @@
-import { InferRenderersForComponentBlocks } from '@keystone-next/fields-document/component-blocks';
+import { InferRenderersForComponentBlocks } from '@keystone-6/fields-document/component-blocks';
 import {
   DocumentRenderer as KeystoneDocumentRenderer,
   DocumentRendererProps,
-} from '@keystone-next/document-renderer';
+} from '@keystone-6/document-renderer';
 import React, { ComponentProps, Fragment } from 'react';
 
 import { H1, H2, H3, H4, H5, H6, P } from '../../../components/ui/typography';

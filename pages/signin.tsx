@@ -5,7 +5,6 @@ import { Container, HomeLink } from '../components/ui/layout';
 import { H1 } from '../components/ui/typography';
 import { FieldContainer, FieldLabel, TextInput } from '../components/ui/forms';
 import { Link } from '../components/ui/link';
-import { useRouter } from 'next/router';
 import { useAuth } from '../components/auth';
 
 export default function SigninPage() {
@@ -31,7 +30,7 @@ export default function SigninPage() {
       // FIXME: there's a cache issue with Urql where it's not reloading the
       // current user properly if we do a client-side redirect here.
       // router.push('/');
-      top.location.href = '/';
+      top!.location.href = '/';
     } else {
       setEmail('');
       setPassword('');

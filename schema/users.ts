@@ -4,8 +4,9 @@ import {
   relationship,
   text,
   virtual,
-} from '@keystone-next/keystone/fields';
-import { list, graphql } from '@keystone-next/keystone';
+} from '@keystone-6/core/fields';
+import { list, graphql } from '@keystone-6/core';
+import path from 'path';
 
 import { permissions, rules } from './access';
 import { GitHubRepo, githubReposResolver } from './fields/githubRepos/field';
@@ -30,7 +31,7 @@ export const User = list({
       query: () => true,
       update: rules.canManageUserList,
       delete: rules.canManageUserList,
-    }
+    },
   },
   ui: {
     hideCreate: context => !permissions.canManageUsers(context),
@@ -86,7 +87,7 @@ export const User = list({
         resolve: githubReposResolver,
       }),
       ui: {
-        views: require.resolve('./fields/githubRepos/components'),
+        views: path.join(__dirname, './fields/githubRepos/components'),
         createView: { fieldMode: 'hidden' },
         listView: { fieldMode: 'hidden' },
         itemView: { fieldMode: 'read' },
@@ -118,7 +119,7 @@ export const Role = list({
       delete: permissions.canManageUsers,
       query: permissions.canManageUsers,
       update: permissions.canManageUsers,
-    }
+    },
   },
   ui: {
     isHidden: context => !permissions.canManageUsers(context),

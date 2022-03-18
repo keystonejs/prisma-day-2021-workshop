@@ -1,6 +1,7 @@
-import { relationship, select, text, timestamp } from '@keystone-next/keystone/fields';
-import { document } from '@keystone-next/fields-document';
-import { list } from '@keystone-next/keystone';
+import { relationship, select, text, timestamp } from '@keystone-6/core/fields';
+import { document } from '@keystone-6/fields-document';
+import { list } from '@keystone-6/core';
+import path from 'path';
 
 import { permissions, rules } from './access';
 import { componentBlocks } from '../schema/fields/content/components';
@@ -10,7 +11,7 @@ export const contentListAccess = {
     create: permissions.canManageContent,
     update: permissions.canManageContent,
     delete: permissions.canManageContent,
-  }
+  },
 };
 
 export const contentUIConfig = {
@@ -39,13 +40,15 @@ export const Label = list({
 
 function defaultSlug({ context, inputData }: any) {
   const date = new Date();
-  return `${inputData?.title
-    ?.trim()
-    ?.toLowerCase()
-    ?.replace(/[^\w ]+/g, '')
-    ?.replace(/ +/g, '-') ?? ''
-    }-${date?.getFullYear() ?? ''}${date?.getMonth() + 1 ?? ''}${date?.getDate() ?? ''
-    }`;
+  return `${
+    inputData?.title
+      ?.trim()
+      ?.toLowerCase()
+      ?.replace(/[^\w ]+/g, '')
+      ?.replace(/ +/g, '-') ?? ''
+  }-${date?.getFullYear() ?? ''}${date?.getMonth() + 1 ?? ''}${
+    date?.getDate() ?? ''
+  }`;
 }
 
 function defaultTimestamp() {
@@ -71,8 +74,8 @@ export const Post = list({
             return defaultSlug({ context, inputData });
           }
           return resolvedData.slug;
-        }
-      }
+        },
+      },
     }),
     status: select({
       options: [
@@ -90,8 +93,8 @@ export const Post = list({
             return defaultTimestamp();
           }
           return resolvedData.slug;
-        }
-      }
+        },
+      },
     }),
     author: relationship({ ref: 'User.authoredPosts' }),
     labels: relationship({ ref: 'Label.posts', many: true }),
@@ -126,7 +129,7 @@ export const Post = list({
         },
       },
       componentBlocks,
-      ui: { views: require.resolve('./fields/content/components') },
+      ui: { views: path.join(__dirname, './fields/content/components') },
     }),
   },
 });

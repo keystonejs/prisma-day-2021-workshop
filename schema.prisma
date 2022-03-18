@@ -7,9 +7,8 @@ datasource postgresql {
 }
 
 generator client {
-  provider   = "prisma-client-js"
-  output     = "node_modules/.prisma/client"
-  engineType = "binary"
+  provider = "prisma-client-js"
+  output   = "node_modules/.prisma/client"
 }
 
 model Post {
@@ -20,7 +19,7 @@ model Post {
   publishedDate DateTime?
   author        User?     @relation("Post_author", fields: [authorId], references: [id])
   authorId      String?   @map("author")
-  labels        Label[]   @relation("Label_posts_Post_labels")
+  labels        Label[]   @relation("Label_posts")
   intro         Json      @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
   content       Json      @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
 
@@ -30,7 +29,7 @@ model Post {
 model Label {
   id    String @id @default(cuid())
   name  String @default("")
-  posts Post[] @relation("Label_posts_Post_labels")
+  posts Post[] @relation("Label_posts")
 }
 
 model Poll {
@@ -44,7 +43,7 @@ model PollAnswer {
   label           String  @default("")
   poll            Poll?   @relation("PollAnswer_poll", fields: [pollId], references: [id])
   pollId          String? @map("poll")
-  answeredByUsers User[]  @relation("PollAnswer_answeredByUsers_User_pollAnswers")
+  answeredByUsers User[]  @relation("PollAnswer_answeredByUsers")
 
   @@index([pollId])
 }
@@ -58,7 +57,7 @@ model User {
   roleId         String?      @map("role")
   githubUsername String       @default("")
   authoredPosts  Post[]       @relation("Post_author")
-  pollAnswers    PollAnswer[] @relation("PollAnswer_answeredByUsers_User_pollAnswers")
+  pollAnswers    PollAnswer[] @relation("PollAnswer_answeredByUsers")
 
   @@index([roleId])
 }

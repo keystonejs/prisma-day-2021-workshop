@@ -1,12 +1,9 @@
-import { graphQLSchemaExtension } from '@keystone-next/keystone';
-import { KeystoneContext, PollWhereInput } from '.keystone/types';
+import { graphQLSchemaExtension } from '@keystone-6/core';
+import { Context, PollWhereInput } from '.keystone/types';
 
 const gql = ([content]: TemplateStringsArray) => content;
 
-async function clearVote(
-  _context: KeystoneContext,
-  pollFilter: PollWhereInput
-) {
+async function clearVote(_context: Context, pollFilter: PollWhereInput) {
   const context = _context.sudo();
   if (!context.session) {
     throw new Error('You must be signed in to vote');
@@ -15,7 +12,7 @@ async function clearVote(
   const answers = await context.db.PollAnswer.findMany({
     where: {
       poll: pollFilter,
-      answeredByUsers_some: { id: context.session.itemId },
+      answeredByUsers: { some: { id: { equals: context.session.itemId } } },
     },
   });
 
@@ -31,7 +28,7 @@ async function clearVote(
   }
 }
 
-export const extendGraphqlSchema = graphQLSchemaExtension({
+export const extendGraphqlSchema = graphQLSchemaExtension<Context>({
   typeDefs: gql`
     type Mutation {
       voteForPoll(answerId: ID!): Boolean
@@ -41,10 +38,10 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
   resolvers: {
     Mutation: {
       async clearVoteForPoll(rootVal, { pollId }, context) {
-        await clearVote(context as KeystoneContext, { id: pollId });
+        await clearVote(context, { id: pollId });
       },
       async voteForPoll(rootVal, { answerId }, _context) {
-        const context = _context.sudo() as KeystoneContext;
+        const context = _context.sudo();
         clearVote(context, { answers: { some: { id: answerId } } });
         await context.db.PollAnswer.updateOne({
           where: { id: answerId },
