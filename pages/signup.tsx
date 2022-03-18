@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { gql, useMutation } from 'urql';
 
 import { Button } from '../components/ui/controls';
 import { Container, HomeLink } from '../components/ui/layout';
@@ -7,19 +6,23 @@ import { H1 } from '../components/ui/typography';
 import { FieldContainer, FieldLabel, TextInput } from '../components/ui/forms';
 import { useRouter } from 'next/router';
 import { Link } from '../components/ui/link';
+import { gql } from '@ts-gql/tag/no-transform';
+import { useMutation } from '@ts-gql/apollo';
 
 export default function SignupPage() {
-  const [{ error, data }, signup] = useMutation(gql`
-    mutation ($name: String!, $email: String!, $password: String!) {
-      createUser(data: { name: $name, email: $email, password: $password }) {
-        __typename
-        id
+  const [signup, { error, data }] = useMutation(
+    gql`
+      mutation Signup($name: String!, $email: String!, $password: String!) {
+        createUser(data: { name: $name, email: $email, password: $password }) {
+          __typename
+          id
+        }
+        authenticateUserWithPassword(email: $email, password: $password) {
+          __typename
+        }
       }
-      authenticateUserWithPassword(email: $email, password: $password) {
-        __typename
-      }
-    }
-  `);
+    ` as import('../__generated__/ts-gql/Signup').type
+  );
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,7 +36,7 @@ export default function SignupPage() {
       <form
         onSubmit={event => {
           event.preventDefault();
-          signup({ name, email, password }).then(result => {
+          signup({ variables: { name, email, password } }).then(result => {
             if (result.data?.createUser) {
               // FIXME: there's a cache issue with Urql where it's not reloading the
               // current user properly if we do a client-side redirect here.

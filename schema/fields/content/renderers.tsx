@@ -10,7 +10,8 @@ import { Divider } from '../../../components/ui/layout';
 import { useAuth } from '../../../components/auth';
 import { Button } from '../../../components/ui/controls';
 import { Link } from '../../../components/ui/link';
-import { gql, useMutation, useQuery } from 'urql';
+import { gql } from '@ts-gql/tag/no-transform';
+import { useMutation, useQuery } from '@ts-gql/apollo';
 
 // by default the DocumentRenderer will render unstyled html elements
 // we're customising how headings are rendered here but you can customise any of the renderers that the DocumentRenderer uses
@@ -86,10 +87,10 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
   },
   poll: function Poll({ poll: relatedPoll }) {
     if (!relatedPoll?.data) return null;
-    const [{ data }] = useQuery({
-      query: gql`
-        query ($id: ID!) {
-          Poll(where: { id: $id }) {
+    const { data } = useQuery(
+      gql`
+        query Poll($id: ID!) {
+          poll(where: { id: $id }) {
             id
             label
             answers {
@@ -102,21 +103,25 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
             }
           }
         }
-      `,
-      variables: { id: relatedPoll.id },
-    });
-    const poll = (data?.Poll || relatedPoll.data) as Poll;
+      ` as import('../../../__generated__/ts-gql/Poll').type,
+      { variables: { id: relatedPoll.id } }
+    );
+    const poll = (data?.poll || relatedPoll.data) as Poll;
 
-    const [{}, voteForPoll] = useMutation(gql`
-      mutation ($answerId: ID!) {
-        voteForPoll(answerId: $answerId)
-      }
-    `);
-    const [{}, clearVoteForPoll] = useMutation(gql`
-      mutation ($pollId: ID!) {
-        clearVoteForPoll(pollId: $pollId)
-      }
-    `);
+    const [voteForPoll] = useMutation(
+      gql`
+        mutation VoteForPoll($answerId: ID!) {
+          voteForPoll(answerId: $answerId)
+        }
+      ` as import('../../../__generated__/ts-gql/VoteForPoll').type
+    );
+    const [clearVoteForPoll] = useMutation(
+      gql`
+        mutation ClearVoteForPoll($pollId: ID!) {
+          clearVoteForPoll(pollId: $pollId)
+        }
+      ` as import('../../../__generated__/ts-gql/ClearVoteForPoll').type
+    );
     const auth = useAuth();
     return (
       <div className="my-4">
@@ -137,10 +142,10 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
                   checked={poll.userAnswer?.id === answer.id}
                   disabled={!auth.ready || !auth.sessionData}
                   onChange={() => {
-                    voteForPoll(
-                      { answerId: answer.id },
-                      { additionalTypenames: ['Poll', 'PollAnswer'] }
-                    );
+                    voteForPoll({
+                      variables: { answerId: answer.id },
+                      refetchQueries: ['Poll'],
+                    });
                   }}
                   className="rounded-full bg-blue-200 border-2 border-blue-400 w-4 h-4 inline-block mr-4"
                 />
@@ -160,10 +165,10 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
         {poll.userAnswer?.id && (
           <Button
             onClick={() => {
-              clearVoteForPoll(
-                { pollId: relatedPoll.id },
-                { additionalTypenames: ['Poll', 'PollAnswer'] }
-              );
+              clearVoteForPoll({
+                variables: { pollId: relatedPoll.id },
+                refetchQueries: ['Poll'],
+              });
             }}
           >
             Clear Vote

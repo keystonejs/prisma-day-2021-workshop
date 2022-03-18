@@ -37,12 +37,12 @@ export const extendGraphqlSchema = graphQLSchemaExtension<Context>({
   `,
   resolvers: {
     Mutation: {
-      async clearVoteForPoll(rootVal, { pollId }, context) {
-        await clearVote(context, { id: pollId });
+      async clearVoteForPoll(rootVal, { pollId }: { pollId: string }, context) {
+        await clearVote(context, { id: { equals: pollId } });
       },
-      async voteForPoll(rootVal, { answerId }, _context) {
+      async voteForPoll(rootVal, { answerId }: { answerId: string }, _context) {
         const context = _context.sudo();
-        clearVote(context, { answers: { some: { id: answerId } } });
+        clearVote(context, { answers: { some: { id: { equals: answerId } } } });
         await context.db.PollAnswer.updateOne({
           where: { id: answerId },
           data: {
