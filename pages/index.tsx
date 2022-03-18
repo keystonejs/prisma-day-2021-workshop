@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GetStaticPropsContext } from 'next';
+import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 
 import { gql } from '@ts-gql/tag/no-transform';
 import { fetchGraphQL } from '../utils';
@@ -10,20 +10,9 @@ import { Link } from '../components/ui/link';
 import { H1 } from '../components/ui/typography';
 import { useAuth } from '../components/auth';
 
-type Post = {
-  id: string;
-  slug: string;
-  title: string;
-  publishedDate: string;
-  intro: {
-    document: any;
-  };
-  author: {
-    name: string;
-  };
-};
-
-export default function Home({ posts }: { posts: Post[] }) {
+export default function Home({
+  posts,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   const auth = useAuth();
   return (
     <Container>

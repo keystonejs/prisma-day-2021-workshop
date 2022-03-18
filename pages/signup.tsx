@@ -36,12 +36,12 @@ export default function SignupPage() {
       <form
         onSubmit={event => {
           event.preventDefault();
-          signup({ variables: { name, email, password } }).then(result => {
+          signup({
+            variables: { name, email, password },
+            refetchQueries: ['AuthenticatedItem'],
+          }).then(result => {
             if (result.data?.createUser) {
-              // FIXME: there's a cache issue with Urql where it's not reloading the
-              // current user properly if we do a client-side redirect here.
-              // router.push('/');
-              top!.location.href = '/';
+              router.push('/');
             }
           });
         }}
@@ -76,7 +76,7 @@ export default function SignupPage() {
           />
         </FieldContainer>
         <Button type="submit" size="large" appearance="primary">
-          Sign In
+          Sign Up
         </Button>
       </form>
       <hr className="my-4" />

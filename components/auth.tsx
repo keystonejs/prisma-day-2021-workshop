@@ -70,7 +70,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     password,
   }: SignInArgs): Promise<SignInResult> => {
     try {
-      const result = await authenticate({ variables: { email, password } });
+      const result = await authenticate({
+        variables: { email, password },
+        refetchQueries: ['AuthenticatedItem'],
+      });
       const { data } = result;
       if (
         data?.authenticateUserWithPassword?.__typename ===

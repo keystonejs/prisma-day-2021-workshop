@@ -6,6 +6,7 @@ import { H1 } from '../components/ui/typography';
 import { FieldContainer, FieldLabel, TextInput } from '../components/ui/forms';
 import { Link } from '../components/ui/link';
 import { useAuth } from '../components/auth';
+import { useRouter } from 'next/router';
 
 export default function SigninPage() {
   const auth = useAuth();
@@ -13,7 +14,7 @@ export default function SigninPage() {
   const [password, setPassword] = useState('password');
   const [error, setError] = useState('');
 
-  // const router = useRouter();
+  const router = useRouter();
 
   const signIn = async () => {
     if (!auth.ready) {
@@ -27,10 +28,7 @@ export default function SigninPage() {
     setError('');
     const result = await auth.signIn({ email, password });
     if (result.success) {
-      // FIXME: there's a cache issue with Urql where it's not reloading the
-      // current user properly if we do a client-side redirect here.
-      // router.push('/');
-      top!.location.href = '/';
+      router.push('/');
     } else {
       setEmail('');
       setPassword('');
