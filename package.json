@@ -12,6 +12,7 @@
     "site:dev": "next dev -p 8000",
     "site:build": "yarn lint && next build",
     "site:start": "next start -p 8000",
+    "site:launch": "site:build && site:start",
     "dev": "keystone-next dev",
     "start": "keystone-next start",
     "build": "yarn lint && keystone-next build",
