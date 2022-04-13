@@ -16,7 +16,7 @@
     "dev": "keystone-next dev",
     "start": "keystone-next start",
     "build": "yarn lint && keystone-next build",
-    "launch": "yarn build && yarn start",
+    "launch": "sleep 10 && yarn build && yarn start",
     "migrate": "keystone-next prisma migrate deploy",
     "format": "prettier --write \"**/*.ts\"",
     "lint": "eslint ./utils ./pages ./schema ./*.ts ./*.js",
