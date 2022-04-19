@@ -4,9 +4,9 @@ import {
   relationship,
   text,
   virtual,
-} from '@keystone-next/keystone/fields';
+} from '@keystone-6/core/fields';
 
-import { graphql, list } from '@keystone-next/keystone';
+import { graphql, list } from '@keystone-6/core';
 
 import {
   permissions,

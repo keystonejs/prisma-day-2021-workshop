@@ -44,6 +44,17 @@ module.exports = {
       { functions: false, classes: false, variables: true },
 
     ],
+    @typescript-eslint/ban-types": [
+      "error",
+      {
+        "extendDefaults": true,
+        "types": {
+          "{}": false
+        }
+      }
+    ]
+
+
   },
   settings: {
     "import/resolver": {

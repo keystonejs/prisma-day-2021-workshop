@@ -12,12 +12,12 @@ import {
   component,
   fields,
   NotEditable,
-} from '@keystone-next/fields-document/component-blocks';
+} from '@keystone-6/fields-document/component-blocks';
 import {
   ToolbarButton,
   ToolbarGroup,
   ToolbarSeparator,
-} from '@keystone-next/fields-document/primitives';
+} from '@keystone-6/fields-document/primitives';
 
 import { PollAnswerAny } from '../../../wrap_any'
 
@@ -56,7 +56,8 @@ export const componentBlocks = {
     component: function Callout({ content, appearance }) {
       const { /*palette,*/ radii, spacing } = useTheme();
       const intentConfig = appearances[appearance.value];
-
+      if (content == undefined)
+        return (<div> </div>);
       return (
         <div
           css={{
@@ -80,7 +81,7 @@ export const componentBlocks = {
               <intentConfig.icon />
             </div>
           </NotEditable>
-          <div css={{ flex: 1 }}>{content}</div>
+          <div css={{ flex: 1 }}><>{content}</></div>
         </div>
       );
     },
@@ -149,11 +150,11 @@ export const componentBlocks = {
     component: ({ content, name, position }) => {
       return (
         <div css={{}}>
-          <div css={{ fontStyle: 'italic' }}>{content}</div>
+          <div css={{ fontStyle: 'italic' }}><>{content}</></div>
           <div css={{ fontWeight: 'bold', color: '#4A5568', marginTop: 4 }}>
-            {name}
+            <>{name}</>
           </div>
-          <div css={{ color: '#718096', marginTop: 4 }}>{position}</div>
+          <div css={{ color: '#718096', marginTop: 4 }}><>{position}</></div>
         </div>
       );
     },

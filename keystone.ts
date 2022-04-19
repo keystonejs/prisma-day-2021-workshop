@@ -1,8 +1,8 @@
 import { xlog } from './utils/logging';
 //import { Maps } from './utils/func';
-import { config } from '@keystone-next/keystone';
-import { statelessSessions } from '@keystone-next/keystone/session';
-import { createAuth } from '@keystone-next/auth';
+import { config } from '@keystone-6/core';
+import { statelessSessions } from '@keystone-6/core/session';
+import { createAuth } from '@keystone-6/auth';
 import { lists, extendGraphqlSchema } from './schema';
 import { permissions } from './schema/access';
 import cuid from 'cuid';

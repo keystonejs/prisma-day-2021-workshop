@@ -1,0 +1,381 @@
+{
+  "version": "ts-gql-document-extractor@v3,@babel/parser@7.17.9",
+  "integrity": "__TS_GQL_INTEGRITY_b9f5c4db218598145c0d7148627c6e0b_TS_GQL_INTEGRITY__",
+  "cache": {
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/keystone.ts": {
+      "hash": "eee8dfd6aa2fb1d683d9f7edb62ff308",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/schema.ts": {
+      "hash": "45ae1f552b8d0f34fa163741f4160f21",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/components/auth.tsx": {
+      "hash": "4c21bfb27b3609b1c51af25cdf266db2",
+      "errors": [],
+      "documents": [
+        {
+          "loc": {
+            "start": {
+              "line": 54,
+              "column": 7,
+              "index": 1039
+            },
+            "end": {
+              "line": 63,
+              "column": 5,
+              "index": 1192
+            }
+          },
+          "document": "\n      query AuthenticatedItem {\n        authenticatedItem {\n          ... on User {\n            id\n            name\n          }\n        }\n      }\n    "
+        },
+        {
+          "loc": {
+            "start": {
+              "line": 67,
+              "column": 9,
+              "index": 1308
+            },
+            "end": {
+              "line": 81,
+              "column": 7,
+              "index": 1736
+            }
+          },
+          "document": "\n        mutation AuthenticateUser($email: String!, $password: String!) {\n          authenticateUserWithPassword(email: $email, password: $password) {\n            __typename\n            ... on UserAuthenticationWithPasswordSuccess {\n              item {\n                id\n              }\n            }\n            ... on UserAuthenticationWithPasswordFailure {\n              message\n            }\n          }\n        }\n      "
+        },
+        {
+          "loc": {
+            "start": {
+              "line": 117,
+              "column": 7,
+              "index": 2741
+            },
+            "end": {
+              "line": 121,
+              "column": 5,
+              "index": 2803
+            }
+          },
+          "document": "\n      mutation EndSession {\n        endSession\n      }\n    "
+        }
+      ]
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/pages/signin.tsx": {
+      "hash": "c5509803f715fe92bbebcc6dfb9dc7fc",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/pages/signup.tsx": {
+      "hash": "d85f70d5ef6aa958f1b3fddcf47a64cc",
+      "errors": [],
+      "documents": [
+        {
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 7,
+              "index": 551
+            },
+            "end": {
+              "line": 25,
+              "column": 5,
+              "index": 873
+            }
+          },
+          "document": "\n      mutation Signup($name: String!, $email: String!, $password: String!) {\n        createUser(data: { name: $name, email: $email, password: $password }) {\n          __typename\n          id\n        }\n        authenticateUserWithPassword(email: $email, password: $password) {\n          __typename\n        }\n      }\n    "
+        }
+      ]
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/pages/ui.tsx": {
+      "hash": "1582e9cd13f0f6c84ee1b89cf3894e55",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/pages/index.tsx": {
+      "hash": "19f63fa84cfe5014c9c4e5423a92e9b4",
+      "errors": [],
+      "documents": [
+        {
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 18,
+              "index": 1871
+            },
+            "end": {
+              "line": 78,
+              "column": 5,
+              "index": 2254
+            }
+          },
+          "document": "\n      query AllPosts {\n        posts(\n          where: { status: { equals: \"published\" } }\n          orderBy: [{ publishedDate: desc }]\n        ) {\n          id\n          title\n          slug\n          publishedDate\n          intro {\n            document(hydrateRelationships: true)\n          }\n          author {\n            id\n            name\n          }\n        }\n      }\n    "
+        }
+      ]
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/schema/access.ts": {
+      "hash": "46e3fd45dc412a2e9ab9b56f91f39bae",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/schema/mutations.ts": {
+      "hash": "4b50702393d71fe4c2684dab57b4e469",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/schema/content.ts": {
+      "hash": "5528e2b9f0cf4304d1db3d389cf486b9",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/schema/polls.ts": {
+      "hash": "0f663c1199905bd5c408e486e82cfe29",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/pages/_app.tsx": {
+      "hash": "9d544629c3402785f0c37c62b7fd53df",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/utils/badValues.ts": {
+      "hash": "4aa0c85440e0c394351b24cf3d341fef",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/schema/users.ts": {
+      "hash": "9e209b6082c45b019bcf71f4c6a998cf",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/utils/fetchGraphQL.ts": {
+      "hash": "ca3812b81e0f8be4e4c3e119128975ed",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/utils/func.ts": {
+      "hash": "8a7a2b2092e949ee5005107aaf447d7c",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/utils/gotoPage.ts": {
+      "hash": "0e574fdd6f494479e9532ffff7b07bb6",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/wrap_any.ts": {
+      "hash": "6f62baa6c4f5cfb865e9a6d4c35008e6",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/utils/maybeIOPromise.ts": {
+      "hash": "7f606f7f789b12d6ece4fbcc4fa0c19b",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/utils/logging.ts": {
+      "hash": "a82fd89a84a0368e97c132d2edca311b",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/utils/maybeIO.ts": {
+      "hash": "eabd6723c05c4d70c7dcf6fef66cbc24",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/utils/unit.ts": {
+      "hash": "58ca0ea104c63ee29ddaa1d2692e4dab",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/components/ui/icons.tsx": {
+      "hash": "742864b78d7df0e897e5121d77a02198",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/components/ui/controls.tsx": {
+      "hash": "48597f69b96273c30ed7c480eb70787c",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/components/ui/forms.tsx": {
+      "hash": "7da38827375793c20e2a64a19a40b98a",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/components/ui/link.tsx": {
+      "hash": "a86ce003509d7ffa15055d42a9eb130d",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/components/ui/typography.tsx": {
+      "hash": "6fc8d350a798b84520f6f3cdc8d0e22e",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/components/ui/layout.tsx": {
+      "hash": "730703a761a58d30af12238d5f3698e3",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/pages/post/[slug].tsx": {
+      "hash": "f0d9eb62e0a869c5e7e929e4ebe10182",
+      "errors": [],
+      "documents": [
+        {
+          "loc": {
+            "start": {
+              "line": 40,
+              "column": 16,
+              "index": 1090
+            },
+            "end": {
+              "line": 47,
+              "column": 3,
+              "index": 1169
+            }
+          },
+          "document": "\n    query PostSlugs {\n      posts {\n        id\n        slug\n      }\n    }\n  "
+        },
+        {
+          "loc": {
+            "start": {
+              "line": 70,
+              "column": 20,
+              "index": 1737
+            },
+            "end": {
+              "line": 85,
+              "column": 7,
+              "index": 2067
+            }
+          },
+          "document": "\n        query PostPage($slug: String!) {\n          post(where: { slug: $slug }) {\n            id\n            title\n            content {\n              document(hydrateRelationships: true)\n            }\n            publishedDate\n            author {\n              id\n              name\n            }\n          }\n        }\n      "
+        }
+      ]
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/__generated__/ts-gql/AuthenticateUser.ts": {
+      "hash": "fcd130800f87828b7eb3d19717238228",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/__generated__/ts-gql/AllPosts.ts": {
+      "hash": "89675a2444bf89811c5a885213d9ffb8",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/__generated__/ts-gql/AuthenticatedItem.ts": {
+      "hash": "81bccc9c6feb276fa4ed7033295b7e48",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/__generated__/ts-gql/PostPage.ts": {
+      "hash": "15b07dc61a6fd9ae424d0902a3a5de2b",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/__generated__/ts-gql/EndSession.ts": {
+      "hash": "b5dca3040ea8040a9e6a2baba4c97645",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/__generated__/ts-gql/Poll.ts": {
+      "hash": "035a56de4d041a630b153c43a9c2e1a0",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/__generated__/ts-gql/PostSlugs.ts": {
+      "hash": "5f495b9d1cda7106b5bd47c7c521d9b4",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/__generated__/ts-gql/ClearVoteForPoll.ts": {
+      "hash": "2f836ff84648e7557de8d857f6c52b86",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/__generated__/ts-gql/VoteForPoll.ts": {
+      "hash": "d73d68930cdcf0a2242699693ab4ca3c",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/__generated__/ts-gql/Signup.ts": {
+      "hash": "4c1e895adf5e7e53f4d38d4d620f1ba4",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/__generated__/ts-gql/@introspection.ts": {
+      "hash": "babb80149b23504e75bcec1ae390cab5",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/schema/fields/githubRepos/components.tsx": {
+      "hash": "a53b4756d84e0fd4792df9a45c74e63d",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/schema/fields/content/components.tsx": {
+      "hash": "674c532ea44e1e69dd0bcad2c4cb40fe",
+      "errors": [],
+      "documents": []
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/schema/fields/content/renderers.tsx": {
+      "hash": "1d4ea44de202dbd530e79f81e8c368f0",
+      "errors": [],
+      "documents": [
+        {
+          "loc": {
+            "start": {
+              "line": 93,
+              "column": 9,
+              "index": 3178
+            },
+            "end": {
+              "line": 108,
+              "column": 7,
+              "index": 3463
+            }
+          },
+          "document": "\n        query Poll($id: ID!) {\n          poll(where: { id: $id }) {\n            id\n            label\n            answers {\n              id\n              label\n              voteCount\n            }\n            userAnswer {\n              id\n            }\n          }\n        }\n      "
+        },
+        {
+          "loc": {
+            "start": {
+              "line": 114,
+              "column": 9,
+              "index": 3685
+            },
+            "end": {
+              "line": 118,
+              "column": 7,
+              "index": 3794
+            }
+          },
+          "document": "\n        mutation VoteForPoll($answerId: ID!) {\n          voteForPoll(answerId: $answerId)\n        }\n      "
+        },
+        {
+          "loc": {
+            "start": {
+              "line": 121,
+              "column": 9,
+              "index": 3915
+            },
+            "end": {
+              "line": 125,
+              "column": 7,
+              "index": 4028
+            }
+          },
+          "document": "\n        mutation ClearVoteForPoll($pollId: ID!) {\n          clearVoteForPoll(pollId: $pollId)\n        }\n      "
+        }
+      ]
+    },
+    "C:/msys64/home/jonathan/proj/from-serv/prisma-day-latest/schema/fields/githubRepos/field.ts": {
+      "hash": "cf7ff83c7b0035b608052001ed3b40b1",
+      "errors": [],
+      "documents": []
+    }
+  }
+}

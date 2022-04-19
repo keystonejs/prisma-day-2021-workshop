@@ -1,4 +1,6 @@
-module.exports = {
+const { withTsGql } = require('@ts-gql/next');
+
+module.exports = withTsGql({
   async rewrites() {
     return [
       {
@@ -7,4 +9,4 @@ module.exports = {
       },
     ];
   }
-};
+});

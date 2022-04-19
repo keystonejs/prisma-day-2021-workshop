@@ -67,7 +67,7 @@ export const abbreviatedRenderer = (e: CleanError): string => {
 export const stackRenderer = (e: CleanError): string => {
   let str = '';
 
-  ErrorStackParser.parse(e)?.map((elem: ErrorStackParser.StackFrame) => {
+  ErrorStackParser.parse(e)?.map(elem => {
     const scope =
       elem.functionName === undefined ? 'file scope' : elem.functionName;
 

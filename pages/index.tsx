@@ -1,18 +1,23 @@
-import { fetchGraphQLInjectApiKey, gql } from '../utils/fetchGraphQL';
+import React from 'react';
+import { InferGetStaticPropsType } from 'next';
+
+import { gql } from '@ts-gql/tag/no-transform';
+import { fetchGraphQLInjectApiKey } from '../utils/fetchGraphQL';
 import { DocumentRenderer } from '../schema/fields/content/renderers';
+
 import { Container } from '../components/ui/layout';
 import { Link } from '../components/ui/link';
 import { H1 } from '../components/ui/typography';
 import { useAuth } from '../components/auth';
 import { makeIO } from '../utils/maybeIOPromise'
-import { DocumentAny } from '../wrap_any'
 
-
-export default function Home({ posts }: { posts: QueryPost[] }) {
+export default function Home({
+  posts,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   const auth = useAuth();
   return (
     <Container>
-      <H1>FOURCUBE news</H1>
+      <H1>My Blog</H1>
       {auth.ready && auth.sessionData ? (
         <p>
           You&apos;re signed in as {auth.sessionData.name} |{' '}
@@ -25,7 +30,7 @@ export default function Home({ posts }: { posts: QueryPost[] }) {
       )}
 
       <div>
-        {posts?.map(post => {
+        {posts!.map(post => {
           const date = post.publishedDate
             ? new Date(post.publishedDate).toLocaleDateString()
             : null;
@@ -49,31 +54,10 @@ export default function Home({ posts }: { posts: QueryPost[] }) {
   );
 }
 
-
-export type QueryPost = {
-  id: string;
-  title: string;
-  slug: string;
-  publishedDate: string;
-  intro: {
-    document: DocumentAny;
-  };
-  author: {
-    name: string;
-  };
-};
-
-export type TQueryPostsForIndex = {
-  posts: QueryPost[]
-}
-
-
-
-//We can save a little time by compiling the functional code to a runtime constant
 const fetchAllPostsForIndex = makeIO (() =>
-  fetchGraphQLInjectApiKey<TQueryPostsForIndex>(
-    gql`
-      query {
+  fetchGraphQLInjectApiKey({
+    operation: gql`
+      query AllPosts {
         posts(
           where: { status: { equals: "published" } }
           orderBy: [{ publishedDate: desc }]
@@ -91,12 +75,13 @@ const fetchAllPostsForIndex = makeIO (() =>
           }
         }
       }
-    `
-  ))
+    ` as import('../__generated__/ts-gql/AllPosts').type,
+  }))
   .then (data => data.posts);
 
-export const getStaticProps = () => {
-  return fetchAllPostsForIndex
-    .exec ([])
-    .then (postsRx => { return { props: { posts: postsRx }, revalidate: 60 } })
-}
+
+  export const getStaticProps = () => {
+    return fetchAllPostsForIndex
+      .exec ([])
+      .then (postsRx => { return { props: { posts: postsRx }, revalidate: 60 } })
+  }

@@ -1,19 +1,13 @@
-import React, {
-  createContext,
-  useRef,
-  useMemo,
-  useEffect,
-  useContext,
-  ReactNode,
-} from 'react';
+import { createContext, useRef, useEffect, useContext, ReactNode } from 'react';
 
-import { gql, useQuery, useMutation, OperationResult} from 'urql';
+import { useQuery, useMutation } from '@ts-gql/apollo';
+import { gql } from '@ts-gql/tag/no-transform';
+
 import { Maps } from '../utils/func'
 import { makeIO } from '../utils/maybeIOPromise'
-import { AuthenticationResponseAny } from '../wrap_any';
+
 //Security audit:
-//Pushed an `any` one depth lower into urql.
-export type AuthenticationResponse = OperationResult<AuthenticationResponseAny,object>
+
 
 export type SignInArgs = { email: string; password: string };
 export type SignInResult =
@@ -42,63 +36,61 @@ type AuthContextType =
 const AuthContext = createContext<AuthContextType>({
   ready: false,
 });
-/* eslint-disable */
+
+
 export const useAuth = () => {
   return useContext(AuthContext);
 }
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const wasReady = useRef(false);
-  const mutationContext = useMemo(
-    () => ({ additionalTypenames: ['User', 'Poll', 'PollAnswer'] }),
-    []
+
+
+  const {
+    loading,
+    data: sessionData,
+    error: sessionError,
+  } = useQuery(
+    gql`
+      query AuthenticatedItem {
+        authenticatedItem {
+          ... on User {
+            id
+            name
+          }
+        }
+      }
+    ` as import('../__generated__/ts-gql/AuthenticatedItem').type
   );
 
-  const [{ fetching, data: sessionData, error: sessionError }/*, refetch*/] =
-    useQuery({
-      query: gql`
-        query {
-          authenticatedItem {
-            ... on User {
-              id
-              name
+    const [authenticate] = useMutation(
+      gql`
+        mutation AuthenticateUser($email: String!, $password: String!) {
+          authenticateUserWithPassword(email: $email, password: $password) {
+            __typename
+            ... on UserAuthenticationWithPasswordSuccess {
+              item {
+                id
+              }
+            }
+            ... on UserAuthenticationWithPasswordFailure {
+              message
             }
           }
         }
-      `,
-    });
+      ` as import('../__generated__/ts-gql/AuthenticateUser').type
+    );
 
-  const [, authenticate] = useMutation(gql`
-    mutation ($email: String!, $password: String!) {
-      authenticateUserWithPassword(email: $email, password: $password) {
-        __typename
-        ... on UserAuthenticationWithPasswordSuccess {
-          item {
-            id
-          }
-        }
-        ... on UserAuthenticationWithPasswordFailure {
-          message
-        }
-      }
-    }
-  `);
 
-  type AuthResponse = {data?: {authenticateUserWithPassword?: {__typename: string, message: string}}, error?: Object};
-
-  const typedAuthenticate = (details: SignInArgs, mutContext: any) : Promise<AuthResponse> => authenticate(
-    details,
-    mutContext
-  )
-
-  const signIn = (details: SignInArgs): Promise<SignInResult> => {
-    return makeIO(()=>typedAuthenticate(
-      details,
-      mutationContext
-    ))
+  const signIn = ({ email , password }: SignInArgs): Promise<SignInResult> => {
+    return makeIO(()=>authenticate(
+      {
+        variables: { email, password },
+        refetchQueries: ['AuthenticatedItem'],
+      }))
     .then (result =>
     {
-      const { data, error } = result;
+      const { data } = result;
       if (
         data?.authenticateUserWithPassword?.__typename ===
         'UserAuthenticationWithPasswordSuccess'
@@ -113,28 +105,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           message: data.authenticateUserWithPassword?.message,
         } ;
       }
-      if (error) {
-        return { success: false, message: error.toString() };
-      } else {
-        return { success: false, message: 'An unknown error occurred' };
-      }
+
+      return { success: false, message: 'An unknown error occurred' };
+
     }
       )
     .exec({ success: false, message: 'An unknown runtime error occurred' });
   };
 
-  const [u, signOutMutation] = useMutation(gql`
-    mutation {
-      endSession
-    }
-  `);
+  const [signOutMutation] = useMutation(
+    gql`
+      mutation EndSession {
+        endSession
+      }
+    ` as import('../__generated__/ts-gql/EndSession').type
+  );
 
   const signOut = () => {
-    signOutMutation(u, mutationContext);
+    signOutMutation({ refetchQueries: ['AuthenticatedItem'] });
   };
 
   useEffect(() => {
-    if (!wasReady.current && !fetching && !sessionError) {
+    if (!wasReady.current && !loading && !sessionError) {
       wasReady.current = true;
     }
   });
@@ -142,8 +134,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   return (
     <AuthContext.Provider
       value={{
-        ready: wasReady.current || !fetching,
-        sessionData: sessionData?.authenticatedItem,
+        ready: wasReady.current || !loading,
+        sessionData:
+        sessionData?.authenticatedItem?.name != null
+          ? {
+              id: sessionData.authenticatedItem.id,
+              name: sessionData.authenticatedItem.name,
+            }
+          : undefined,
         signIn,
         signOut,
       }}

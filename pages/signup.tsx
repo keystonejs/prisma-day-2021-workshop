@@ -1,34 +1,34 @@
-import React,{ useState } from 'react';
-import { gql, useMutation } from 'urql';
+import { useState } from 'react';
 
 import { Button } from '../components/ui/controls';
 import { Container, HomeLink } from '../components/ui/layout';
 import { H1 } from '../components/ui/typography';
 import { FieldContainer, FieldLabel, TextInput } from '../components/ui/forms';
-//import { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { Link } from '../components/ui/link';
-import { gotoPage } from '../utils/gotoPage'
+import { gql } from '@ts-gql/tag/no-transform';
+import { useMutation } from '@ts-gql/apollo';
 
 
-
-
-export default function SignupPage(){
-  const [{ error }, signup] = useMutation(gql`
-    mutation ($name: String!, $email: String!, $password: String!) {
-      createUser(data: { name: $name, email: $email, password: $password }) {
-        __typename
-        id
+export default function SignupPage() {
+  const [signup, { error}] = useMutation(
+    gql`
+      mutation Signup($name: String!, $email: String!, $password: String!) {
+        createUser(data: { name: $name, email: $email, password: $password }) {
+          __typename
+          id
+        }
+        authenticateUserWithPassword(email: $email, password: $password) {
+          __typename
+        }
       }
-      authenticateUserWithPassword(email: $email, password: $password) {
-        __typename
-      }
-    }
-  `);
+    ` as import('../__generated__/ts-gql/Signup').type
+  );
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  //const router = useRouter();
+  const router = useRouter();
 
   return (
     <Container>
@@ -37,12 +37,12 @@ export default function SignupPage(){
       <form
         onSubmit={event => {
           event.preventDefault();
-          signup({ name, email, password }).then(result => {
+          signup({
+            variables: { name, email, password },
+            refetchQueries: ['AuthenticatedItem'],
+          }).then(result => {
             if (result.data?.createUser) {
-              // FIXME: there's a cache issue with Urql where it's not reloading the
-              // current user properly if we do a client-side redirect here.
-              // router.push('/');
-                gotoPage('/');
+              router.push('/');
             }
           });
         }}
@@ -77,7 +77,7 @@ export default function SignupPage(){
           />
         </FieldContainer>
         <Button type="submit" size="large" appearance="primary">
-          Sign In
+          Sign Up
         </Button>
       </form>
       <hr className="my-4" />
@@ -87,4 +87,3 @@ export default function SignupPage(){
     </Container>
   );
 }
-

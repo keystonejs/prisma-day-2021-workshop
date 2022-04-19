@@ -1,4 +1,4 @@
-import { KeystoneContext } from '.keystone/types';
+import { Context } from '.keystone/types';
 import { frontEndPort, keystoneNextjsBuildApiKey } from '../keystone';
 import { log } from '../utils/logging';
 import { drop } from '../utils/func';
@@ -12,7 +12,7 @@ export const EDIT = 'edit';
 export const READ = 'read';
 export const HIDDEN = 'hidden';
 
-export const PUBLISHED_POST_STATUS = { status: { eq: PUBLISHED } };
+export const PUBLISHED_POST_STATUS = { status: { equals: PUBLISHED } };
 
 export type SessionContext = {
   session?: {
@@ -38,7 +38,7 @@ export type SessionFrame = {
 
 export type FilterFrame = SessionFrame & {
   session: SessionContext;
-  context: KeystoneContext;
+  context: Context;
   listKey: string;
   operation: string;
 };
@@ -51,10 +51,10 @@ export const isBuildEnvir = (frame: SessionFrame): boolean => {
   if (frame?.session === undefined) {
     // It's a bit confusing as to why this dodgy cast is needed. It took ages to get api keys working because of the
     // obscuriy of the workaround.
-    // The top level query prefers SessionFrame, and does not build against KeystoneFrame (same, bar KeystoneContext for context)
+    // The top level query prefers SessionFrame, and does not build against KeystoneFrame (same, bar Context for context)
     // This does appear to be the right way to access the context, but why do we need to
     // cast something as important as this?
-    const kontext = frame?.context as KeystoneContext;
+    const kontext = frame?.context as Context;
     const recvApiKey = kontext?.req?.headers['x-api-key'];
 
     if (recvApiKey === keystoneNextjsBuildApiKey) {
@@ -77,7 +77,7 @@ export const isBuildEnvir = (frame: SessionFrame): boolean => {
   return false;
 };
 
-export const isSignedIn = (context: KeystoneContext) => {
+export const isSignedIn = (context: Context) => {
   /*
   const auth = useAuth();
   if (!auth.ready || !auth.sessionData)
@@ -182,7 +182,7 @@ export const permissions = {
 
     if (isBuildEnvir(frame)) return true;
 
-    const ks = frame.context as KeystoneContext;
+    const ks = frame.context as Context;
 
     return ks.req?.headers['x-forwarded-port'] === frontEndPort;
   },
@@ -192,7 +192,7 @@ export const permissions = {
 
     if (!frame || !frame?.context) return false;
 
-    const ks = frame.context as KeystoneContext;
+    const ks = frame.context as Context;
 
     const url = ks.req?.headers?.referer
       ? new URL(ks.req.headers.referer)

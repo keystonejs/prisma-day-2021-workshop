@@ -3,9 +3,9 @@ import {
   select,
   text,
   timestamp,
-} from '@keystone-next/keystone/fields';
-import { document } from '@keystone-next/fields-document';
-import { list } from '@keystone-next/keystone';
+} from '@keystone-6/core/fields';
+import { document } from '@keystone-6/fields-document';
+import { list } from '@keystone-6/core';
 
 import {
   permissions,

@@ -1,24 +1,30 @@
 import 'tailwindcss/tailwind.css';
 import type { AppProps } from 'next/app';
-import { createClient, Provider } from 'urql';
-import React from 'react'
+
 import { AuthProvider } from '../components/auth';
-import { keystoneHost } from '../keystone'
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import { useMemo } from 'react';
 
-export const client = createClient({
-  url:
-    typeof window === undefined
-      ? `http://${keystoneHost}:3000/api/graphql`
-      : '/api/graphql',
-});
 
-export default function MyApp ({ Component, pageProps }: AppProps) {
+
+function MyApp({ Component, pageProps }: AppProps) {
+  const client = useMemo(
+    () =>
+      new ApolloClient({
+        cache: new InMemoryCache(),
+        uri:
+          typeof window === "undefined"
+            ? 'http://localhost:3000/api/graphql'
+            : '/api/graphql',
+      }),
+    []
+  );
   return (
-    <Provider value={client}>
+    <ApolloProvider client={client}>
       <AuthProvider>
         <Component {...pageProps} />
       </AuthProvider>
-    </Provider>
+    </ApolloProvider>
   );
 }
-
+export default MyApp;

@@ -1,9 +1,7 @@
-import { relationship, text, virtual } from '@keystone-next/keystone/fields';
-import { graphql, list } from '@keystone-next/keystone';
+import { relationship, text, virtual } from '@keystone-6/core/fields';
+import { graphql, list } from '@keystone-6/core';
 import {
-  KeystoneContext,
-  KeystoneListsAPI,
-  KeystoneDbAPI,
+  Context
 } from '.keystone/types';
 
 import { isSignedIn, permissions, HIDDEN } from './access';
@@ -20,12 +18,13 @@ export const PollAnswer = list({
     voteCount: virtual({
       field: graphql.field({
         type: graphql.Int,
-        resolve(pollAnswer, args, context) {
-          const lists = context.query as KeystoneListsAPI;
+        resolve(pollAnswer, args, _context) {
+          const context = _context as Context;
 
-          return lists.User.count({
+          return context.query.User.count({
             where: {
               pollAnswers: {
+                // @ts-ignore
                 some: { id: { equals: pollAnswer.id.toString() } },
               },
             },
@@ -81,11 +80,13 @@ export const Poll = list({
       field: graphql.field({
         type: graphql.Int,
 
-        resolve(poll, args, context) {
-          const lists = context.query as KeystoneListsAPI;
-          return lists.User.count({
+        resolve(poll, args, _context) {
+          const context = _context as Context;
+
+          return context.query.User.count({
             where: {
               pollAnswers: {
+                // @ts-ignore
                 some: { poll: { id: { equals: poll.id.toString() } } },
               },
             },
@@ -97,17 +98,19 @@ export const Poll = list({
       field: lists =>
         graphql.field({
           type: lists.PollAnswer.types.output,
-          resolve(poll, args, context) {
-            if (!isSignedIn(context as KeystoneContext)) {
+          resolve(poll, args, _context) {
+            const context = _context as Context;
+            if (!isSignedIn(context)) {
               return null;
             }
-            const lists = context.db as KeystoneDbAPI;
             return makeIO(
               () =>
-                lists.PollAnswer.findMany({
+                  context.db.PollAnswer.findMany({
                   where: {
+                    // @ts-ignore
                     poll: { id: { equals: poll.id.toString() } },
                     answeredByUsers: {
+                      // @ts-ignore
                       some: { id: { equals: context.session.itemId } },
                     },
                   },

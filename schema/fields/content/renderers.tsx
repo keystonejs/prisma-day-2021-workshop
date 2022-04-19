@@ -1,20 +1,19 @@
-import { InferRenderersForComponentBlocks } from '@keystone-next/fields-document/component-blocks';
+import { InferRenderersForComponentBlocks } from '@keystone-6/fields-document/component-blocks';
 import {
   DocumentRenderer as KeystoneDocumentRenderer,
   DocumentRendererProps,
-} from '@keystone-next/document-renderer';
-import React, { ComponentProps, Fragment } from 'react'
+} from '@keystone-6/document-renderer';
+import React, { ComponentProps, Fragment } from 'react';
 
 import { H1, H2, H3, H4, H5, H6, P } from '../../../components/ui/typography';
-import { Divider } from '../../../components/ui/layout'
-import { useAuth } from '../../../components/auth'
-import { Button } from '../../../components/ui/controls'
-import { Link } from '../../../components/ui/link'
-import { gql, useMutation, useQuery } from 'urql'
-import Image  from 'next/image'
-import {boolk} from '../../../utils/func'
+import { Divider } from '../../../components/ui/layout';
+import { useAuth } from '../../../components/auth';
+import { Button } from '../../../components/ui/controls';
+import { Link } from '../../../components/ui/link';
+import { gql } from '@ts-gql/tag/no-transform';
+import { useMutation, useQuery } from '@ts-gql/apollo';
+import { drop } from '../../../utils/func';
 
-//import { log } from '../../../utils/logging'
 // by default the DocumentRenderer will render unstyled html elements
 // we're customising how headings are rendered here but you can customise any of the renderers that the DocumentRenderer uses
 export const renderers: DocumentRendererProps['renderers'] = {
@@ -22,24 +21,24 @@ export const renderers: DocumentRendererProps['renderers'] = {
     heading({ level, children, textAlign }) {
       switch (level) {
         case 1:
-          return <H1 textAlign={textAlign}>{children}</H1>
+          return <H1 textAlign={textAlign}>{children}</H1>;
         case 2:
-          return <H2 textAlign={textAlign}>{children}</H2>
+          return <H2 textAlign={textAlign}>{children}</H2>;
         case 3:
-          return <H3 textAlign={textAlign}>{children}</H3>
+          return <H3 textAlign={textAlign}>{children}</H3>;
         case 4:
-          return <H4 textAlign={textAlign}>{children}</H4>
+          return <H4 textAlign={textAlign}>{children}</H4>;
         case 5:
-          return <H5 textAlign={textAlign}>{children}</H5>
+          return <H5 textAlign={textAlign}>{children}</H5>;
         default:
-          return <H6 textAlign={textAlign}>{children}</H6>
+          return <H6 textAlign={textAlign}>{children}</H6>;
       }
     },
     paragraph({ children, textAlign }) {
-      return <P textAlign={textAlign}>{children}</P>
+      return <P textAlign={textAlign}>{children}</P>;
     },
     divider() {
-      return <Divider />
+      return <Divider />;
     },
   },
 };
@@ -66,45 +65,33 @@ const calloutStyles = {
 export const componentBlockRenderers: InferRenderersForComponentBlocks<
   typeof import('./components').componentBlocks
 > = {
-  callout: ({ appearance, content }) => {
+  callout: function Callout({ appearance, content }) {
     const classes = `my-4 py-2 px-4 rounded border-l-4 ${calloutStyles[appearance]}`;
-    return <div className={classes}>{content}</div>;
+    return <div className={classes}><>{content}</></div>;
   },
-  quote: ({ content, name, position, image, href }) => {
-
+  quote: function Quote({ content, name, position, image, href }) {
+    drop(image);
     return (
       <div className="my-4 border-l-4 border-gray-300 px-4 py-2">
-        <div className="text-xl font-serif text-gray-600">{content}</div>
+        <div className="text-xl font-serif text-gray-600"><>{content}</></div>
         <div className="mt-4 font-semibold text-gray-800">
-          {href ? (
+          <>{href ? (
             <a href={href} target="_blank" rel="noreferrer">
-              {name}
-            </a> )
-           : (name)
-          }
-          {image !== ''?
-          (
-          < Image
-          src={image}
-          alt = "Avatar"
-          width = "50"
-          height = "50"
-          />
-          )
-          : ""
-          }
+              <>{name}</>
+            </a>
+          ) : (
+            name
+          )}</>
         </div>
-
-        <div className="text-sm text-gray-500 uppercase">{position}</div>
+        <div className="text-sm text-gray-500 uppercase"><>{position}</></div>
       </div>
     );
   },
   poll: function Poll({ poll: relatedPoll }) {
     //if (!relatedPoll?.data) return null;
-
-    const [{ data }] = useQuery({
-      query: gql`
-        query ($id: ID!) {
+    const { data } = useQuery(
+      gql`
+        query Poll($id: ID!) {
           poll(where: { id: $id }) {
             id
             label
@@ -118,30 +105,26 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
             }
           }
         }
-      `,
-      variables: { id: relatedPoll?.id },
-    });
-
+      ` as import('../../../__generated__/ts-gql/Poll').type,
+      { variables: { id: relatedPoll!.id ?? "" } }
+    );
     const poll = (data?.poll || relatedPoll?.data) as Poll;
 
-
-/*eslint-disable no-empty-pattern*/
-const [{}, voteForPoll] =
-useMutation(gql`
-mutation ($answerId: ID!) {
-  voteForPoll(answerId: $answerId)
-}
-`)
-;
-
-const [{},clearVoteForPoll] = useMutation(gql`
-mutation ($pollId: ID!) {
-  clearVoteForPoll(pollId: $pollId)
-}
-`);
-/*eslint-enable no-empty-pattern*/
+    const [voteForPoll] = useMutation(
+      gql`
+        mutation VoteForPoll($answerId: ID!) {
+          voteForPoll(answerId: $answerId)
+        }
+      ` as import('../../../__generated__/ts-gql/VoteForPoll').type
+    );
+    const [clearVoteForPoll] = useMutation(
+      gql`
+        mutation ClearVoteForPoll($pollId: ID!) {
+          clearVoteForPoll(pollId: $pollId)
+        }
+      ` as import('../../../__generated__/ts-gql/ClearVoteForPoll').type
+    );
     const auth = useAuth();
-    const hasVoted = poll.userAnswer?.id? true:false;
     return (
       <div className="my-4">
         <div className="text-grey-800 uppercase text-lg font-semibold">
@@ -149,8 +132,6 @@ mutation ($pollId: ID!) {
         </div>
         <form>
           {poll.answers.map(answer => {
-
-
             return (
               <label
                 key={answer.id}
@@ -161,18 +142,17 @@ mutation ($pollId: ID!) {
                   name={poll.id}
                   value={answer.id}
                   checked={poll.userAnswer?.id === answer.id}
-                  disabled={!auth.ready || !auth.sessionData || hasVoted}
-
+                  disabled={!auth.ready || !auth.sessionData}
                   onChange={() => {
-                    boolk(hasVoted)(voteForPoll(
-                      { answerId: answer.id },
-                      { additionalTypenames: ['Poll', 'PollAnswer'] }
-                    )
-                    )}}
+                    voteForPoll({
+                      variables: { answerId: answer.id },
+                      refetchQueries: ['Poll'],
+                    });
+                  }}
                   className="rounded-full bg-blue-200 border-2 border-blue-400 w-4 h-4 inline-block mr-4"
                 />
                 <span className="cursor-pointer">
-                  {answer.label}{hasVoted?(': ' + answer.voteCount +' votes'): ''}
+                  {answer.label} {answer.voteCount} Votes
                 </span>
               </label>
             );
@@ -184,13 +164,13 @@ mutation ($pollId: ID!) {
             <Link href="/signup">Join</Link> to vote
           </Fragment>
         )}
-        {hasVoted && (
+        {poll.userAnswer?.id && (
           <Button
             onClick={() => {
-              clearVoteForPoll(
-                { pollId: relatedPoll?.id },
-                { additionalTypenames: ['Poll', 'PollAnswer'] }
-              );
+              clearVoteForPoll({
+                variables: { pollId: relatedPoll!.id ?? ""},
+                refetchQueries: ['Poll'],
+              });
             }}
           >
             Clear Vote
@@ -201,13 +181,15 @@ mutation ($pollId: ID!) {
   },
 };
 
-export const DocumentRenderer = ({
+export function DocumentRenderer({
   document,
-}: Pick<ComponentProps<typeof KeystoneDocumentRenderer>, 'document'>) => {
+}: Pick<ComponentProps<typeof KeystoneDocumentRenderer>, 'document'>) {
   return (
     <KeystoneDocumentRenderer
       document={document}
+
       renderers={renderers}
+// @ts-ignore
       componentBlocks={componentBlockRenderers}
     />
   );
