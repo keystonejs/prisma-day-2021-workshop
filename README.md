@@ -153,11 +153,9 @@ https://www.youtube.com/watch?v=vkcxgagQ4bM
 ## Security audit
 Status: `Preliminary`.
 
-<a href="https://frontend.code-inspector.com/public/user/github/qfunq">
-   <img src="https://code-inspector.com/public/badge/user/github/qfunq?style=light" alt="code inspector badge" />
-</a>
 
-✅ No Code Inspector linting errors, 100% score on all categories. Code inspector has a divide by zero bug that reports N/A when it can find no errors.
+
+✅ No Code Inspector linting errors, 100% score on all categories. Code inspector has a divide by zero bug that reports N/A when it can find no errors. No code inspector anymore, it has vanished from the web. There are a few lint warnings, which are barely worth fixing.
 
 
 ## TL;DR
