@@ -106,7 +106,7 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
           }
         }
       ` as import('../../../__generated__/ts-gql/Poll').type,
-      { variables: { id: relatedPoll!.id ?? "" } }
+      { variables: { id: relatedPoll?.id ?? "" } }
     );
     const poll = (data?.poll || relatedPoll?.data) as Poll;
 
@@ -168,7 +168,7 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
           <Button
             onClick={() => {
               clearVoteForPoll({
-                variables: { pollId: relatedPoll!.id ?? ""},
+                variables: { pollId: relatedPoll?.id ?? ""},
                 refetchQueries: ['Poll'],
               });
             }}
@@ -189,6 +189,7 @@ export function DocumentRenderer({
       document={document}
 
       renderers={renderers}
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
       componentBlocks={componentBlockRenderers}
     />

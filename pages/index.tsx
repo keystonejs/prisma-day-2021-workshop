@@ -30,7 +30,7 @@ export default function Home({
       )}
 
       <div>
-        {posts!.map(post => {
+        {posts?.map(post => {
           const date = post.publishedDate
             ? new Date(post.publishedDate).toLocaleDateString()
             : null;

@@ -24,7 +24,8 @@ export const PollAnswer = list({
           return context.query.User.count({
             where: {
               pollAnswers: {
-                // @ts-ignore
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
                 some: { id: { equals: pollAnswer.id.toString() } },
               },
             },
@@ -86,7 +87,8 @@ export const Poll = list({
           return context.query.User.count({
             where: {
               pollAnswers: {
-                // @ts-ignore
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
                 some: { poll: { id: { equals: poll.id.toString() } } },
               },
             },
@@ -107,10 +109,12 @@ export const Poll = list({
               () =>
                   context.db.PollAnswer.findMany({
                   where: {
-                    // @ts-ignore
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
                     poll: { id: { equals: poll.id.toString() } },
                     answeredByUsers: {
-                      // @ts-ignore
+                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
                       some: { id: { equals: context.session.itemId } },
                     },
                   },

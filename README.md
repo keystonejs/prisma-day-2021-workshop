@@ -155,8 +155,11 @@ Status: `Preliminary`.
 
 
 
-✅ No Code Inspector linting errors, 100% score on all categories. Code inspector has a divide by zero bug that reports N/A when it can find no errors. No code inspector anymore, it has vanished from the web. There are a few lint warnings, which are barely worth fixing.
+?✅ No Codiga linting errors, 100% score on all categories. Code inspector has a divide by zero bug that reports N/A when it can find no errors. No code inspector anymore, it has vanished from the web. Update: There are a few lint warnings, which are currently being addressed.
 
+<a href="https://app.codiga.io/public/user/github/qfunq">
+   <img src="https://api.codiga.io/public/badge/user/github/qfunq?style=light" alt="codiga badge" />
+</a>
 
 ## TL;DR
 `<T>(a: T)` is a type safe replacement for many cases of `(a: any)`, because we need to trap the awkward `undefined` cases at build time.
