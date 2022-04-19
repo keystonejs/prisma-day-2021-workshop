@@ -42,7 +42,7 @@ yarn-error.log*
 # keystone
 .keystone
 app.db
-
+__generated__
 
 migrations/migration_lock.toml
 
