@@ -18,9 +18,9 @@ import { print } from 'graphql/language/printer';
 /* eslint-disable no-unused-vars */
 
 type RequiredKeys<T> = {
-  [K in keyof T]: {} extends Pick<T, K> ? never : K;
+  [K in keyof T]: Record<string, never> extends Pick<T, K> ? never : K;
 } extends { [_ in keyof T]: infer U }
-  ? {} extends U
+  ? Record<string, never> extends U
     ? never
     : U
   : never;
