@@ -1,11 +1,12 @@
-import 'tailwindcss/tailwind.css';
-import type { AppProps } from 'next/app';
+import '../styles/global.css';
 
-import { AuthProvider } from '../components/auth';
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import type { AppProps } from 'next/app';
 import { useMemo } from 'react';
 
-function MyApp({ Component, pageProps }: AppProps) {
+import { AuthProvider } from '../components/auth';
+
+export default function App({ Component, pageProps }: AppProps) {
   const client = useMemo(
     () =>
       new ApolloClient({
@@ -25,4 +26,3 @@ function MyApp({ Component, pageProps }: AppProps) {
     </ApolloProvider>
   );
 }
-export default MyApp;

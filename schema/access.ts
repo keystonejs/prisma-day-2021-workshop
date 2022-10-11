@@ -11,7 +11,7 @@ type SessionContext = {
     listKey: string;
   };
 };
-type ItemContext = { item: any; } & SessionContext;
+type ItemContext = { item: any } & SessionContext;
 
 export const isSignedIn = ({ session }: SessionContext) => {
   return !!session;

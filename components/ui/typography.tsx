@@ -116,17 +116,3 @@ export function H6({
     </h6>
   );
 }
-
-export function P({
-  className,
-  children,
-  textAlign,
-  ...props
-}: HTMLAttributes<HTMLElement> & Alignable) {
-  const classes = buildClasses('my-2', { className, textAlign });
-  return (
-    <p className={classes} {...props}>
-      {children}
-    </p>
-  );
-}

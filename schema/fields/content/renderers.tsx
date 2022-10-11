@@ -1,17 +1,22 @@
-import { InferRenderersForComponentBlocks } from '@keystone-6/fields-document/component-blocks';
+import {
+  CheckCircleIcon,
+  ExclamationTriangleIcon,
+  InformationCircleIcon,
+  XCircleIcon,
+} from '@heroicons/react/20/solid';
 import {
   DocumentRenderer as KeystoneDocumentRenderer,
   DocumentRendererProps,
 } from '@keystone-6/document-renderer';
-import React, { ComponentProps, Fragment } from 'react';
-
-import { H1, H2, H3, H4, H5, H6, P } from '../../../components/ui/typography';
-import { Divider } from '../../../components/ui/layout';
+import { InferRenderersForComponentBlocks } from '@keystone-6/fields-document/component-blocks';
+import { useMutation, useQuery } from '@ts-gql/apollo';
+import { gql } from '@ts-gql/tag/no-transform';
+import { ComponentProps, Fragment } from 'react';
 import { useAuth } from '../../../components/auth';
 import { Button } from '../../../components/ui/controls';
+import { Divider } from '../../../components/ui/layout';
 import { Link } from '../../../components/ui/link';
-import { gql } from '@ts-gql/tag/no-transform';
-import { useMutation, useQuery } from '@ts-gql/apollo';
+import { H1, H2, H3, H4, H5, H6 } from '../../../components/ui/typography';
 
 // by default the DocumentRenderer will render unstyled html elements
 // we're customising how headings are rendered here but you can customise any of the renderers that the DocumentRenderer uses
@@ -33,9 +38,6 @@ export const renderers: DocumentRendererProps['renderers'] = {
           return <H6 textAlign={textAlign}>{children}</H6>;
       }
     },
-    paragraph({ children, textAlign }) {
-      return <P textAlign={textAlign}>{children}</P>;
-    },
     divider() {
       return <Divider />;
     },
@@ -55,23 +57,41 @@ type Poll = {
 };
 
 const calloutStyles = {
-  info: 'text-blue-800 bg-blue-50 border-blue-300',
-  error: 'text-red-800 bg-red-50 border-red-300',
-  warning: 'text-yellow-800 bg-yellow-50 border-yellow-300',
-  success: 'text-green-800 bg-green-50 border-green-300',
+  info: 'bg-blue-50 text-blue-700',
+  error: 'bg-red-50 text-red-700',
+  warning: 'bg-warning-50 text-warning-700',
+  success: 'bg-green-50 text-green-700',
+};
+
+const calloutIcons = {
+  info: InformationCircleIcon,
+  error: XCircleIcon,
+  warning: ExclamationTriangleIcon,
+  success: CheckCircleIcon,
 };
 
 export const componentBlockRenderers: InferRenderersForComponentBlocks<
   typeof import('./components').componentBlocks
 > = {
   callout: function Callout({ appearance, content }) {
-    const classes = `my-4 py-2 px-4 rounded border-l-4 ${calloutStyles[appearance]}`;
-    return <div className={classes}>{content}</div>;
+    const Icon = calloutIcons[appearance];
+    return (
+      <div className={`not-prose rounded-md p-4 ${calloutStyles[appearance]}`}>
+        <div className="flex">
+          <div className="flex-shrink-0">
+            <Icon className="h-5 w-5 fill-current" aria-hidden="true" />
+          </div>
+          <div className="ml-3 flex-1 md:flex md:justify-between">
+            <p className="text-sm">{content}</p>
+          </div>
+        </div>
+      </div>
+    );
   },
   quote: function Quote({ content, name, position, image, href }) {
     return (
       <div className="my-4 border-l-4 border-gray-300 px-4 py-2">
-        <div className="text-xl font-serif text-gray-600">{content}</div>
+        <div className="font-serif text-xl text-gray-600">{content}</div>
         <div className="mt-4 font-semibold text-gray-800">
           {href ? (
             <a href={href} target="_blank">
@@ -81,7 +101,7 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
             name
           )}
         </div>
-        <div className="text-sm text-gray-500 uppercase">{position}</div>
+        <div className="text-sm uppercase text-gray-500">{position}</div>
       </div>
     );
   },
@@ -125,36 +145,43 @@ export const componentBlockRenderers: InferRenderersForComponentBlocks<
     const auth = useAuth();
     return (
       <div className="my-4">
-        <div className="text-grey-800 uppercase text-lg font-semibold">
-          {poll.label}
-        </div>
         <form>
-          {poll.answers.map(answer => {
-            return (
-              <label
-                key={answer.id}
-                className="text-grey-800 mt-2 flex items-center"
-              >
-                <input
-                  type="radio"
-                  name={poll.id}
-                  value={answer.id}
-                  checked={poll.userAnswer?.id === answer.id}
-                  disabled={!auth.ready || !auth.sessionData}
-                  onChange={() => {
-                    voteForPoll({
-                      variables: { answerId: answer.id },
-                      refetchQueries: ['Poll'],
-                    });
-                  }}
-                  className="rounded-full bg-blue-200 border-2 border-blue-400 w-4 h-4 inline-block mr-4"
-                />
-                <span className="cursor-pointer">
-                  {answer.label} {answer.voteCount} Votes
-                </span>
-              </label>
-            );
-          })}
+          <fieldset>
+            <legend className="text-sm font-medium text-gray-900 uppercase tracking-wide">
+              {poll.label}
+            </legend>
+            <div className="flex flex-col gap-2 py-3 max-w-sm">
+              {poll.answers.map(answer => {
+                return (
+                  <label
+                    key={answer.id}
+                    className="flex items-center border p-2 rounded-md cursor-pointer focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
+                  >
+                    <input
+                      type="radio"
+                      name={poll.id}
+                      value={answer.id}
+                      checked={poll.userAnswer?.id === answer.id}
+                      disabled={!auth.ready || !auth.sessionData}
+                      onChange={() => {
+                        voteForPoll({
+                          variables: { answerId: answer.id },
+                          refetchQueries: ['Poll'],
+                        });
+                      }}
+                      className="focus:ring-0"
+                    />
+                    <span className="ml-3 flex flex-1 justify-between text-sm font-medium text-gray-700">
+                      <span>{answer.label}</span>
+                      <span className="text-gray-500">
+                        {answer.voteCount} Votes
+                      </span>
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          </fieldset>
         </form>
         {auth.ready && !auth.sessionData && (
           <Fragment>
@@ -183,10 +210,12 @@ export function DocumentRenderer({
   document,
 }: Pick<ComponentProps<typeof KeystoneDocumentRenderer>, 'document'>) {
   return (
-    <KeystoneDocumentRenderer
-      document={document}
-      renderers={renderers}
-      componentBlocks={componentBlockRenderers}
-    />
+    <div className="prose">
+      <KeystoneDocumentRenderer
+        document={document}
+        renderers={renderers}
+        componentBlocks={componentBlockRenderers}
+      />
+    </div>
   );
 }

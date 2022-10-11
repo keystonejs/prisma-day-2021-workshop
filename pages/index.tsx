@@ -35,8 +35,8 @@ export default function Home({
             : null;
           return (
             <div key={post.id} className="my-8">
-              <div className="text-gray-500 text-sm font-medium">{date}</div>
-              <h2 className="text-xl text-gray-800 my-2 font-medium">
+              <div className="text-sm font-medium text-gray-500">{date}</div>
+              <h2 className="my-2 text-xl font-medium text-gray-800">
                 {post.title}
               </h2>
               {post.intro?.document && (
