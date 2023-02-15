@@ -1,6 +1,6 @@
 import { createContext, useRef, useEffect, useContext, ReactNode } from 'react';
 
-import { useQuery, useMutation } from '@ts-gql/apollo';
+import { useQuery, useMutation } from '@apollo/client';
 import { gql } from '@ts-gql/tag/no-transform';
 
 export type SignInArgs = { email: string; password: string };

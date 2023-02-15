@@ -9,7 +9,7 @@ import {
   DocumentRendererProps,
 } from '@keystone-6/document-renderer';
 import { InferRenderersForComponentBlocks } from '@keystone-6/fields-document/component-blocks';
-import { useMutation, useQuery } from '@ts-gql/apollo';
+import { useMutation, useQuery } from '@apollo/client';
 import { gql } from '@ts-gql/tag/no-transform';
 import { ComponentProps, Fragment } from 'react';
 import { useAuth } from '../../../components/auth';

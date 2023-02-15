@@ -7,7 +7,7 @@ import { FieldContainer, FieldLabel, TextInput } from '../components/ui/forms';
 import { useRouter } from 'next/router';
 import { Link } from '../components/ui/link';
 import { gql } from '@ts-gql/tag/no-transform';
-import { useMutation } from '@ts-gql/apollo';
+import { useMutation } from '@apollo/client';
 
 export default function SignupPage() {
   const [signup, { error, data }] = useMutation(

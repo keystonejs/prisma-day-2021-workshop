@@ -20,11 +20,10 @@
     "@keystone-6/core": "^1.0.1",
     "@keystone-6/document-renderer": "^1.0.0",
     "@keystone-6/fields-document": "^1.0.1",
-    "@ts-gql/apollo": "^0.11.0",
-    "@ts-gql/compiler": "^0.15.0",
-    "@ts-gql/eslint-plugin": "^0.8.0",
-    "@ts-gql/next": "^16.0.0",
-    "@ts-gql/tag": "^0.6.0",
+    "@ts-gql/compiler": "^0.16.3",
+    "@ts-gql/eslint-plugin": "^0.8.5",
+    "@ts-gql/next": "^17.0.0",
+    "@ts-gql/tag": "^0.7.0",
     "@typescript-eslint/parser": "^5.15.0",
     "classnames": "^2.3.1",
     "eslint": "^8.11.0",
@@ -51,7 +50,6 @@
   },
   "ts-gql": {
     "schema": "schema.graphql",
-    "addTypenames": false,
     "mode": "no-transform"
   }
 }
